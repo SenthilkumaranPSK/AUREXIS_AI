@@ -61,6 +61,9 @@ export default function IntelligencePanel() {
             <div>
               <div className="text-xs font-semibold text-foreground">{currentUser.name}</div>
               <div className="text-[10px] text-muted-foreground">{currentUser.occupation}</div>
+              {currentUser.location && (
+                <div className="text-[10px] text-muted-foreground/70">📍 {currentUser.location}</div>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -76,6 +79,17 @@ export default function IntelligencePanel() {
               </div>
             ))}
           </div>
+          {/* Bank info */}
+          {currentUser.bankName && (
+            <div className="mt-2 p-2.5 bg-muted/50 rounded-xl border border-border">
+              <div className="text-[9px] text-muted-foreground uppercase tracking-wider mb-1">Bank Details</div>
+              <div className="text-xs font-semibold text-foreground">{currentUser.bankName} · {currentUser.accountType}</div>
+              <div className="text-[10px] text-muted-foreground">{currentUser.accountNumber} · {currentUser.bankLocation}</div>
+              {currentUser.hasCreditCard && (
+                <span className="inline-block mt-1 text-[9px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium">Credit Card</span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Risk & Health */}

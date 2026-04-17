@@ -35,3 +35,5 @@ coverage/
 # Misc
 *.sqlite
 *.db
+*.bat
+*.xlsx

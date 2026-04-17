@@ -205,6 +205,9 @@ User's financial profile:
 - Monthly Expenses: ₹{expense:,.0f}
 - Savings Rate: {savings_rate}%
 - Credit Score: {credit_score}
+- Bank: {user_context.get("bank_name", "N/A")} ({user_context.get("account_type", "Savings")})
+- Location: {user_context.get("location", "N/A")}
+- Credit Card: {user_context.get("credit_card", "No")}
 
 Guidelines:
 - Give personalized advice using the user's actual numbers above
@@ -282,6 +285,13 @@ def build_user_profile(user: Dict[str, Any]) -> Dict[str, Any]:
         "avatar": f"https://ui-avatars.com/api/?name={user.get('name','User')}&background=3B82F6&color=fff&size=128&bold=true",
         "occupation": user.get("occupation", "Professional"),
         "age": user.get("age", 30),
+        "email": user.get("email", ""),
+        "bankName": user.get("bank_name", ""),
+        "accountNumber": user.get("account_number", ""),
+        "accountType": user.get("account_type", "Savings"),
+        "bankLocation": user.get("bank_location", ""),
+        "hasCreditCard": user.get("credit_card", "No").lower() == "yes",
+        "location": user.get("location", ""),
         "monthlyIncome": income,
         "monthlyExpense": expense,
         "savings": int(income - expense),

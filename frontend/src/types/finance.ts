@@ -7,6 +7,13 @@ export interface UserProfile {
   avatar: string;
   occupation: string;
   age: number;
+  email: string;
+  bankName: string;
+  accountNumber: string;
+  accountType: string;
+  bankLocation: string;
+  hasCreditCard: boolean;
+  location: string;
   monthlyIncome: number;
   monthlyExpense: number;
   netWorth: number;
