@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Optional, Dict, Any
 
 BASE_DIR = Path(__file__).parent
-TEST_DATA_DIR = BASE_DIR.parent / "test_data_dir"
+TEST_DATA_DIR = BASE_DIR / "user_data"
 
 USERS_DATA = [
     {"si_no": 1,  "name": "Senthilkumaran", "user_number": "1010101010", "email": "sk@gmail.com",   "occupation": "Software Engineer",   "age": 24, "password": "Senthil@123",  "account_number": "ACC001", "bank_name": "SBI",   "account_type": "Savings", "bank_location": "Chennai",    "credit_card": "Yes", "location": "Chennai"},

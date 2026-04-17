@@ -23,23 +23,10 @@ An AI-powered personal finance dashboard with real-time risk analysis, investmen
 ├── backend/
 │   ├── server.py          # FastAPI server — auth, chat, data endpoints
 │   ├── user_manager.py    # User auth and financial data loading
+│   ├── user_data/         # Per-user JSON financial data files
+│   │   └── {user_number}/
 │   ├── requirements.txt
-│   ├── .env               # Backend environment config
-│   └── Users.xlsx         # User credentials (name = password)
-│
-├── frontend/
-│   └── src/
-│       ├── pages/         # LoginPage, DashboardPage, NotFound
-│       ├── components/
-│       │   ├── dashboard/ # MetricCard, Charts, Chat, Panels
-│       │   ├── layout/    # AppSidebar, AppHeader
-│       │   └── AnimatedBackground.tsx
-│       ├── store/         # Zustand global state
-│       ├── lib/           # API client, formatters
-│       └── types/         # TypeScript interfaces
-│
-└── test_data_dir/
-    └── {phone_number}/    # Per-user JSON financial data files
+│   └── .env               # Backend environment config
 ```
 
 ---
