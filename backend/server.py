@@ -26,6 +26,15 @@ from user_manager import (
     get_all_user_data,
     load_user_data,
 )
+from analytics import (
+    compute_metrics,
+    compute_forecast,
+    compute_expenses,
+    compute_investments,
+    compute_goals,
+    compute_risk,
+    compute_simulation,
+)
 
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "deepseek-v3.1:671b-cloud")
@@ -143,6 +152,76 @@ async def chat(request: ChatMessage):
             },
             "user_id": user_id,
         }
+
+
+# --- Analytics Endpoints ---
+
+@app.get("/api/user/{user_id}/metrics")
+async def get_metrics(user_id: str):
+    """Key financial metrics computed from raw data."""
+    data = get_all_user_data(user_id)
+    return compute_metrics(data)
+
+
+@app.get("/api/user/{user_id}/forecast")
+async def get_forecast(user_id: str):
+    """12-month historical + 6-month projected forecast."""
+    data = get_all_user_data(user_id)
+    return {"forecast": compute_forecast(data)}
+
+
+@app.get("/api/user/{user_id}/expenses")
+async def get_expenses(user_id: str):
+    """Expense breakdown by category."""
+    data = get_all_user_data(user_id)
+    return {"expenses": compute_expenses(data)}
+
+
+@app.get("/api/user/{user_id}/investments")
+async def get_investments(user_id: str):
+    """Investment portfolio breakdown."""
+    data = get_all_user_data(user_id)
+    return compute_investments(data)
+
+
+@app.get("/api/user/{user_id}/goals")
+async def get_goals(user_id: str):
+    """Financial goals with progress."""
+    data = get_all_user_data(user_id)
+    return {"goals": compute_goals(data)}
+
+
+@app.get("/api/user/{user_id}/risk")
+async def get_risk(user_id: str):
+    """Detailed risk analysis."""
+    data = get_all_user_data(user_id)
+    return compute_risk(data)
+
+
+class SimulationRequest(BaseModel):
+    new_loan: float = 0
+    salary_increase: float = 0
+    job_loss: bool = False
+    vacation_expense: float = 0
+    house_purchase: bool = False
+    car_purchase: bool = False
+    investment_increase: float = 0
+
+
+@app.post("/api/user/{user_id}/simulation")
+async def run_simulation(user_id: str, params: SimulationRequest):
+    """Run scenario simulation with given parameters."""
+    data = get_all_user_data(user_id)
+    return compute_simulation(
+        data,
+        new_loan=params.new_loan,
+        salary_increase=params.salary_increase,
+        job_loss=params.job_loss,
+        vacation_expense=params.vacation_expense,
+        house_purchase=params.house_purchase,
+        car_purchase=params.car_purchase,
+        investment_increase=params.investment_increase,
+    )
 
 
 # --- Helpers ---

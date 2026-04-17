@@ -133,7 +133,7 @@ export async function getAllUserData(userId: string): Promise<any> {
 }
 
 /**
- * Send message to ADK agent
+ * Send message to Ollama AI advisor
  */
 export async function sendChatMessage(
   request: ChatRequest
@@ -141,5 +141,46 @@ export async function sendChatMessage(
   return apiRequest<ChatResponse>("/api/chat", {
     method: "POST",
     body: JSON.stringify(request),
+  });
+}
+
+// --- Analytics API ---
+
+export async function getUserMetrics(userId: string): Promise<any> {
+  return apiRequest(`/api/user/${userId}/metrics`);
+}
+
+export async function getUserForecast(userId: string): Promise<{ forecast: any[] }> {
+  return apiRequest(`/api/user/${userId}/forecast`);
+}
+
+export async function getUserExpenses(userId: string): Promise<{ expenses: any[] }> {
+  return apiRequest(`/api/user/${userId}/expenses`);
+}
+
+export async function getUserInvestments(userId: string): Promise<any> {
+  return apiRequest(`/api/user/${userId}/investments`);
+}
+
+export async function getUserGoals(userId: string): Promise<{ goals: any[] }> {
+  return apiRequest(`/api/user/${userId}/goals`);
+}
+
+export async function getUserRisk(userId: string): Promise<any> {
+  return apiRequest(`/api/user/${userId}/risk`);
+}
+
+export async function runSimulation(userId: string, params: {
+  new_loan?: number;
+  salary_increase?: number;
+  job_loss?: boolean;
+  vacation_expense?: number;
+  house_purchase?: boolean;
+  car_purchase?: boolean;
+  investment_increase?: number;
+}): Promise<any> {
+  return apiRequest(`/api/user/${userId}/simulation`, {
+    method: "POST",
+    body: JSON.stringify(params),
   });
 }
