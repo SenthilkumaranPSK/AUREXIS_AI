@@ -22,11 +22,22 @@ An AI-powered personal finance dashboard with real-time risk analysis, investmen
 ```
 ├── backend/
 │   ├── server.py          # FastAPI server — auth, chat, data endpoints
-│   ├── user_manager.py    # User auth and financial data loading
+│   ├── user_manager.py    # User auth and financial data (hardcoded)
 │   ├── user_data/         # Per-user JSON financial data files
 │   │   └── {user_number}/
 │   ├── requirements.txt
 │   └── .env               # Backend environment config
+│
+└── frontend/
+    └── src/
+        ├── pages/         # LoginPage, DashboardPage, NotFound
+        ├── components/
+        │   ├── dashboard/ # MetricCard, Charts, Chat, Panels
+        │   ├── layout/    # AppSidebar, AppHeader
+        │   └── AnimatedBackground.tsx
+        ├── store/         # Zustand global state
+        ├── lib/           # API client, formatters
+        └── types/         # TypeScript interfaces
 ```
 
 ---
@@ -85,24 +96,24 @@ Frontend runs at `http://localhost:5173`
 
 ---
 
-## Login
+## Login Credentials
 
-Credentials are name-based — the username and password are the same value (case-insensitive).
+Password format: `Name@2000`
 
-| Name | Password | Occupation |
-|------|----------|------------|
-| Senthilkumaran | Senthilkumaran@2000 | Software Engineer |
-| Imayavarman | Imayavarman@2000 | Doctor |
-| Srivarshan | Srivarshan@2000 | Business Owner |
-| Rahulprasath | Rahulprasath@2000 | Teacher |
-| Magudesh | Magudesh@2000 | Freelancer |
-| Deepak | Deepak@2000 | CA |
-| Mani | Mani@2000 | Government Employee |
-| Dineshkumar | Dineshkumar@2000 | Lawyer |
-| Avinash | Avinash@2000 | IPS |
-| Kumar | Kumar@2000 | Content Creator |
-| Hari | Hari@2000 | Startup Founder |
-| Janakrishnan | Janakrishnan@2000 | Government Employee |
+| Name | Password | Occupation | Location |
+|------|----------|------------|----------|
+| Senthilkumaran | Senthilkumaran@2000 | Software Engineer | Salem |
+| Imayavarman | Imayavarman@2000 | Doctor | Erode |
+| Srivarshan | Srivarshan@2000 | Business Owner | Theni |
+| Rahulprasath | Rahulprasath@2000 | Teacher | Omalur |
+| Magudesh | Magudesh@2000 | Freelancer | Bangalore |
+| Deepak | Deepak@2000 | CA | Chennai |
+| Mani | Mani@2000 | Government Employee | Edapadi |
+| Dineshkumar | Dineshkumar@2000 | Lawyer | Sangagari |
+| Avinash | Avinash@2000 | IPS | Ambur |
+| Kumar | Kumar@2000 | Content Creator | Coimbatore |
+| Hari | Hari@2000 | Startup Founder | Karur |
+| Janakrishnan | Janakrishnan@2000 | Government Employee | Rasipuram |
 
 ---
 
@@ -131,15 +142,19 @@ OLLAMA_MODEL=deepseek-v3.1:671b-cloud
 
 ---
 
-## Features
+## Dashboard Features
 
-- **Dashboard** — Net worth, income, expenses, savings rate, credit score, health score
-- **Financial Health** — Score gauge, trend analysis, recommendations
-- **Risk Analysis** — Debt-to-income ratio, risk level assessment
-- **Investments** — Portfolio breakdown, allocation, returns
-- **Goals** — Progress tracking with monthly savings targets
-- **Scenario Simulator** — What-if modeling for loans, salary changes, job loss
-- **Forecasting** — 6-month income/expense/savings projection
-- **AI Chat** — Personalized financial advice via local Ollama LLM
-- **Animated Background** — Canvas-based moving gradient mesh
-- **Dark / Light theme** — Toggle in the header
+| Section | Description |
+|---------|-------------|
+| Overview | Key metrics, health score, forecast chart, quick summary cards |
+| Financial Health | Health score gauge, savings rate, credit score, recommendations |
+| Risk Analysis | Risk level, debt-to-income ratio, credit score |
+| Savings | Monthly savings, emergency fund, goals tracking |
+| Debt | Total debt, DTI ratio, scenario simulation |
+| Investments | Portfolio breakdown, allocation, returns |
+| Goals | Progress tracking with monthly savings targets |
+| Forecasting | 6-month income/expense/savings projection |
+| Scenario Sim | What-if modeling — loans, salary, job loss, purchases |
+| Alerts | AI-generated financial recommendations |
+| Reports | Expense breakdown + forecast charts |
+| AI Chat | Personalized financial advice via local Ollama LLM |
