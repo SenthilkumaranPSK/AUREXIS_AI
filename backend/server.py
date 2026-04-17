@@ -38,6 +38,14 @@ from analytics import (
 from recommendations import generate_recommendations
 from alerts import generate_alerts, generate_emis
 from health import compute_health
+from forecasting import (
+    compute_monthly_forecast,
+    compute_net_worth_forecast,
+    compute_goal_forecast,
+    compute_expense_forecast,
+    compute_savings_projection,
+)
+from report import generate_report
 
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "deepseek-v3.1:671b-cloud")
@@ -249,6 +257,53 @@ async def get_alerts(user_id: str):
         "alerts": generate_alerts(data),
         "emis": generate_emis(data),
     }
+
+
+# --- Forecasting Endpoints ---
+
+@app.get("/api/user/{user_id}/forecast/monthly")
+async def get_monthly_forecast(user_id: str, months: int = 6):
+    """Historical + projected monthly income/expense/savings."""
+    data = get_all_user_data(user_id)
+    return {"forecast": compute_monthly_forecast(data, months)}
+
+
+@app.get("/api/user/{user_id}/forecast/networth")
+async def get_networth_forecast(user_id: str, years: int = 5):
+    """Multi-year net worth projection."""
+    data = get_all_user_data(user_id)
+    return {"forecast": compute_net_worth_forecast(data, years)}
+
+
+@app.get("/api/user/{user_id}/forecast/goals")
+async def get_goal_forecast(user_id: str):
+    """Goal completion timeline forecast."""
+    data = get_all_user_data(user_id)
+    return {"goals": compute_goal_forecast(data)}
+
+
+@app.get("/api/user/{user_id}/forecast/expenses")
+async def get_expense_forecast(user_id: str, months: int = 6):
+    """Category-wise expense trend forecast."""
+    data = get_all_user_data(user_id)
+    return {"categories": compute_expense_forecast(data, months)}
+
+
+@app.get("/api/user/{user_id}/forecast/savings")
+async def get_savings_projection(user_id: str):
+    """Savings projection at different contribution rates."""
+    data = get_all_user_data(user_id)
+    return compute_savings_projection(data)
+
+
+# --- Report Endpoint ---
+
+@app.get("/api/user/{user_id}/report")
+async def get_report(user_id: str):
+    """Generate complete financial report for a user."""
+    user = get_user_by_id(user_id) or get_user_by_name(user_id) or {"name": "User", "number": user_id}
+    data = get_all_user_data(user_id)
+    return generate_report(user, data)
 
 
 # --- Helpers ---

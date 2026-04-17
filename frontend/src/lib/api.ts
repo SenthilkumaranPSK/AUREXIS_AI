@@ -151,7 +151,27 @@ export async function getUserMetrics(userId: string): Promise<any> {
 }
 
 export async function getUserForecast(userId: string): Promise<{ forecast: any[] }> {
-  return apiRequest(`/api/user/${userId}/forecast`);
+  return apiRequest(`/api/user/${userId}/forecast/monthly`);
+}
+
+export async function getNetworthForecast(userId: string, years = 5): Promise<{ forecast: any[] }> {
+  return apiRequest(`/api/user/${userId}/forecast/networth?years=${years}`);
+}
+
+export async function getGoalForecast(userId: string): Promise<{ goals: any[] }> {
+  return apiRequest(`/api/user/${userId}/forecast/goals`);
+}
+
+export async function getExpenseForecast(userId: string): Promise<{ categories: any[] }> {
+  return apiRequest(`/api/user/${userId}/forecast/expenses`);
+}
+
+export async function getSavingsProjection(userId: string): Promise<any> {
+  return apiRequest(`/api/user/${userId}/forecast/savings`);
+}
+
+export async function getFullReport(userId: string): Promise<any> {
+  return apiRequest(`/api/user/${userId}/report`);
 }
 
 export async function getUserExpenses(userId: string): Promise<{ expenses: any[] }> {
