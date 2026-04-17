@@ -91,18 +91,18 @@ Credentials are name-based — the username and password are the same value (cas
 
 | Name | Password | Occupation |
 |------|----------|------------|
-| Senthilkumaran | Senthilkumaran | Software Engineer |
-| Imayavarman | Imayavarman | Doctor |
-| Srivarshan | Srivarshan | Business Owner |
-| Rahulprasath | Rahulprasath | Teacher |
-| Dineshkumar | Dineshkumar | Freelancer |
-| Deepak | Deepak | CA |
-| Mani | Mani | Government Employee |
-| Murugesan | Murugesan | Lawyer |
-| Avinash | Avinash | IPS |
-| Kumar | Kumar | Content Creator |
-| Vadivel | Vadivel | Startup Founder |
-| Janakrishnan | Janakrishnan | Government Employee |
+| Senthilkumaran | Senthilkumaran@2000 | Software Engineer |
+| Imayavarman | Imayavarman@2000 | Doctor |
+| Srivarshan | Srivarshan@2000 | Business Owner |
+| Rahulprasath | Rahulprasath@2000 | Teacher |
+| Magudesh | Magudesh@2000 | Freelancer |
+| Deepak | Deepak@2000 | CA |
+| Mani | Mani@2000 | Government Employee |
+| Dineshkumar | Dineshkumar@2000 | Lawyer |
+| Avinash | Avinash@2000 | IPS |
+| Kumar | Kumar@2000 | Content Creator |
+| Hari | Hari@2000 | Startup Founder |
+| Janakrishnan | Janakrishnan@2000 | Government Employee |
 
 ---
 

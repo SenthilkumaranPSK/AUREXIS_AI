@@ -3,7 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Wallet, TrendingUp, TrendingDown, PiggyBank, CreditCard,
-  Shield, Target, AlertTriangle, RefreshCw
+  Shield, Target, AlertTriangle, RefreshCw, ArrowRight,
+  Heart, ShieldAlert, FlaskConical, LineChart, Bell, FileText
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { formatCurrency } from "@/lib/formatters";
@@ -20,79 +21,141 @@ import FloatingChat from "@/components/dashboard/FloatingChat";
 import AppSidebar from "@/components/layout/AppSidebar";
 import AppHeader from "@/components/layout/AppHeader";
 
-function OverviewSection({ u }: { u: ReturnType<typeof useStore>["currentUser"] }) {
+// Quick summary card — shows a snapshot with a "View Details" link
+function SummaryCard({
+  icon: Icon, title, value, sub, color, path, navigate
+}: {
+  icon: any; title: string; value: string; sub: string;
+  color: string; path: string; navigate: (p: string) => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -2 }}
+      onClick={() => navigate(path)}
+      className="glass-card rounded-2xl p-5 border border-border cursor-pointer group transition-all duration-200 hover:border-primary/30"
+    >
+      <div className="flex items-start justify-between mb-3">
+        <div className={`p-2 rounded-xl ${color}`}>
+          <Icon className="w-4 h-4" />
+        </div>
+        <ArrowRight className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+      </div>
+      <div className="text-xl font-bold text-foreground tabular-nums mb-0.5">{value}</div>
+      <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{title}</div>
+      <div className="text-[10px] text-muted-foreground/60 mt-1">{sub}</div>
+    </motion.div>
+  );
+}
+
+import { UserProfile } from "@/types/finance";
+
+function OverviewSection({ u }: { u: UserProfile }) {
+  const navigate = useNavigate();
+  if (!u) return null;
+
+  const avgGoalPct = u.goals?.length
+    ? Math.round(u.goals.reduce((s, g) => s + (g.current / g.target), 0) / u.goals.length * 100)
+    : 0;
+
+  return (
+    <>
+      {/* Key metrics */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <MetricCard title="Net Worth"      value={formatCurrency(u.netWorth)}      icon={Wallet}      variant="primary" trend={{ value: "4.2%", positive: true }} />
+        <MetricCard title="Monthly Income" value={formatCurrency(u.monthlyIncome)} icon={TrendingUp}  variant="success" />
+        <MetricCard title="Monthly Expense"value={formatCurrency(u.monthlyExpense)}icon={TrendingDown} variant="danger" />
+        <MetricCard title="Savings Rate"   value={`${u.savingsRate}%`}             icon={PiggyBank}   variant={u.savingsRate > 30 ? "success" : "warning"} trend={{ value: "2.1%", positive: u.savingsRate > 30 }} />
+      </div>
+
+      {/* Health + Forecast */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <HealthScoreGauge />
+        <div className="lg:col-span-2"><ForecastChart /></div>
+      </div>
+
+      {/* Quick summary cards — click to navigate */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-foreground">Quick Summary</h2>
+          <span className="text-[11px] text-muted-foreground">Click any card to explore</span>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+          <SummaryCard icon={Heart}       title="Health"      value={`${u.financialHealthScore}/100`}   sub="Financial health score"          color="bg-success/10 text-success"  path="/dashboard/health"     navigate={navigate} />
+          <SummaryCard icon={ShieldAlert} title="Risk"        value={u.riskLevel}                        sub={`DTI: ${(u.debtToIncomeRatio*100).toFixed(0)}%`} color="bg-warning/10 text-warning"  path="/dashboard/risk"       navigate={navigate} />
+          <SummaryCard icon={TrendingUp}  title="Investments" value={formatCurrency(u.investmentValue)} sub="Portfolio value"                 color="bg-primary/10 text-primary"  path="/dashboard/investments" navigate={navigate} />
+          <SummaryCard icon={Target}      title="Goals"       value={`${avgGoalPct}%`}                   sub={`${u.goals?.length || 0} active goals`} color="bg-success/10 text-success"  path="/dashboard/goals"      navigate={navigate} />
+          <SummaryCard icon={CreditCard}  title="Debt"        value={formatCurrency(u.totalDebt)}        sub="Total outstanding"               color="bg-danger/10 text-danger"    path="/dashboard/debt"       navigate={navigate} />
+          <SummaryCard icon={FlaskConical}title="Simulator"   value="What-if"                            sub="Run scenario analysis"           color="bg-primary/10 text-primary"  path="/dashboard/simulation" navigate={navigate} />
+        </div>
+      </div>
+
+      {/* Recent alerts preview */}
+      {u.alerts?.length > 0 && (
+        <div className="glass-card rounded-2xl p-5 border border-border">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Bell className="w-4 h-4 text-warning" />
+              <span className="text-sm font-semibold text-foreground">Recent Alerts</span>
+            </div>
+            <button onClick={() => navigate("/dashboard/alerts")}
+              className="text-[11px] text-primary flex items-center gap-1 hover:underline">
+              View all <ArrowRight className="w-3 h-3" />
+            </button>
+          </div>
+          <div className="space-y-2">
+            {u.alerts.slice(0, 2).map(a => (
+              <div key={a.id} className={`flex items-start gap-2.5 p-2.5 rounded-xl border text-xs ${
+                a.type === "warning" ? "bg-warning/5 border-warning/20" :
+                a.type === "danger"  ? "bg-danger/5  border-danger/20"  :
+                a.type === "success" ? "bg-success/5 border-success/20" :
+                "bg-primary/5 border-primary/20"
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full mt-1 shrink-0 ${
+                  a.type === "warning" ? "bg-warning" : a.type === "danger" ? "bg-danger" :
+                  a.type === "success" ? "bg-success" : "bg-primary"
+                }`} />
+                <div>
+                  <div className="font-semibold text-foreground">{a.title}</div>
+                  <div className="text-muted-foreground text-[10px]">{a.message}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function HealthSection({ u }: { u: UserProfile }) {
   if (!u) return null;
   return (
     <>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Net Worth" value={formatCurrency(u.netWorth)} icon={Wallet} variant="primary"
-          trend={{ value: "4.2%", positive: true }} />
-        <MetricCard title="Monthly Income" value={formatCurrency(u.monthlyIncome)} icon={TrendingUp} variant="success" />
-        <MetricCard title="Monthly Expense" value={formatCurrency(u.monthlyExpense)} icon={TrendingDown} variant="danger" />
-        <MetricCard title="Savings Rate" value={`${u.savingsRate}%`} icon={PiggyBank}
-          variant={u.savingsRate > 30 ? "success" : "warning"}
-          trend={{ value: "2.1%", positive: u.savingsRate > 30 }} />
-      </div>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Total Debt" value={formatCurrency(u.totalDebt)} icon={CreditCard}
-          variant={u.debtToIncomeRatio < 0.3 ? "success" : "danger"} subtitle={`DTI: ${(u.debtToIncomeRatio * 100).toFixed(1)}%`} />
-        <MetricCard title="Investments" value={formatCurrency(u.investmentValue)} icon={TrendingUp} variant="primary"
-          trend={{ value: "8.5%", positive: true }} />
-        <MetricCard title="Emergency Fund" value={`${u.emergencyFundMonths} months`} icon={Shield}
-          variant={u.emergencyFundMonths >= 6 ? "success" : u.emergencyFundMonths >= 3 ? "warning" : "danger"} />
-        <MetricCard title="Goals Progress" value={`${(u.goals || []).length} active`} icon={Target} variant="primary"
-          subtitle={`${u.goals?.length ? Math.round(u.goals.reduce((s, g) => s + (g.current / g.target), 0) / u.goals.length * 100) : 0}% avg completion`} />
+        <MetricCard title="Health Score"   value={`${u.financialHealthScore}/100`} icon={Shield}    variant={u.financialHealthScore >= 70 ? "success" : u.financialHealthScore >= 50 ? "warning" : "danger"} />
+        <MetricCard title="Savings Rate"   value={`${u.savingsRate}%`}             icon={PiggyBank} variant={u.savingsRate > 30 ? "success" : "warning"} />
+        <MetricCard title="Emergency Fund" value={`${u.emergencyFundMonths} months`} icon={Shield}  variant={u.emergencyFundMonths >= 6 ? "success" : "warning"} />
+        <MetricCard title="Credit Score"   value={`${u.creditScore}`}              icon={CreditCard} variant={u.creditScore >= 750 ? "success" : u.creditScore >= 650 ? "warning" : "danger"} />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <HealthScoreGauge />
         <div className="lg:col-span-2"><ForecastChart /></div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ExpenseBreakdown />
-        <InvestmentPanel />
-      </div>
-      <GoalsPanel />
-      <ScenarioSimulation />
       <RecommendationFeed />
     </>
   );
 }
 
-function HealthSection({ u }: { u: ReturnType<typeof useStore>["currentUser"] }) {
+function RiskSection({ u }: { u: UserProfile }) {
   if (!u) return null;
   return (
     <>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Health Score" value={`${u.financialHealthScore}/100`} icon={Shield}
-          variant={u.financialHealthScore >= 70 ? "success" : u.financialHealthScore >= 50 ? "warning" : "danger"} />
-        <MetricCard title="Savings Rate" value={`${u.savingsRate}%`} icon={PiggyBank}
-          variant={u.savingsRate > 30 ? "success" : "warning"} />
-        <MetricCard title="Emergency Fund" value={`${u.emergencyFundMonths} months`} icon={Shield}
-          variant={u.emergencyFundMonths >= 6 ? "success" : "warning"} />
-        <MetricCard title="Credit Score" value={`${u.creditScore}`} icon={CreditCard}
-          variant={u.creditScore >= 750 ? "success" : u.creditScore >= 650 ? "warning" : "danger"} />
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <HealthScoreGauge />
-        <div className="lg:col-span-2"><ForecastChart /></div>
-      </div>
-      <RecommendationFeed />
-    </>
-  );
-}
-
-function RiskSection({ u }: { u: ReturnType<typeof useStore>["currentUser"] }) {
-  if (!u) return null;
-  return (
-    <>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Risk Level" value={u.riskLevel} icon={AlertTriangle}
-          variant={u.riskLevel === "Low" ? "success" : u.riskLevel === "Medium" ? "warning" : "danger"} />
-        <MetricCard title="Debt-to-Income" value={`${(u.debtToIncomeRatio * 100).toFixed(1)}%`} icon={CreditCard}
-          variant={u.debtToIncomeRatio < 0.3 ? "success" : "danger"} />
-        <MetricCard title="Total Debt" value={formatCurrency(u.totalDebt)} icon={CreditCard} variant="danger" />
-        <MetricCard title="Credit Score" value={`${u.creditScore}`} icon={Shield}
-          variant={u.creditScore >= 750 ? "success" : "warning"} />
+        <MetricCard title="Risk Level"     value={u.riskLevel}                                        icon={AlertTriangle} variant={u.riskLevel === "Low" ? "success" : u.riskLevel === "Medium" ? "warning" : "danger"} />
+        <MetricCard title="Debt-to-Income" value={`${(u.debtToIncomeRatio * 100).toFixed(1)}%`}       icon={CreditCard}    variant={u.debtToIncomeRatio < 0.3 ? "success" : "danger"} />
+        <MetricCard title="Total Debt"     value={formatCurrency(u.totalDebt)}                        icon={CreditCard}    variant="danger" />
+        <MetricCard title="Credit Score"   value={`${u.creditScore}`}                                 icon={Shield}        variant={u.creditScore >= 750 ? "success" : "warning"} />
       </div>
       <HealthScoreGauge />
       <RecommendationFeed />
@@ -100,17 +163,15 @@ function RiskSection({ u }: { u: ReturnType<typeof useStore>["currentUser"] }) {
   );
 }
 
-function SavingsSection({ u }: { u: ReturnType<typeof useStore>["currentUser"] }) {
+function SavingsSection({ u }: { u: UserProfile }) {
   if (!u) return null;
   return (
     <>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Monthly Savings" value={formatCurrency(u.savings)} icon={PiggyBank} variant="success" />
-        <MetricCard title="Savings Rate" value={`${u.savingsRate}%`} icon={PiggyBank}
-          variant={u.savingsRate > 30 ? "success" : "warning"} />
-        <MetricCard title="Emergency Fund" value={`${u.emergencyFundMonths} months`} icon={Shield}
-          variant={u.emergencyFundMonths >= 6 ? "success" : "warning"} />
-        <MetricCard title="Net Worth" value={formatCurrency(u.netWorth)} icon={Wallet} variant="primary" />
+        <MetricCard title="Monthly Savings" value={formatCurrency(u.savings)}          icon={PiggyBank} variant="success" />
+        <MetricCard title="Savings Rate"    value={`${u.savingsRate}%`}                icon={PiggyBank} variant={u.savingsRate > 30 ? "success" : "warning"} />
+        <MetricCard title="Emergency Fund"  value={`${u.emergencyFundMonths} months`}  icon={Shield}    variant={u.emergencyFundMonths >= 6 ? "success" : "warning"} />
+        <MetricCard title="Net Worth"       value={formatCurrency(u.netWorth)}         icon={Wallet}    variant="primary" />
       </div>
       <ForecastChart />
       <GoalsPanel />
@@ -118,17 +179,15 @@ function SavingsSection({ u }: { u: ReturnType<typeof useStore>["currentUser"] }
   );
 }
 
-function DebtSection({ u }: { u: ReturnType<typeof useStore>["currentUser"] }) {
+function DebtSection({ u }: { u: UserProfile }) {
   if (!u) return null;
   return (
     <>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Total Debt" value={formatCurrency(u.totalDebt)} icon={CreditCard} variant="danger" />
-        <MetricCard title="Debt-to-Income" value={`${(u.debtToIncomeRatio * 100).toFixed(1)}%`} icon={CreditCard}
-          variant={u.debtToIncomeRatio < 0.3 ? "success" : "danger"} />
-        <MetricCard title="Monthly Income" value={formatCurrency(u.monthlyIncome)} icon={TrendingUp} variant="success" />
-        <MetricCard title="Credit Score" value={`${u.creditScore}`} icon={Shield}
-          variant={u.creditScore >= 750 ? "success" : "warning"} />
+        <MetricCard title="Total Debt"      value={formatCurrency(u.totalDebt)}                  icon={CreditCard} variant="danger" />
+        <MetricCard title="Debt-to-Income"  value={`${(u.debtToIncomeRatio * 100).toFixed(1)}%`} icon={CreditCard} variant={u.debtToIncomeRatio < 0.3 ? "success" : "danger"} />
+        <MetricCard title="Monthly Income"  value={formatCurrency(u.monthlyIncome)}              icon={TrendingUp} variant="success" />
+        <MetricCard title="Credit Score"    value={`${u.creditScore}`}                           icon={Shield}     variant={u.creditScore >= 750 ? "success" : "warning"} />
       </div>
       <ScenarioSimulation />
       <RecommendationFeed />
@@ -137,36 +196,36 @@ function DebtSection({ u }: { u: ReturnType<typeof useStore>["currentUser"] }) {
 }
 
 const sectionMap: Record<string, (u: any) => JSX.Element | null> = {
-  "/dashboard/health": (u) => <HealthSection u={u} />,
-  "/dashboard/risk": (u) => <RiskSection u={u} />,
-  "/dashboard/savings": (u) => <SavingsSection u={u} />,
-  "/dashboard/debt": (u) => <DebtSection u={u} />,
-  "/dashboard/investments": (u) => <><InvestmentPanel /><RecommendationFeed /></>,
-  "/dashboard/goals": (u) => <GoalsPanel />,
-  "/dashboard/forecasting": (u) => <ForecastChart />,
-  "/dashboard/simulation": (u) => <ScenarioSimulation />,
-  "/dashboard/alerts": (u) => <RecommendationFeed />,
-  "/dashboard/reports": (u) => <><ForecastChart /><ExpenseBreakdown /></>,
-  "/dashboard/settings": (u) => (
-    <div className="glass-card rounded-2xl p-6 text-muted-foreground text-sm">
+  "/dashboard/health":      (u) => <HealthSection u={u} />,
+  "/dashboard/risk":        (u) => <RiskSection u={u} />,
+  "/dashboard/savings":     (u) => <SavingsSection u={u} />,
+  "/dashboard/debt":        (u) => <DebtSection u={u} />,
+  "/dashboard/investments": ()  => <><InvestmentPanel /><RecommendationFeed /></>,
+  "/dashboard/goals":       ()  => <GoalsPanel />,
+  "/dashboard/forecasting": ()  => <ForecastChart />,
+  "/dashboard/simulation":  ()  => <ScenarioSimulation />,
+  "/dashboard/alerts":      ()  => <RecommendationFeed />,
+  "/dashboard/reports":     ()  => <><ForecastChart /><ExpenseBreakdown /></>,
+  "/dashboard/settings":    ()  => (
+    <div className="glass-card rounded-2xl p-6 text-muted-foreground text-sm border border-border">
       Settings panel coming soon.
     </div>
   ),
 };
 
 const sectionTitles: Record<string, string> = {
-  "/dashboard": "Financial Intelligence Overview",
-  "/dashboard/health": "Financial Health",
-  "/dashboard/risk": "Risk Analysis",
-  "/dashboard/savings": "Savings",
-  "/dashboard/debt": "Debt Management",
+  "/dashboard":             "Overview",
+  "/dashboard/health":      "Financial Health",
+  "/dashboard/risk":        "Risk Analysis",
+  "/dashboard/savings":     "Savings",
+  "/dashboard/debt":        "Debt Management",
   "/dashboard/investments": "Investments",
-  "/dashboard/goals": "Goals",
+  "/dashboard/goals":       "Goals",
   "/dashboard/forecasting": "Forecasting",
-  "/dashboard/simulation": "Scenario Simulation",
-  "/dashboard/alerts": "Alerts & Recommendations",
-  "/dashboard/reports": "Reports",
-  "/dashboard/settings": "Settings",
+  "/dashboard/simulation":  "Scenario Simulation",
+  "/dashboard/alerts":      "Alerts & Recommendations",
+  "/dashboard/reports":     "Reports",
+  "/dashboard/settings":    "Settings",
 };
 
 export default function DashboardPage() {
@@ -183,7 +242,6 @@ export default function DashboardPage() {
   const u = currentUser;
   const path = location.pathname;
   const title = sectionTitles[path] || "Dashboard";
-  const subtitle = path === "/dashboard" ? "Here's your financial intelligence overview" : `Viewing: ${title}`;
 
   const renderSection = () => {
     try {
@@ -191,13 +249,13 @@ export default function DashboardPage() {
       const renderer = sectionMap[path];
       if (renderer) return renderer(u);
       return <OverviewSection u={u} />;
-    } catch (e) {
+    } catch {
       return (
-        <div className="glass-card rounded-2xl p-8 flex flex-col items-center gap-4 text-center">
+        <div className="glass-card rounded-2xl p-8 flex flex-col items-center gap-4 text-center border border-border">
           <AlertTriangle className="w-10 h-10 text-warning" />
           <p className="text-muted-foreground text-sm">Something went wrong rendering this section.</p>
           <button onClick={() => navigate("/dashboard")}
-            className="px-4 py-2 rounded-xl gradient-primary text-primary-foreground text-sm flex items-center gap-2">
+            className="px-4 py-2 rounded-xl gradient-primary text-white text-sm flex items-center gap-2">
             <RefreshCw className="w-4 h-4" /> Back to Overview
           </button>
         </div>
@@ -216,11 +274,13 @@ export default function DashboardPage() {
               <h1 className="text-2xl font-bold text-foreground">
                 {path === "/dashboard" ? `Welcome back, ${u.name.split(" ")[0]}` : title}
               </h1>
-              <p className="text-sm text-muted-foreground">{subtitle}</p>
+              <p className="text-sm text-muted-foreground">
+                {path === "/dashboard" ? "Your financial intelligence at a glance" : `Viewing: ${title}`}
+              </p>
             </motion.div>
             {renderSection()}
           </main>
-          <IntelligencePanel />
+          {path === "/dashboard" && <IntelligencePanel />}
         </div>
       </div>
       <FloatingChat />
