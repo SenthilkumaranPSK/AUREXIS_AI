@@ -1,1 +1,139 @@
-{}
+{
+  "stockTransactions": [
+    {
+      "symbol": "SBIN",
+      "companyName": "State Bank of India",
+      "exchange": "NSE",
+      "currentPrice": 866.17,
+      "totalQuantity": 25,
+      "currentValue": 21654.34,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-06-12",
+          "symbol": "SBIN",
+          "quantity": 5,
+          "price": 835.98,
+          "amount": 4179.91
+        },
+        {
+          "type": "BUY",
+          "date": "2025-08-25",
+          "symbol": "SBIN",
+          "quantity": 5,
+          "price": 821.22,
+          "amount": 4106.08
+        },
+        {
+          "type": "BUY",
+          "date": "2025-09-16",
+          "symbol": "SBIN",
+          "quantity": 5,
+          "price": 822.18,
+          "amount": 4110.88
+        },
+        {
+          "type": "BUY",
+          "date": "2025-10-14",
+          "symbol": "SBIN",
+          "quantity": 5,
+          "price": 797.85,
+          "amount": 3989.26
+        },
+        {
+          "type": "BUY",
+          "date": "2026-01-18",
+          "symbol": "SBIN",
+          "quantity": 5,
+          "price": 779.49,
+          "amount": 3897.45
+        }
+      ]
+    },
+    {
+      "symbol": "HDFCBANK",
+      "companyName": "HDFC Bank Ltd",
+      "exchange": "NSE",
+      "currentPrice": 1823.52,
+      "totalQuantity": 10,
+      "currentValue": 18235.19,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-04-07",
+          "symbol": "HDFCBANK",
+          "quantity": 2,
+          "price": 1647.22,
+          "amount": 3294.43
+        },
+        {
+          "type": "BUY",
+          "date": "2025-08-07",
+          "symbol": "HDFCBANK",
+          "quantity": 2,
+          "price": 1652.33,
+          "amount": 3304.66
+        },
+        {
+          "type": "BUY",
+          "date": "2025-12-17",
+          "symbol": "HDFCBANK",
+          "quantity": 2,
+          "price": 1671.64,
+          "amount": 3343.29
+        },
+        {
+          "type": "BUY",
+          "date": "2026-01-13",
+          "symbol": "HDFCBANK",
+          "quantity": 2,
+          "price": 1657.46,
+          "amount": 3314.92
+        },
+        {
+          "type": "BUY",
+          "date": "2026-03-18",
+          "symbol": "HDFCBANK",
+          "quantity": 2,
+          "price": 1665.37,
+          "amount": 3330.74
+        }
+      ]
+    },
+    {
+      "symbol": "TCS",
+      "companyName": "Tata Consultancy Services",
+      "exchange": "NSE",
+      "currentPrice": 4418.7,
+      "totalQuantity": 3,
+      "currentValue": 13256.11,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-05-25",
+          "symbol": "TCS",
+          "quantity": 1,
+          "price": 4077.6,
+          "amount": 4077.6
+        },
+        {
+          "type": "BUY",
+          "date": "2025-09-17",
+          "symbol": "TCS",
+          "quantity": 1,
+          "price": 3957.48,
+          "amount": 3957.48
+        },
+        {
+          "type": "BUY",
+          "date": "2025-10-15",
+          "symbol": "TCS",
+          "quantity": 1,
+          "price": 4035.1,
+          "amount": 4035.1
+        }
+      ]
+    }
+  ],
+  "schemaDescription": "Stock transactions with buy/sell history"
+}

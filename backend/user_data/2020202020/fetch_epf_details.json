@@ -1,42 +1,14 @@
 {
-  "uanAccounts": [
-    {
-      "phoneNumber": {},
-      "rawDetails": {
-        "est_details": [
-          {
-            "est_name": "APEX SOLUTIONS LTD",
-            "member_id": "KABN*****************",
-            "office": "(RO)BENGALURU",
-            "doj_epf": "20-05-2015",
-            "doe_epf": "15-07-2019",
-            "doe_eps": "15-07-2019",
-            "pf_balance": {
-              "net_balance": "115000",
-              "employee_share": {
-                "credit": "150000",
-                "balance": "60000"
-              },
-              "employer_share": {
-                "credit": "150000",
-                "balance": "50000"
-              }
-            }
-          }
-        ],
-        "overall_pf_balance": {
-          "pension_balance": "55000",
-          "current_pf_balance": "115000",
-          "employee_share_total": {
-            "credit": "150000",
-            "balance": "60000"
-          },
-          "employer_share_total": {
-            "credit": "150000",
-            "balance": "50000"
-          }
-        }
-      }
-    }
-  ]
+  "epfDetails": {
+    "uanNumber": "1020202020",
+    "memberName": "Deepak",
+    "dateOfJoining": "2019-04-01",
+    "establishmentName": "CA Organization",
+    "employeeContribution": 907200,
+    "employerContribution": 816480,
+    "interestEarned": 482630,
+    "totalBalance": 2206310,
+    "lastContributionMonth": "2026-04",
+    "monthlyContribution": 10800
+  }
 }

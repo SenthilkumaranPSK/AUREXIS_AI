@@ -1,1 +1,105 @@
-{}
+{
+  "stockTransactions": [
+    {
+      "symbol": "TATAMOTORS",
+      "companyName": "Tata Motors Ltd",
+      "exchange": "NSE",
+      "currentPrice": 1105.47,
+      "totalQuantity": 8,
+      "currentValue": 8843.74,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-04-10",
+          "symbol": "TATAMOTORS",
+          "quantity": 2,
+          "price": 930.06,
+          "amount": 1860.12
+        },
+        {
+          "type": "BUY",
+          "date": "2025-08-14",
+          "symbol": "TATAMOTORS",
+          "quantity": 2,
+          "price": 927.24,
+          "amount": 1854.48
+        },
+        {
+          "type": "BUY",
+          "date": "2025-11-17",
+          "symbol": "TATAMOTORS",
+          "quantity": 2,
+          "price": 962.93,
+          "amount": 1925.87
+        },
+        {
+          "type": "BUY",
+          "date": "2026-02-10",
+          "symbol": "TATAMOTORS",
+          "quantity": 2,
+          "price": 985.6,
+          "amount": 1971.2
+        }
+      ]
+    },
+    {
+      "symbol": "INFY",
+      "companyName": "Infosys Ltd",
+      "exchange": "NSE",
+      "currentPrice": 1942.19,
+      "totalQuantity": 6,
+      "currentValue": 11653.12,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-05-19",
+          "symbol": "INFY",
+          "quantity": 1,
+          "price": 1701.17,
+          "amount": 1701.17
+        },
+        {
+          "type": "BUY",
+          "date": "2025-08-05",
+          "symbol": "INFY",
+          "quantity": 1,
+          "price": 1748.51,
+          "amount": 1748.51
+        },
+        {
+          "type": "BUY",
+          "date": "2025-09-12",
+          "symbol": "INFY",
+          "quantity": 1,
+          "price": 1746.35,
+          "amount": 1746.35
+        },
+        {
+          "type": "BUY",
+          "date": "2025-10-14",
+          "symbol": "INFY",
+          "quantity": 1,
+          "price": 1710.48,
+          "amount": 1710.48
+        },
+        {
+          "type": "BUY",
+          "date": "2025-11-14",
+          "symbol": "INFY",
+          "quantity": 1,
+          "price": 1753.04,
+          "amount": 1753.04
+        },
+        {
+          "type": "BUY",
+          "date": "2026-03-09",
+          "symbol": "INFY",
+          "quantity": 1,
+          "price": 1731.42,
+          "amount": 1731.42
+        }
+      ]
+    }
+  ],
+  "schemaDescription": "Stock transactions with buy/sell history"
+}

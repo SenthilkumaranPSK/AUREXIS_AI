@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   Wallet, TrendingUp, TrendingDown, PiggyBank, CreditCard,
   Shield, Target, AlertTriangle, RefreshCw, ArrowRight,
-  Heart, ShieldAlert, FlaskConical, LineChart, Bell, FileText
+  Heart, ShieldAlert, FlaskConical, Bell
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { formatCurrency } from "@/lib/formatters";
@@ -20,6 +20,9 @@ import IntelligencePanel from "@/components/dashboard/IntelligencePanel";
 import FloatingChat from "@/components/dashboard/FloatingChat";
 import AppSidebar from "@/components/layout/AppSidebar";
 import AppHeader from "@/components/layout/AppHeader";
+import StocksPanel from "@/components/dashboard/StocksPanel";
+import MutualFundsPanel from "@/components/dashboard/MutualFundsPanel";
+import MLForecastChart from "@/components/dashboard/MLForecastChart";
 
 // Quick summary card — shows a snapshot with a "View Details" link
 function SummaryCard({
@@ -200,9 +203,9 @@ const sectionMap: Record<string, (u: any) => JSX.Element | null> = {
   "/dashboard/risk":        (u) => <RiskSection u={u} />,
   "/dashboard/savings":     (u) => <SavingsSection u={u} />,
   "/dashboard/debt":        (u) => <DebtSection u={u} />,
-  "/dashboard/investments": ()  => <><InvestmentPanel /><RecommendationFeed /></>,
+  "/dashboard/investments": ()  => <><InvestmentPanel /><StocksPanel /><MutualFundsPanel /><RecommendationFeed /></>,
   "/dashboard/goals":       ()  => <GoalsPanel />,
-  "/dashboard/forecasting": ()  => <ForecastChart />,
+  "/dashboard/forecasting": ()  => <><ForecastChart /><MLForecastChart /></>,
   "/dashboard/simulation":  ()  => <ScenarioSimulation />,
   "/dashboard/alerts":      ()  => <RecommendationFeed />,
   "/dashboard/reports":     ()  => <><ForecastChart /><ExpenseBreakdown /></>,

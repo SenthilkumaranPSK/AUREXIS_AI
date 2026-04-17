@@ -1,1 +1,52 @@
-{"netWorthResponse":{"assetValues":[{"netWorthAttribute":"ASSET_TYPE_SAVINGS_ACCOUNTS","value":{"currencyCode":"INR","units":"186726"}}],"totalNetWorthValue":{"currencyCode":"INR","units":"186726"}},"mfSchemeAnalytics":{},"accountDetailsBulkResponse":{}}
+{
+  "netWorthResponse": {
+    "assetValues": [
+      {
+        "netWorthAttribute": "ASSET_TYPE_MUTUAL_FUND",
+        "value": {
+          "currencyCode": "INR",
+          "units": "67500"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_EPF",
+        "value": {
+          "currencyCode": "INR",
+          "units": "56250"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_DEPOSITS",
+        "value": {
+          "currencyCode": "INR",
+          "units": "45000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_ETF",
+        "value": {
+          "currencyCode": "INR",
+          "units": "22500"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_SAVINGS_ACCOUNTS",
+        "value": {
+          "currencyCode": "INR",
+          "units": "450000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_RECURRING_DEPOSIT",
+        "value": {
+          "currencyCode": "INR",
+          "units": "11250"
+        }
+      }
+    ],
+    "totalNetWorthValue": {
+      "currencyCode": "INR",
+      "units": "652500"
+    }
+  }
+}

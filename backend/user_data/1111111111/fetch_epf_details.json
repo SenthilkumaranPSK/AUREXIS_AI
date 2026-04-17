@@ -1,1 +1,14 @@
-{}
+{
+  "epfDetails": {
+    "uanNumber": "1011111111",
+    "memberName": "Imayavarman",
+    "dateOfJoining": "2016-04-01",
+    "establishmentName": "Doctor Organization",
+    "employeeContribution": 2160000,
+    "employerContribution": 1944000,
+    "interestEarned": 1641600,
+    "totalBalance": 5745600,
+    "lastContributionMonth": "2026-04",
+    "monthlyContribution": 18000
+  }
+}

@@ -1,21 +1,17 @@
 {
   "user_id": "1010101010",
   "name": "Senthilkumaran",
-  "email": "sk@gmail.com",
   "occupation": "Software Engineer",
   "age": 24,
-  "monthly_income": 85000,
-  "gender": "Male",
-  "phone": "1010101010",
-  "address": "Chennai, Tamil Nadu",
-  "pan": "ABCDE1234F",
-  "aadhar": "1234-5678-9012",
-  "bank_account": "1234567890",
-  "ifsc": "SBIN0001234",
-  "emergency_contact": "9876543210",
-  "marital_status": "Single",
-  "dependents": 0,
+  "monthly_income": 78000,
+  "city": "Salem",
   "risk_profile": "Moderate",
-  "investment_preference": "Equity and Mutual Funds",
-  "financial_goals": ["Emergency Fund", "Car Purchase", "Retirement Planning"]
+  "financial_goals": [
+    "Emergency Fund",
+    "Retirement Planning",
+    "Investment Growth"
+  ],
+  "dependents": 3,
+  "marital_status": "Single",
+  "investment_preference": "Debt and FD"
 }

@@ -46,6 +46,8 @@ from forecasting import (
     compute_savings_projection,
 )
 from report import generate_report
+from ml_forecasting import compute_ml_forecast
+from portfolio import compute_stocks, compute_mutual_funds
 
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "deepseek-v3.1:671b-cloud")
@@ -304,6 +306,31 @@ async def get_report(user_id: str):
     user = get_user_by_id(user_id) or get_user_by_name(user_id) or {"name": "User", "number": user_id}
     data = get_all_user_data(user_id)
     return generate_report(user, data)
+
+
+# --- Portfolio Endpoints ---
+
+@app.get("/api/user/{user_id}/stocks")
+async def get_stocks(user_id: str):
+    """Stock portfolio with holdings, P&L, sector breakdown."""
+    data = get_all_user_data(user_id)
+    return compute_stocks(data)
+
+
+@app.get("/api/user/{user_id}/mutual-funds")
+async def get_mutual_funds(user_id: str):
+    """Mutual fund portfolio with scheme-wise returns and XIRR."""
+    data = get_all_user_data(user_id)
+    return compute_mutual_funds(data)
+
+
+# --- ML Forecasting Endpoint ---
+
+@app.get("/api/user/{user_id}/forecast/ml")
+async def get_ml_forecast(user_id: str, steps: int = 6):
+    """ML-based forecast using ARIMA, LSTM, Random Forest, Gradient Boosting."""
+    data = get_all_user_data(user_id)
+    return compute_ml_forecast(data, steps)
 
 
 # --- Helpers ---

@@ -174,6 +174,18 @@ export async function getFullReport(userId: string): Promise<any> {
   return apiRequest(`/api/user/${userId}/report`);
 }
 
+export async function getUserStocks(userId: string): Promise<any> {
+  return apiRequest(`/api/user/${userId}/stocks`);
+}
+
+export async function getUserMutualFunds(userId: string): Promise<any> {
+  return apiRequest(`/api/user/${userId}/mutual-funds`);
+}
+
+export async function getMLForecast(userId: string, steps = 6): Promise<any> {
+  return apiRequest(`/api/user/${userId}/forecast/ml?steps=${steps}`);
+}
+
 export async function getUserExpenses(userId: string): Promise<{ expenses: any[] }> {
   return apiRequest(`/api/user/${userId}/expenses`);
 }

@@ -1,1 +1,199 @@
-{}
+{
+  "stockTransactions": [
+    {
+      "symbol": "WIPRO",
+      "companyName": "Wipro Ltd",
+      "exchange": "NSE",
+      "currentPrice": 553.92,
+      "totalQuantity": 15,
+      "currentValue": 8308.84,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2026-02-14",
+          "symbol": "WIPRO",
+          "quantity": 15,
+          "price": 471.97,
+          "amount": 7079.57
+        }
+      ]
+    },
+    {
+      "symbol": "ICICIBANK",
+      "companyName": "ICICI Bank Ltd",
+      "exchange": "NSE",
+      "currentPrice": 1242.57,
+      "totalQuantity": 24,
+      "currentValue": 29821.6,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-07-13",
+          "symbol": "ICICIBANK",
+          "quantity": 6,
+          "price": 1102.42,
+          "amount": 6614.52
+        },
+        {
+          "type": "BUY",
+          "date": "2025-10-18",
+          "symbol": "ICICIBANK",
+          "quantity": 6,
+          "price": 1072.86,
+          "amount": 6437.18
+        },
+        {
+          "type": "BUY",
+          "date": "2026-01-23",
+          "symbol": "ICICIBANK",
+          "quantity": 6,
+          "price": 1060.33,
+          "amount": 6361.96
+        },
+        {
+          "type": "BUY",
+          "date": "2026-03-13",
+          "symbol": "ICICIBANK",
+          "quantity": 6,
+          "price": 1093.39,
+          "amount": 6560.33
+        }
+      ]
+    },
+    {
+      "symbol": "HDFCBANK",
+      "companyName": "HDFC Bank Ltd",
+      "exchange": "NSE",
+      "currentPrice": 1982.08,
+      "totalQuantity": 16,
+      "currentValue": 31713.21,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-05-19",
+          "symbol": "HDFCBANK",
+          "quantity": 4,
+          "price": 1669.0,
+          "amount": 6676.01
+        },
+        {
+          "type": "BUY",
+          "date": "2025-07-25",
+          "symbol": "HDFCBANK",
+          "quantity": 4,
+          "price": 1697.09,
+          "amount": 6788.35
+        },
+        {
+          "type": "BUY",
+          "date": "2025-12-10",
+          "symbol": "HDFCBANK",
+          "quantity": 4,
+          "price": 1660.38,
+          "amount": 6641.5
+        },
+        {
+          "type": "BUY",
+          "date": "2026-01-14",
+          "symbol": "HDFCBANK",
+          "quantity": 4,
+          "price": 1702.7,
+          "amount": 6810.82
+        }
+      ]
+    },
+    {
+      "symbol": "RELIANCE",
+      "companyName": "Reliance Industries Ltd",
+      "exchange": "NSE",
+      "currentPrice": 3223.51,
+      "totalQuantity": 10,
+      "currentValue": 32235.11,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-04-13",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 2735.73,
+          "amount": 5471.45
+        },
+        {
+          "type": "BUY",
+          "date": "2025-05-17",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 2865.99,
+          "amount": 5731.97
+        },
+        {
+          "type": "BUY",
+          "date": "2025-08-19",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 2979.33,
+          "amount": 5958.67
+        },
+        {
+          "type": "BUY",
+          "date": "2025-10-20",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 2976.18,
+          "amount": 5952.37
+        },
+        {
+          "type": "BUY",
+          "date": "2026-01-14",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 3017.66,
+          "amount": 6035.33
+        }
+      ]
+    },
+    {
+      "symbol": "TCS",
+      "companyName": "Tata Consultancy Services",
+      "exchange": "NSE",
+      "currentPrice": 4442.22,
+      "totalQuantity": 4,
+      "currentValue": 17768.9,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-06-22",
+          "symbol": "TCS",
+          "quantity": 1,
+          "price": 3832.41,
+          "amount": 3832.41
+        },
+        {
+          "type": "BUY",
+          "date": "2025-07-12",
+          "symbol": "TCS",
+          "quantity": 1,
+          "price": 3842.53,
+          "amount": 3842.53
+        },
+        {
+          "type": "BUY",
+          "date": "2025-11-20",
+          "symbol": "TCS",
+          "quantity": 1,
+          "price": 3983.06,
+          "amount": 3983.06
+        },
+        {
+          "type": "BUY",
+          "date": "2026-01-18",
+          "symbol": "TCS",
+          "quantity": 1,
+          "price": 4088.34,
+          "amount": 4088.34
+        }
+      ]
+    }
+  ],
+  "schemaDescription": "Stock transactions with buy/sell history"
+}

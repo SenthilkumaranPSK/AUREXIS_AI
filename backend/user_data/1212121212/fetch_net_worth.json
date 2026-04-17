@@ -2,82 +2,51 @@
   "netWorthResponse": {
     "assetValues": [
       {
+        "netWorthAttribute": "ASSET_TYPE_MUTUAL_FUND",
+        "value": {
+          "currencyCode": "INR",
+          "units": "202500"
+        }
+      },
+      {
         "netWorthAttribute": "ASSET_TYPE_EPF",
         "value": {
           "currencyCode": "INR",
-          "units": "235000"
+          "units": "168750"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_DEPOSITS",
+        "value": {
+          "currencyCode": "INR",
+          "units": "135000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_ETF",
+        "value": {
+          "currencyCode": "INR",
+          "units": "67500"
         }
       },
       {
         "netWorthAttribute": "ASSET_TYPE_SAVINGS_ACCOUNTS",
         "value": {
           "currencyCode": "INR",
-          "units": "15750"
+          "units": "750000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_RECURRING_DEPOSIT",
+        "value": {
+          "currencyCode": "INR",
+          "units": "33750"
         }
       }
     ],
     "totalNetWorthValue": {
       "currencyCode": "INR",
-      "units": "250750"
-    }
-  },
-  "mfSchemeAnalytics": {
-    "schemeAnalytics": []
-  },
-  "accountDetailsBulkResponse": {
-    "accountDetailsMap": {
-      "d0e1f2a3-b4c5-6789-abcd-ef1234567890": {
-        "accountDetails": {
-          "fipId": "fip@epfo",
-          "maskedAccountNumber": "DLCPM-XXXX-XXXX",
-          "accInstrumentType": "ACC_INSTRUMENT_TYPE_EPF",
-          "accountType": {
-            "epfAccountType": "EPF_ACCOUNT_TYPE_DEFAULT_TYPE"
-          },
-          "fipMeta": {
-            "name": "EPFO",
-            "displayName": "EPFO"
-          }
-        },
-        "epfSummary": {
-          "accountId": "d0e1f2a3-b4c5-6789-abcd-ef1234567890",
-          "currentBalance": {
-            "currencyCode": "INR",
-            "units": "235000"
-          },
-          "balanceDate": "2024-05-20T00:00:00Z",
-          "accountStatus": "EPF_ACCOUNT_STATUS_INACTIVE"
-        }
-      },
-      "e1f2a3b4-c5d6-7890-bcde-f12345678901": {
-        "accountDetails": {
-          "fipId": "PNB-FIP",
-          "maskedAccountNumber": "XXXXXX8811",
-          "accInstrumentType": "ACC_INSTRUMENT_TYPE_DEPOSIT",
-          "ifscCode": "PUNB0123456",
-          "accountType": {
-            "depositAccountType": "DEPOSIT_ACCOUNT_TYPE_SAVINGS"
-          },
-          "fipMeta": {
-            "name": "Punjab National Bank",
-            "displayName": "PNB",
-            "bank": "PNB"
-          }
-        },
-        "depositSummary": {
-          "accountId": "e1f2a3b4-c5d6-7890-bcde-f12345678901",
-          "currentBalance": {
-            "currencyCode": "INR",
-            "units": "15750"
-          },
-          "balanceDate": "2024-06-15T14:30:00Z",
-          "depositAccountType": "DEPOSIT_ACCOUNT_TYPE_SAVINGS",
-          "branch": "Delhi Main",
-          "ifscCode": "PUNB0123456",
-          "openingDate": "2015-06-10T00:00:00Z",
-          "depositAccountStatus": "DEPOSIT_ACCOUNT_STATUS_ACTIVE"
-        }
-      }
+      "units": "1357500"
     }
   }
 }
