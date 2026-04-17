@@ -35,6 +35,9 @@ from analytics import (
     compute_risk,
     compute_simulation,
 )
+from recommendations import generate_recommendations
+from alerts import generate_alerts, generate_emis
+from health import compute_health
 
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "deepseek-v3.1:671b-cloud")
@@ -222,6 +225,30 @@ async def run_simulation(user_id: str, params: SimulationRequest):
         car_purchase=params.car_purchase,
         investment_increase=params.investment_increase,
     )
+
+
+@app.get("/api/user/{user_id}/health")
+async def get_health(user_id: str):
+    """Detailed financial health score with sub-scores."""
+    data = get_all_user_data(user_id)
+    return compute_health(data)
+
+
+@app.get("/api/user/{user_id}/recommendations")
+async def get_recommendations(user_id: str):
+    """Personalized financial recommendations from real data."""
+    data = get_all_user_data(user_id)
+    return {"recommendations": generate_recommendations(data)}
+
+
+@app.get("/api/user/{user_id}/alerts")
+async def get_alerts(user_id: str):
+    """Real-time financial alerts generated from data patterns."""
+    data = get_all_user_data(user_id)
+    return {
+        "alerts": generate_alerts(data),
+        "emis": generate_emis(data),
+    }
 
 
 # --- Helpers ---

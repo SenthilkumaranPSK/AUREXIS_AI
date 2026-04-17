@@ -170,6 +170,18 @@ export async function getUserRisk(userId: string): Promise<any> {
   return apiRequest(`/api/user/${userId}/risk`);
 }
 
+export async function getUserHealth(userId: string): Promise<any> {
+  return apiRequest(`/api/user/${userId}/health`);
+}
+
+export async function getUserRecommendations(userId: string): Promise<{ recommendations: any[] }> {
+  return apiRequest(`/api/user/${userId}/recommendations`);
+}
+
+export async function getUserAlerts(userId: string): Promise<{ alerts: any[]; emis: any[] }> {
+  return apiRequest(`/api/user/${userId}/alerts`);
+}
+
 export async function runSimulation(userId: string, params: {
   new_loan?: number;
   salary_increase?: number;
