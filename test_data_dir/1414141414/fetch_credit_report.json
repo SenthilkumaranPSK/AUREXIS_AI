@@ -1,0 +1,208 @@
+{
+  "creditReports": [
+    {
+      "creditReportData": {
+        "userMessage": {
+          "userMessageText": "Normal Response"
+        },
+        "creditProfileHeader": {
+          "reportDate": "20240521",
+          "reportTime": "111530"
+        },
+        "currentApplication": {
+          "currentApplicationDetails": {
+            "enquiryReason": "0",
+            "amountFinanced": "0",
+            "durationOfAgreement": "0",
+            "currentApplicantDetails": {
+              "dateOfBirthApplicant": "19900825"
+            }
+          }
+        },
+        "creditAccount": {
+          "creditAccountSummary": {
+            "account": {
+              "creditAccountTotal": "6",
+              "creditAccountActive": "6",
+              "creditAccountDefault": "0",
+              "creditAccountClosed": "0",
+              "cadSuitFiledCurrentBalance": "0"
+            },
+            "totalOutstandingBalance": {
+              "outstandingBalanceSecured": "4300000",
+              "outstandingBalanceSecuredPercentage": "93",
+              "outstandingBalanceUnSecured": "302000",
+              "outstandingBalanceUnSecuredPercentage": "7",
+              "outstandingBalanceAll": "4602000"
+            }
+          },
+          "creditAccountDetails": [
+            {
+              "subscriberName": "State Bank of India",
+              "portfolioType": "I",
+              "accountType": "02",
+              "openDate": "20190410",
+              "highestCreditOrOriginalLoanAmount": "4000000",
+              "accountStatus": "11",
+              "paymentRating": "1",
+              "paymentHistoryProfile": "000000000000000000000000000000001000",
+              "currentBalance": "3850000",
+              "amountPastDue": "0",
+              "dateReported": "20240501",
+              "occupationCode": "S",
+              "rateOfInterest": "8.75",
+              "repaymentTenure": "240",
+              "dateOfAddition": "20190410",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            },
+            {
+              "subscriberName": "Punjab National Bank",
+              "portfolioType": "I",
+              "accountType": "01",
+              "openDate": "20220720",
+              "highestCreditOrOriginalLoanAmount": "700000",
+              "accountStatus": "11",
+              "paymentRating": "0",
+              "paymentHistoryProfile": "000000000000000000000000000000000000",
+              "currentBalance": "450000",
+              "amountPastDue": "0",
+              "dateReported": "20240505",
+              "occupationCode": "S",
+              "rateOfInterest": "9.20",
+              "repaymentTenure": "60",
+              "dateOfAddition": "20220720",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            },
+            {
+              "subscriberName": "ICICI Bank",
+              "portfolioType": "R",
+              "accountType": "10",
+              "openDate": "20200115",
+              "creditLimitAmount": "150000",
+              "highestCreditOrOriginalLoanAmount": "150000",
+              "accountStatus": "11",
+              "paymentRating": "2",
+              "paymentHistoryProfile": "000000000000000000000000000000010100",
+              "currentBalance": "135000",
+              "amountPastDue": "6500",
+              "dateReported": "20240428",
+              "occupationCode": "S",
+              "rateOfInterest": "22.0",
+              "repaymentTenure": "0",
+              "dateOfAddition": "20200115",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            },
+            {
+              "subscriberName": "HDFC Bank",
+              "portfolioType": "R",
+              "accountType": "10",
+              "openDate": "20180510",
+              "creditLimitAmount": "100000",
+              "highestCreditOrOriginalLoanAmount": "100000",
+              "accountStatus": "11",
+              "paymentRating": "1",
+              "paymentHistoryProfile": "000000000000000000000000000000000010",
+              "currentBalance": "92000",
+              "amountPastDue": "4800",
+              "dateReported": "20240429",
+              "occupationCode": "S",
+              "rateOfInterest": "21.5",
+              "repaymentTenure": "0",
+              "dateOfAddition": "20180510",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            },
+            {
+              "subscriberName": "American Express",
+              "portfolioType": "R",
+              "accountType": "10",
+              "openDate": "20211101",
+              "creditLimitAmount": "200000",
+              "highestCreditOrOriginalLoanAmount": "200000",
+              "accountStatus": "11",
+              "paymentRating": "0",
+              "paymentHistoryProfile": "000000000000000000000000000000000000",
+              "currentBalance": "45000",
+              "amountPastDue": "0",
+              "dateReported": "20240502",
+              "occupationCode": "S",
+              "rateOfInterest": "19.0",
+              "repaymentTenure": "0",
+              "dateOfAddition": "20211101",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            },
+            {
+              "subscriberName": "Tata Capital",
+              "portfolioType": "I",
+              "accountType": "06",
+              "openDate": "20231005",
+              "highestCreditOrOriginalLoanAmount": "80000",
+              "accountStatus": "11",
+              "paymentRating": "0",
+              "paymentHistoryProfile": "000000000000000000000000000000000000",
+              "currentBalance": "30000",
+              "amountPastDue": "0",
+              "dateReported": "20240504",
+              "occupationCode": "S",
+              "rateOfInterest": "16.0",
+              "repaymentTenure": "12",
+              "dateOfAddition": "20231005",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            }
+          ]
+        },
+        "matchResult": {
+          "exactMatch": "Y"
+        },
+        "totalCapsSummary": {
+          "totalCapsLast7Days": "0",
+          "totalCapsLast30Days": "1",
+          "totalCapsLast90Days": "1",
+          "totalCapsLast180Days": "2"
+        },
+        "nonCreditCaps": {
+          "nonCreditCapsSummary": {
+            "nonCreditCapsLast7Days": "0",
+            "nonCreditCapsLast30Days": "1",
+            "nonCreditCapsLast90Days": "1",
+            "nonCreditCapsLast180Days": "2"
+          },
+          "capsApplicationDetailsArray": []
+        },
+        "score": {
+          "bureauScore": "645",
+          "bureauScoreConfidenceLevel": "M"
+        },
+        "segment": {},
+        "caps": {
+          "capsSummary": {
+            "capsLast7Days": "0",
+            "capsLast30Days": "1",
+            "capsLast90Days": "1",
+            "capsLast180Days": "2"
+          },
+          "capsApplicationDetailsArray": [
+            {
+              "SubscriberName": "Kotak Mahindra Bank",
+              "DateOfRequest": "20240422",
+              "EnquiryReason": "10",
+              "FinancePurpose": "10"
+            },
+            {
+              "SubscriberName": "Fullerton India",
+              "DateOfRequest": "20231215",
+              "EnquiryReason": "05",
+              "FinancePurpose": "05"
+            }
+          ]
+        }
+      },
+      "vendor": "EXPERIAN"
+    }
+  ]
+}

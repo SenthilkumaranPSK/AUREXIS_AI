@@ -1,0 +1,153 @@
+{
+  "creditReports": [
+    {
+      "creditReportData": {
+        "userMessage": {
+          "userMessageText": "Normal Response"
+        },
+        "creditProfileHeader": {
+          "reportDate": "20240521",
+          "reportTime": "121545"
+        },
+        "currentApplication": {
+          "currentApplicationDetails": {
+            "enquiryReason": "01",
+            "amountFinanced": "550000",
+            "durationOfAgreement": "60",
+            "currentApplicantDetails": {
+              "dateOfBirthApplicant": "19870320"
+            }
+          }
+        },
+        "creditAccount": {
+          "creditAccountSummary": {
+            "account": {
+              "creditAccountTotal": "3",
+              "creditAccountActive": "3",
+              "creditAccountDefault": "0",
+              "creditAccountClosed": "0",
+              "cadSuitFiledCurrentBalance": "0"
+            },
+            "totalOutstandingBalance": {
+              "outstandingBalanceSecured": "542000",
+              "outstandingBalanceSecuredPercentage": "95",
+              "outstandingBalanceUnSecured": "30000",
+              "outstandingBalanceUnSecuredPercentage": "5",
+              "outstandingBalanceAll": "572000"
+            }
+          },
+          "creditAccountDetails": [
+            {
+              "subscriberName": "HDFC Bank",
+              "portfolioType": "I",
+              "accountType": "01",
+              "openDate": "20240415",
+              "highestCreditOrOriginalLoanAmount": "550000",
+              "accountStatus": "11",
+              "paymentRating": "0",
+              "paymentHistoryProfile": "000000000000000000000000000000000000",
+              "currentBalance": "542000",
+              "amountPastDue": "0",
+              "dateReported": "20240510",
+              "occupationCode": "S",
+              "rateOfInterest": "9.10",
+              "repaymentTenure": "60",
+              "dateOfAddition": "20240415",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            },
+            {
+              "subscriberName": "SBI Card",
+              "portfolioType": "R",
+              "accountType": "10",
+              "openDate": "20160210",
+              "creditLimitAmount": "120000",
+              "highestCreditOrOriginalLoanAmount": "120000",
+              "accountStatus": "11",
+              "paymentRating": "0",
+              "paymentHistoryProfile": "000000000000000000000000000000000000",
+              "currentBalance": "18000",
+              "amountPastDue": "0",
+              "dateReported": "20240503",
+              "occupationCode": "S",
+              "rateOfInterest": "20.0",
+              "repaymentTenure": "0",
+              "dateOfAddition": "20160210",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            },
+            {
+              "subscriberName": "ICICI Bank",
+              "portfolioType": "R",
+              "accountType": "10",
+              "openDate": "20210525",
+              "creditLimitAmount": "80000",
+              "highestCreditOrOriginalLoanAmount": "80000",
+              "accountStatus": "11",
+              "paymentRating": "0",
+              "paymentHistoryProfile": "000000000000000000000000000000000000",
+              "currentBalance": "12000",
+              "amountPastDue": "0",
+              "dateReported": "20240428",
+              "occupationCode": "S",
+              "rateOfInterest": "21.5",
+              "repaymentTenure": "0",
+              "dateOfAddition": "20210525",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            }
+          ]
+        },
+        "matchResult": {
+          "exactMatch": "Y"
+        },
+        "totalCapsSummary": {
+          "totalCapsLast7Days": "0",
+          "totalCapsLast30Days": "1",
+          "totalCapsLast90Days": "1",
+          "totalCapsLast180Days": "1"
+        },
+        "nonCreditCaps": {
+          "nonCreditCapsSummary": {
+            "nonCreditCapsLast7Days": "0",
+            "nonCreditCapsLast30Days": "1",
+            "nonCreditCapsLast90Days": "1",
+            "nonCreditCapsLast180Days": "1"
+          },
+          "capsApplicationDetailsArray": [
+            {
+              "SubscriberName": "HDFC Bank",
+              "FinancePurpose": "01",
+              "capsApplicantDetails": {},
+              "capsOtherDetails": {},
+              "capsApplicantAddressDetails": {},
+              "capsApplicantAdditionalAddressDetails": {}
+            }
+          ]
+        },
+        "score": {
+          "bureauScore": "772",
+          "bureauScoreConfidenceLevel": "H"
+        },
+        "segment": {},
+        "caps": {
+          "capsSummary": {
+            "capsLast7Days": "0",
+            "capsLast30Days": "1",
+            "capsLast90Days": "1",
+            "capsLast180Days": "1"
+          },
+          "capsApplicationDetailsArray": [
+            {
+              "SubscriberName": "HDFC Bank",
+              "DateOfRequest": "20240412",
+              "EnquiryReason": "01",
+              "FinancePurpose": "01"
+            }
+          ]
+        }
+      },
+      "vendor": "EXPERIAN"
+    }
+  ]
+}

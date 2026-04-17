@@ -1,0 +1,1 @@
+{"schemaDescription":"A list of mutual fund investments. We currently support 500 transactions across all mutual funds(mutual funds with older transactions will be trimmed off, if limit exceeds). Each 'txns' field is a list of data arrays with schema: [ orderType(1 for BUY and 2 for SELL), transactionDate, purchasePrice, purchaseUnits, transactionAmount ]."}

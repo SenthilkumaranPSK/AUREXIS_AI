@@ -1,0 +1,61 @@
+{
+  "uanAccounts": [
+    {
+      "phoneNumber": {},
+      "rawDetails": {
+        "est_details": [
+          {
+            "est_name": "STRATEGIC CONSULTING GROUP LLP",
+            "member_id": "GUGGNXXXXXXXXXXXXXXXXX",
+            "office": "(RO)GURGAON",
+            "doj_epf": "15-02-2012",
+            "doe_epf": "31-03-2019",
+            "doe_eps": "31-03-2019",
+            "pf_balance": {
+              "net_balance": "850000",
+              "employee_share": {
+                "credit": "400000",
+                "balance": "400000"
+              },
+              "employer_share": {
+                "credit": "400000",
+                "balance": "400000"
+              }
+            }
+          },
+          {
+            "est_name": "GLOBAL ENTERPRISE PARTNERS INDIA",
+            "member_id": "GUGGN*****************",
+            "office": "(RO)GURGAON",
+            "doj_epf": "10-04-2019",
+            "doe_epf": "NOT AVAILABLE",
+            "doe_eps": "NOT AVAILABLE",
+            "pf_balance": {
+              "net_balance": "1100000",
+              "employee_share": {
+                "credit": "500000",
+                "balance": "500000"
+              },
+              "employer_share": {
+                "credit": "500000",
+                "balance": "500000"
+              }
+            }
+          }
+        ],
+        "overall_pf_balance": {
+          "pension_balance": "650000",
+          "current_pf_balance": "1950000",
+          "employee_share_total": {
+            "credit": "900000",
+            "balance": "900000"
+          },
+          "employer_share_total": {
+            "credit": "900000",
+            "balance": "900000"
+          }
+        }
+      }
+    }
+  ]
+}

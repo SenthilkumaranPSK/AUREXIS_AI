@@ -1,0 +1,25 @@
+{
+  "schemaDescription": "A list of bank transactions. Each 'txns' field is a list of data arrays with schema: [transactionAmount, transactionNarration, transactionDate, transactionType (1 for CREDIT, 2 for DEBIT, 3 for OPENING, 4 for INTEREST, 5 for TDS, 6 for INSTALLMENT, 7 for CLOSING and 8 for OTHERS), transactionMode, currentBalance].\n We currently have have only last two month transaction, older transaction are coming soon...",
+  "bankTransactions": [
+    {
+      "bank": "State Bank of India",
+      "txns": [
+        ["78000", "SALARY CREDIT - ABC TECHNOLOGIES - JULY 2024", "2024-07-01", 1, "NEFT", "245500"],
+        ["18000", "IMPS-RAKESH KUMAR-JULY RENT", "2024-07-02", 2, "FT", "227500"],
+        ["5000", "ACH D-NIPPONGOLDFUND-SIP/20240705/NGF54321", "2024-07-05", 6, "ACH", "222500"],
+        ["5000", "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX3344", "2024-07-05", 6, "ACH", "217500"],
+        ["12500", "SBI CREDIT CARD-BILL PAYMENT-XXXXXXXX5511", "2024-07-10", 2, "CARD_PAYMENT", "205000"],
+        ["8750", "QTRLY INTEREST CREDIT ON FD A/C XXXXXX1122", "2024-07-15", 4, "INTEREST", "213750"],
+        ["10000", "IMPS-ZERODHA-FUNDS FOR HDFC GOLD ETF", "2024-07-22", 2, "IMPS", "203750"],
+        ["1800", "UPI-LOCAL GROCER-GROCERIES@SBI-SBIN0000001", "2024-07-25", 2, "OTHERS", "201950"],
+        ["78000", "SALARY CREDIT - ABC TECHNOLOGIES - JUNE 2024", "2024-06-01", 1, "NEFT", "260000"],
+        ["18000", "IMPS-RAKESH KUMAR-JUNE RENT", "2024-06-02", 2, "FT", "242000"],
+        ["5000", "ACH D-NIPPONGOLDFUND-SIP/20240605/NGF54321", "2024-06-05", 6, "ACH", "237000"],
+        ["5000", "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX3344", "2024-06-05", 6, "ACH", "232000"],
+        ["11800", "SBI CREDIT CARD-BILL PAYMENT-XXXXXXXX5511", "2024-06-10", 2, "CARD_PAYMENT", "220200"],
+        ["50000", "TD BOOKING-TRANSFER TO FD A/C XXXXXX7788", "2024-06-20", 8, "FT", "170200"],
+        ["1200", "UPI-INDIAN OIL-IOCLPETROL@SBI-SBIN0000001-FUEL", "2024-06-28", 2, "OTHERS", "169000"]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python *)",
+      "Bash(mv frontend/* .)",
+      "Bash(mv frontend/.* .)",
+      "Bash(rmdir frontend *)",
+      "Bash(pip install *)",
+      "Bash(npm run *)",
+      "Bash(curl *)",
+      "Bash(tasklist /FI \"IMAGENAME eq python*\" /FO CSV)",
+      "Bash(Get-Process python *)",
+      "Bash(Select-Object Id,ProcessName,Path)",
+      "Bash(Format-Table)",
+      "Bash(taskkill /F /IM python.exe)",
+      "Bash(powershell -Command \"Stop-Process -Name python -Force\")",
+      "Bash(powershell *)"
+    ]
+  }
+}

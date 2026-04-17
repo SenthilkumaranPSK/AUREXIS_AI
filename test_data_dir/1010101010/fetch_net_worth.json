@@ -1,0 +1,410 @@
+{
+  "netWorthResponse": {
+    "assetValues": [
+      {
+        "netWorthAttribute": "ASSET_TYPE_MUTUAL_FUND",
+        "value": {
+          "currencyCode": "INR",
+          "units": "169919"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_EPF",
+        "value": {
+          "currencyCode": "INR",
+          "units": "635000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_DEPOSITS",
+        "value": {
+          "currencyCode": "INR",
+          "units": "650000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_ETF",
+        "value": {
+          "currencyCode": "INR",
+          "units": "16815"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_SAVINGS_ACCOUNTS",
+        "value": {
+          "currencyCode": "INR",
+          "units": "250000"
+        }
+      }
+    ],
+    "totalNetWorthValue": {
+      "currencyCode": "INR",
+      "units": "1721734"
+    }
+  },
+  "mfSchemeAnalytics": {
+    "schemeAnalytics": [
+      {
+        "schemeDetail": {
+          "amc": "NIPPON_INDIA_MUTUAL_FUND",
+          "nameData": {
+            "longName": "Nippon India Corporate Bond Fund - Direct Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "divReinvOptionType": "NOT_APPLICABLE",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "21",
+            "nanos": 500000000
+          },
+          "assetClass": "DEBT",
+          "isinNumber": "INF179KB1HS3",
+          "categoryName": "CORPORATE_BOND_FUND",
+          "fundhouseDefinedRiskLevel": "MODERATE_RISK"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "59058"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "52000"
+              },
+              "XIRR": 8.15,
+              "absoluteReturns": {
+                "currencyCode": "INR",
+                "units": "7058"
+              },
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "7058"
+              },
+              "navValue": {
+                "currencyCode": "INR",
+                "units": "21",
+                "nanos": 500000000
+              },
+              "units": 2746.92
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "AXIS_MUTUAL_FUND",
+          "nameData": {
+            "longName": "Axis Treasury Advantage Fund - Direct Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "divReinvOptionType": "NOT_APPLICABLE",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "128"
+          },
+          "assetClass": "DEBT",
+          "isinNumber": "INF174V01BL6",
+          "categoryName": "LOW_DURATION_FUND",
+          "fundhouseDefinedRiskLevel": "LOW_TO_MODERATE_RISK"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "48326"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "45000"
+              },
+              "XIRR": 7.80,
+              "absoluteReturns": {
+                "currencyCode": "INR",
+                "units": "3326"
+              },
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "3326"
+              },
+              "navValue": {
+                "currencyCode": "INR",
+                "units": "128"
+              },
+              "units": 377.55
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "UTI_MUTUAL_FUND",
+          "nameData": {
+            "longName": "UTI Money Market Fund - Direct Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "divReinvOptionType": "NOT_APPLICABLE",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "3300"
+          },
+          "assetClass": "DEBT",
+          "isinNumber": "INF209K01YY1",
+          "categoryName": "MONEY_MARKET_FUND",
+          "fundhouseDefinedRiskLevel": "LOW_TO_MODERATE_RISK"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "62535"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "60000"
+              },
+              "XIRR": 7.10,
+              "absoluteReturns": {
+                "currencyCode": "INR",
+                "units": "2535"
+              },
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "2535"
+              },
+              "navValue": {
+                "currencyCode": "INR",
+                "units": "3300"
+              },
+              "units": 18.95
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "HDFC_MUTUAL_FUND",
+          "nameData": {
+            "longName": "HDFC Gold ETF"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "divReinvOptionType": "NOT_APPLICABLE",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "58"
+          },
+          "assetClass": "COMMODITY",
+          "isinNumber": "INF204KB17I9",
+          "categoryName": "GOLD_ETF",
+          "fundhouseDefinedRiskLevel": "HIGH_RISK"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "16815"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "15000"
+              },
+              "XIRR": 9.92,
+              "absoluteReturns": {
+                "currencyCode": "INR",
+                "units": "1815"
+              },
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "1815"
+              },
+              "navValue": {
+                "currencyCode": "INR",
+                "units": "58"
+              },
+              "units": 289.92
+            }
+          }
+        }
+      }
+    ]
+  },
+  "accountDetailsBulkResponse": {
+    "accountDetailsMap": {
+      "a1b2c3d4-e5f6-7890-1234-567890abcdef": {
+        "accountDetails": {
+          "fipId": "fip@kfintech",
+          "maskedAccountNumber": "XXXXXX1001",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_MUTUAL_FUNDS",
+          "accountType": {
+            "mutualFundAccountType": "MUTUAL_FUND_ACCOUNT_TYPE_FOLIO"
+          },
+          "fipMeta": {
+            "name": "KFintech",
+            "displayName": "KFintech"
+          }
+        },
+        "mutualFundSummary": {
+          "accountId": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          "currentValue": {
+            "currencyCode": "INR",
+            "units": "169919"
+          },
+          "holdingsInfo": [
+            {
+              "isin": "INF179KB1HS3",
+              "folioNumber": "2002011001"
+            },
+            {
+              "isin": "INF174V01BL6",
+              "folioNumber": "2002011001"
+            },
+            {
+              "isin": "INF209K01YY1",
+              "folioNumber": "2002011001"
+            }
+          ]
+        }
+      },
+      "b2c3d4e5-f6a7-8901-2345-67890abcdef1": {
+        "accountDetails": {
+          "fipId": "fip@nsdl",
+          "maskedAccountNumber": "XXXXXX0001",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_ETF",
+          "accountType": {
+            "etfAccountType": "ETF_ACCOUNT_TYPE_DEFAULT_TYPE"
+          },
+          "fipMeta": {
+            "name": "National Securities Depository Limited",
+            "displayName": "NSDL"
+          }
+        },
+        "etfSummary": {
+          "accountId": "b2c3d4e5-f6a7-8901-2345-67890abcdef1",
+          "currentValue": {
+            "currencyCode": "INR",
+            "units": "16815"
+          },
+          "holdingsInfo": [
+            {
+              "isin": "INF204KB17I9",
+              "units": 289.92,
+              "nav": {
+                "currencyCode": "INR",
+                "units": "58"
+              },
+              "lastNavDate": "2024-06-15T00:00:00Z",
+              "isinDescription": "HDFC Gold ETF"
+            }
+          ]
+        }
+      },
+      "c3d4e5f6-a7b8-9012-3456-7890abcdef12": {
+        "accountDetails": {
+          "fipId": "fip@epfo",
+          "maskedAccountNumber": "KABN-XXXX-XXXX",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_EPF",
+          "accountType": {
+            "epfAccountType": "EPF_ACCOUNT_TYPE_DEFAULT_TYPE"
+          },
+          "fipMeta": {
+            "name": "EPFO",
+            "displayName": "EPFO"
+          }
+        },
+        "epfSummary": {
+          "accountId": "c3d4e5f6-a7b8-9012-3456-7890abcdef12",
+          "currentBalance": {
+            "currencyCode": "INR",
+            "units": "635000"
+          },
+          "balanceDate": "2024-05-21T12:00:00Z"
+        }
+      },
+      "d4e5f6a7-b8c9-0123-4567-890abcdef123": {
+        "accountDetails": {
+          "fipId": "SBI-FIP",
+          "maskedAccountNumber": "XXXXXX1122",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_DEPOSIT",
+          "accountType": {
+            "depositAccountType": "DEPOSIT_ACCOUNT_TYPE_FIXED"
+          },
+          "fipMeta": {
+            "name": "State Bank of India",
+            "displayName": "SBI",
+            "bank": "SBI"
+          }
+        },
+        "depositSummary": {
+          "accountId": "d4e5f6a7-b8c9-0123-4567-890abcdef123",
+          "currentBalance": {
+            "currencyCode": "INR",
+            "units": "500000"
+          },
+          "balanceDate": "2024-06-15T10:00:00Z",
+          "depositAccountType": "DEPOSIT_ACCOUNT_TYPE_FIXED",
+          "depositAccountStatus": "DEPOSIT_ACCOUNT_STATUS_ACTIVE"
+        }
+      },
+      "e5f6a7b8-c9d0-1234-5678-90abcdef1234": {
+        "accountDetails": {
+          "fipId": "ICICI-FIP",
+          "maskedAccountNumber": "XXXXXX3344",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_RECURRING_DEPOSIT",
+          "accountType": {
+            "recurringDepositAccountType": "RECURRING_DEPOSIT_ACCOUNT_TYPE_RECURRING"
+          },
+          "fipMeta": {
+            "name": "ICICI Bank",
+            "displayName": "ICICI",
+            "bank": "ICICI"
+          }
+        },
+        "recurringDepositSummary": {
+          "accountId": "e5f6a7b8-c9d0-1234-5678-90abcdef1234",
+          "currentPrincipalAmount": {
+            "currencyCode": "INR",
+            "units": "150000"
+          },
+          "maturityDate": "2025-12-01T00:00:00Z"
+        }
+      },
+      "f6a7b8c9-d0e1-2345-6789-0abcdef12345": {
+        "accountDetails": {
+          "fipId": "SBI-FIP",
+          "maskedAccountNumber": "XXXXXX5566",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_DEPOSIT",
+          "accountType": {
+            "depositAccountType": "DEPOSIT_ACCOUNT_TYPE_SAVINGS"
+          },
+          "fipMeta": {
+            "name": "State Bank of India",
+            "displayName": "SBI",
+            "bank": "SBI"
+          }
+        },
+        "depositSummary": {
+          "accountId": "f6a7b8c9-d0e1-2345-6789-0abcdef12345",
+          "currentBalance": {
+            "currencyCode": "INR",
+            "units": "250000"
+          },
+          "balanceDate": "2024-06-15T18:00:00Z",
+          "depositAccountType": "DEPOSIT_ACCOUNT_TYPE_SAVINGS",
+          "depositAccountStatus": "DEPOSIT_ACCOUNT_STATUS_ACTIVE"
+        }
+      }
+    }
+  }
+}

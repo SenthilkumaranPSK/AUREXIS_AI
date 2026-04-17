@@ -1,0 +1,580 @@
+{
+  "netWorthResponse": {
+    "assetValues": [
+      {
+        "netWorthAttribute": "ASSET_TYPE_MUTUAL_FUND",
+        "value": {
+          "currencyCode": "INR",
+          "units": "1413292"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_EPF",
+        "value": {
+          "currencyCode": "INR",
+          "units": "1780000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_INDIAN_SECURITIES",
+        "value": {
+          "currencyCode": "INR",
+          "units": "1225000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_US_SECURITIES",
+        "value": {
+          "currencyCode": "INR",
+          "units": "445000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_SGB",
+        "value": {
+          "currencyCode": "INR",
+          "units": "700000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_ETF",
+        "value": {
+          "currencyCode": "INR",
+          "units": "335000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_SAVINGS_ACCOUNTS",
+        "value": {
+          "currencyCode": "INR",
+          "units": "480000"
+        }
+      },
+      {
+        "netWorthAttribute": "LIABILITY_TYPE_CREDIT_CARD",
+        "value": {
+          "currencyCode": "INR",
+          "units": "-65000"
+        }
+      }
+    ],
+    "totalNetWorthValue": {
+      "currencyCode": "INR",
+      "units": "6308292"
+    }
+  },
+  "mfSchemeAnalytics": {
+    "schemeAnalytics": [
+      {
+        "schemeDetail": {
+          "amc": "HDFC_MUTUAL_FUND",
+          "nameData": {
+            "longName": "HDFC Flexi Cap Fund - Direct Plan - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "1650"
+          },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF179K012B0",
+          "categoryName": "FLEXI_CAP_FUND"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "518100"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "385000"
+              },
+              "XIRR": 17.85,
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "133100"
+              },
+              "units": 314
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "NIPPON_INDIA_MUTUAL_FUND",
+          "nameData": {
+            "longName": "Nippon India Small Cap Fund - Direct - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "165"
+          },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF204K01C95",
+          "categoryName": "SMALL_CAP_FUND"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "435600"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "254000"
+              },
+              "XIRR": 21.5,
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "181600"
+              },
+              "units": 2640
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "AXIS_MUTUAL_FUND",
+          "nameData": {
+            "longName": "Axis Midcap Fund - Direct Plan - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "125"
+          },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF846K01531",
+          "categoryName": "MID_CAP_FUND"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "312500"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "199000"
+              },
+              "XIRR": 19.2,
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "113500"
+              },
+              "units": 2500
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "MOTILAL_OSWAL",
+          "nameData": {
+            "longName": "Motilal Oswal S&P 500 Index Fund - Direct - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "55"
+          },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF976L01028",
+          "categoryName": "INTERNATIONAL_FUNDS"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "303892"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "245000"
+              },
+              "XIRR": 16.5,
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "58892"
+              },
+              "units": 5525.31
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "MIRAE_ASSET",
+          "nameData": {
+            "longName": "Mirae Asset Tax Saver Fund - Direct Plan - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "45"
+          },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF090I01684",
+          "categoryName": "ELSS"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "485420"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "250000"
+              },
+              "XIRR": 18.9,
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "235420"
+              },
+              "units": 10787.12
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "TATA_MUTUAL_FUND",
+          "nameData": {
+            "longName": "Tata Digital India Fund - Direct - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "50"
+          },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF277K012A3",
+          "categoryName": "SECTORAL_THEMATIC"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "12806"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "20000"
+              },
+              "realisedReturns": {
+                "currencyCode": "INR",
+                "units": "-10"
+              },
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "-7194"
+              },
+              "units": 256.13
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "ICICI_PRUDENTIAL",
+          "nameData": {
+            "longName": "ICICI Prudential Commodities Fund - Direct - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "30"
+          },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF109K01YI0",
+          "categoryName": "SECTORAL_THEMATIC"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "30891"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "20000"
+              },
+              "XIRR": 14.2,
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "10891"
+              },
+              "units": 1029.73
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "ICICI_PRUDENTIAL",
+          "nameData": {
+            "longName": "ICICI Prudential Balanced Advantage - Direct Plan"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "65"
+          },
+          "assetClass": "HYBRID",
+          "isinNumber": "INF109K012B0",
+          "categoryName": "BALANCED_ADVANTAGE_FUND"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "23578"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "20000"
+              },
+              "XIRR": 12.1,
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "3578"
+              },
+              "units": 362.75
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "ICICI_PRUDENTIAL",
+          "nameData": {
+            "longName": "ICICI Prudential Short Term Debt Fund - Direct - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "55"
+          },
+          "assetClass": "DEBT",
+          "isinNumber": "INF109K01XO3",
+          "categoryName": "SHORT_DURATION_FUND"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "113000"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "100000"
+              },
+              "XIRR": 7.5,
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "13000"
+              },
+              "units": 2054.39
+            }
+          }
+        }
+      }
+    ]
+  },
+  "accountDetailsBulkResponse": {
+    "accountDetailsMap": {
+      "uuid-mf-1": {
+        "accountDetails": {
+          "fipId": "fip@cams",
+          "maskedAccountNumber": "XXXXXX-45001",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_MUTUAL_FUNDS"
+        },
+        "mutualFundSummary": {
+          "currentValue": {
+            "currencyCode": "INR",
+            "units": "1387690"
+          },
+          "holdingsInfo": [
+            { "isin": "INF179K012B0", "folioNumber": "WG-45001" },
+            { "isin": "INF846K01531", "folioNumber": "WG-45003" },
+            { "isin": "INF090I01684", "folioNumber": "WG-ELSS1" },
+            { "isin": "INF277K012A3", "folioNumber": "WG-THEME1" },
+            { "isin": "INF109K01YI0", "folioNumber": "WG-COMM1" },
+            { "isin": "INF109K012B0", "folioNumber": "WG-HYB1" },
+            { "isin": "INF109K01XO3", "folioNumber": "WG-DEBT1" }
+          ]
+        }
+      },
+      "uuid-mf-2": {
+        "accountDetails": {
+          "fipId": "fip@kfintech",
+          "maskedAccountNumber": "XXXXXX-45002",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_MUTUAL_FUNDS"
+        },
+        "mutualFundSummary": {
+          "currentValue": {
+            "currencyCode": "INR",
+            "units": "739492"
+          },
+          "holdingsInfo": [
+            { "isin": "INF204K01C95", "folioNumber": "WG-45002" },
+            { "isin": "INF976L01028", "folioNumber": "WG-INTL1" }
+          ]
+        }
+      },
+      "uuid-epf-1": {
+        "accountDetails": {
+          "fipId": "fip@epfo",
+          "maskedAccountNumber": "MHBAN-XXXX-XXXX",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_EPF"
+        },
+        "epfSummary": {
+          "currentBalance": {
+            "currencyCode": "INR",
+            "units": "1780000"
+          }
+        }
+      },
+      "uuid-stocks-ind-1": {
+        "accountDetails": {
+          "fipId": "fip@nsdl",
+          "maskedAccountNumber": "XXXXXX1001",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_EQUITIES"
+        },
+        "equitySummary": {
+          "currentValue": { "currencyCode": "INR", "units": "1225000" },
+          "holdingsInfo": [
+            { "isin": "INE002A01018", "issuerName": "RELIANCE INDUSTRIES LTD", "units": 150, "lastTradedPrice": { "units": "2900" } },
+            { "isin": "INE467B01029", "issuerName": "TATA CONSULTANCY SERVICES LTD", "units": 50, "lastTradedPrice": { "units": "3800" } },
+            { "isin": "INE040A01034", "issuerName": "HDFC BANK LTD", "units": 100, "lastTradedPrice": { "units": "1550" } },
+            { "isin": "INE009A01021", "issuerName": "ICICI BANK LTD.", "units": 250, "lastTradedPrice": { "units": "1100" } },
+            { "isin": "INE075A01022", "issuerName": "BHARTI AIRTEL LIMITED", "units": 125, "lastTradedPrice": { "units": "1320" } }
+          ]
+        }
+      },
+      "uuid-stocks-us-1": {
+        "accountDetails": {
+          "fipId": "fip@international-broker",
+          "maskedAccountNumber": "XXXXXXUS01",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_US_SECURITIES"
+        },
+        "equitySummary": {
+          "currentValue": { "currencyCode": "INR", "units": "445000" },
+          "holdingsInfo": [
+            { "ticker": "AAPL", "issuerName": "Apple Inc.", "units": 5, "lastTradedPrice": { "currencyCode": "USD", "units": "210" } },
+            { "ticker": "MSFT", "issuerName": "Microsoft Corporation", "units": 2, "lastTradedPrice": { "currencyCode": "USD", "units": "440" } },
+            { "ticker": "NVDA", "issuerName": "NVIDIA Corporation", "units": 2, "lastTradedPrice": { "currencyCode": "USD", "units": "130" } },
+            { "ticker": "GOOGL", "issuerName": "Alphabet Inc.", "units": 10, "lastTradedPrice": { "currencyCode": "USD", "units": "180" } }
+          ]
+        }
+      },
+      "uuid-sgb-1": {
+        "accountDetails": {
+          "fipId": "fip@nsdl",
+          "maskedAccountNumber": "XXXXXX1001",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_SGB"
+        },
+        "sgbSummary": {
+          "currentValue": { "currencyCode": "INR", "units": "700000" },
+          "holdingsInfo": [
+            { "isin": "IN0020210185", "description": "SGB 2.50% JAN 2030 - SR VIII", "units": 50 },
+            { "isin": "IN0020200079", "description": "SGB 2.50% SEP 2028 - SR VI", "units": 50 }
+          ]
+        }
+      },
+      "uuid-etf-1": {
+        "accountDetails": {
+          "fipId": "fip@nsdl",
+          "maskedAccountNumber": "XXXXXX1001",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_ETF"
+        },
+        "etfSummary": {
+          "currentValue": { "currencyCode": "INR", "units": "335000" },
+          "holdingsInfo": [
+            { "isin": "INF204KB14I2", "isinDescription": "NIP ETF NIFTY50 BEES", "units": 750, "nav": { "units": "260" } },
+            { "isin": "INF732E01011", "isinDescription": "ICICI PRU NIFTY NEXT 50", "units": 200, "nav": { "units": "700" } }
+          ]
+        }
+      },
+      "uuid-savings-1": {
+        "accountDetails": {
+          "fipId": "HDFC-FIP",
+          "maskedAccountNumber": "XXXXXX5555",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_DEPOSIT"
+        },
+        "depositSummary": {
+          "currentBalance": {
+            "currencyCode": "INR",
+            "units": "480000"
+          },
+          "depositAccountType": "DEPOSIT_ACCOUNT_TYPE_SAVINGS"
+        }
+      },
+      "uuid-cc-1": {
+        "accountDetails": {
+          "fipId": "HDFC-FIP",
+          "maskedAccountNumber": "XXXX-XXXX-XXXX-8888",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_CREDIT_CARD"
+        },
+        "creditCardSummary": {
+          "currentBalance": {
+            "currencyCode": "INR",
+            "units": "25000"
+          },
+          "creditLimit": {
+            "currencyCode": "INR",
+            "units": "750000"
+          }
+        }
+      },
+      "uuid-cc-2": {
+        "accountDetails": {
+          "fipId": "AMEX-FIP",
+          "maskedAccountNumber": "XXXX-XXXX-XXXX-9999",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_CREDIT_CARD"
+        },
+        "creditCardSummary": {
+          "currentBalance": {
+            "currencyCode": "INR",
+            "units": "40000"
+          },
+          "creditLimit": {
+            "currencyCode": "INR",
+            "units": "1000000"
+          }
+        }
+      }
+    }
+  }
+}

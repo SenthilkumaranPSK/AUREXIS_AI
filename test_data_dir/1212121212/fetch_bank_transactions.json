@@ -1,0 +1,23 @@
+{
+  "schemaDescription": "A list of bank transactions. Each 'txns' field is a list of data arrays with schema: [transactionAmount, transactionNarration, transactionDate, transactionType (1 for CREDIT, 2 for DEBIT, 3 for OPENING, 4 for INTEREST, 5 for TDS, 6 for INSTALLMENT, 7 for CLOSING and 8 for OTHERS), transactionMode, currentBalance].\n We currently have have only last two month transaction, older transaction are coming soon...",
+  "bankTransactions": [
+    {
+      "bank": "Punjab National Bank",
+      "txns": [
+        ["2500", "UPI-MOM-9876543210@YBL-PAYMENT FROM MOM", "2024-07-02", 1, "FT", "16500"],
+        ["150", "UPI-RECHARGE-AIRTELPREPAID@AXIS-MOBILE RECHARGE", "2024-07-04", 2, "OTHERS", "16350"],
+        ["280", "UPI-SWIGGY-SWIGGY@YBL-FOOD ORDER", "2024-07-07", 2, "OTHERS", "16070"],
+        ["1000", "CASH WDL-P1A01234-PNB ATM-DELHI", "2024-07-10", 2, "ATM", "15070"],
+        ["1500", "IMPS-RAHUL-HELP", "2024-07-15", 1, "FT", "16570"],
+        ["3000", "UPI-PAYMENT RECEIVED-CLIENT WORK-REF88776", "2024-07-20", 1, "OTHERS", "19570"],
+        ["850", "UPI-SIMPL-SIMPL@AXISBANK-REPAYMENT", "2024-07-25", 2, "CARD_PAYMENT", "18720"],
+        ["2000", "BY CASH DEPOSIT-SELF-CDM", "2024-06-03", 1, "CASH", "9500"],
+        ["5000", "UPI-AMIT SHARMA-AMITSHARMA@OKICICI-JUNE RENT SHARE", "2024-06-05", 2, "FT", "4500"],
+        ["3000", "UPI-DAD-9988776655@PAYTM-FOR EXPENSES", "2024-06-10", 1, "FT", "7500"],
+        ["310", "UPI-ZOMATO-ZOMATO@YBL-LUNCH", "2024-06-15", 2, "OTHERS", "7190"],
+        ["120", "UPI-DMRC-METRO CARD RECHARGE@PAYTM", "2024-06-22", 2, "OTHERS", "7070"],
+        ["500", "CASH WDL-P1A05678-PNB ATM-DELHI", "2024-06-28", 2, "ATM", "6570"]
+      ]
+    }
+  ]
+}

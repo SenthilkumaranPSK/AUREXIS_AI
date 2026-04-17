@@ -1,0 +1,137 @@
+{
+  "creditReports": [
+    {
+      "creditReportData": {
+        "userMessage": {
+          "userMessageText": "Normal Response"
+        },
+        "creditProfileHeader": {
+          "reportDate": "20240521",
+          "reportTime": "114055"
+        },
+        "currentApplication": {
+          "currentApplicationDetails": {
+            "enquiryReason": "0",
+            "amountFinanced": "0",
+            "durationOfAgreement": "0",
+            "currentApplicantDetails": {
+              "dateOfBirthApplicant": "19881110"
+            }
+          }
+        },
+        "creditAccount": {
+          "creditAccountSummary": {
+            "account": {
+              "creditAccountTotal": "3",
+              "creditAccountActive": "2",
+              "creditAccountDefault": "0",
+              "creditAccountClosed": "1",
+              "cadSuitFiledCurrentBalance": "0"
+            },
+            "totalOutstandingBalance": {
+              "outstandingBalanceSecured": "0",
+              "outstandingBalanceSecuredPercentage": "0",
+              "outstandingBalanceUnSecured": "65000",
+              "outstandingBalanceUnSecuredPercentage": "100",
+              "outstandingBalanceAll": "65000"
+            }
+          },
+          "creditAccountDetails": [
+            {
+              "subscriberName": "HDFC Bank",
+              "portfolioType": "R",
+              "accountType": "10",
+              "openDate": "20180612",
+              "creditLimitAmount": "750000",
+              "highestCreditOrOriginalLoanAmount": "750000",
+              "accountStatus": "11",
+              "paymentRating": "0",
+              "paymentHistoryProfile": "000000000000000000000000000000000000",
+              "currentBalance": "25000",
+              "amountPastDue": "0",
+              "dateReported": "20240502",
+              "occupationCode": "S",
+              "rateOfInterest": "18.0",
+              "repaymentTenure": "0",
+              "dateOfAddition": "20180612",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            },
+            {
+              "subscriberName": "American Express",
+              "portfolioType": "R",
+              "accountType": "10",
+              "openDate": "20200920",
+              "creditLimitAmount": "1000000",
+              "highestCreditOrOriginalLoanAmount": "1000000",
+              "accountStatus": "11",
+              "paymentRating": "0",
+              "paymentHistoryProfile": "000000000000000000000000000000000000",
+              "currentBalance": "40000",
+              "amountPastDue": "0",
+              "dateReported": "20240505",
+              "occupationCode": "S",
+              "rateOfInterest": "15.5",
+              "repaymentTenure": "0",
+              "dateOfAddition": "20200920",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            },
+            {
+              "subscriberName": "State Bank of India",
+              "portfolioType": "I",
+              "accountType": "04",
+              "openDate": "20100715",
+              "highestCreditOrOriginalLoanAmount": "850000",
+              "accountStatus": "13",
+              "paymentRating": "0",
+              "paymentHistoryProfile": "000000000000000000000000000000000000",
+              "currentBalance": "0",
+              "amountPastDue": "0",
+              "dateReported": "20170801",
+              "occupationCode": "S",
+              "rateOfInterest": "11.25",
+              "repaymentTenure": "84",
+              "dateOfAddition": "20100715",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            }
+          ]
+        },
+        "matchResult": {
+          "exactMatch": "Y"
+        },
+        "totalCapsSummary": {
+          "totalCapsLast7Days": "0",
+          "totalCapsLast30Days": "0",
+          "totalCapsLast90Days": "0",
+          "totalCapsLast180Days": "0"
+        },
+        "nonCreditCaps": {
+          "nonCreditCapsSummary": {
+            "nonCreditCapsLast7Days": "0",
+            "nonCreditCapsLast30Days": "0",
+            "nonCreditCapsLast90Days": "0",
+            "nonCreditCapsLast180Days": "0"
+          },
+          "capsApplicationDetailsArray": []
+        },
+        "score": {
+          "bureauScore": "795",
+          "bureauScoreConfidenceLevel": "H"
+        },
+        "segment": {},
+        "caps": {
+          "capsSummary": {
+            "capsLast7Days": "0",
+            "capsLast30Days": "0",
+            "capsLast90Days": "0",
+            "capsLast180Days": "0"
+          },
+          "capsApplicationDetailsArray": []
+        }
+      },
+      "vendor": "EXPERIAN"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schemaDescription": "A list of bank transactions. Each 'txns' field is a list of data arrays with schema: [transactionAmount, transactionNarration, transactionDate, transactionType (1 for CREDIT, 2 for DEBIT, 3 for OPENING, 4 for INTEREST, 5 for TDS, 6 for INSTALLMENT, 7 for CLOSING and 8 for OTHERS), transactionMode, currentBalance].\n We currently have have only last two month transaction, older transaction are coming soon...",
+  "bankTransactions": [
+    {
+      "bank": "HDFC Bank",
+      "txns": [
+        ["18000", "STIPEND CREDIT - JULY 2024 - ACME INTERNSHIP", "2024-07-05", 1, "NEFT", "19500"],
+        ["1000", "ACH D-ICICIPRUMF-SIP/9988770011", "2024-07-10", 6, "ACH", "18500"],
+        ["1500", "BILLPAY-HDFC CREDIT CARD-XXXX-FULL PAYMENT", "2024-07-12", 2, "CARD_PAYMENT", "17000"],
+        ["350", "UPI-ZOMATO-ZOMATO@YBL-LUNCH", "2024-07-15", 2, "OTHERS", "16650"],
+        ["500", "ACH D-PARAGPARIKHMF-SIP/8877665544", "2024-07-20", 6, "ACH", "16150"],
+        ["250", "UPI-UBER-RIDE-UBER@HDFCBANK", "2024-07-22", 2, "OTHERS", "15900"],
+        ["450", "UPI-AMAZON-AMAZONPAY@APL-BOOK ORDER", "2024-07-28", 2, "OTHERS", "15450"],
+        ["15000", "IMPS-DAD-POCKET MONEY JUNE", "2024-06-02", 1, "FT", "16200"],
+        ["1000", "ACH D-ICICIPRUMF-SIP/9988770011", "2024-06-10", 6, "ACH", "15200"],
+        ["1200", "BILLPAY-HDFC CREDIT CARD-XXXX-FULL PAYMENT", "2024-06-12", 2, "CARD_PAYMENT", "14000"],
+        ["299", "UPI-RECHARGE-AIRTELPREPAID@AXIS", "2024-06-18", 2, "OTHERS", "13701"],
+        ["500", "ACH D-PARAGPARIKHMF-SIP/8877665544", "2024-06-20", 6, "ACH", "13201"],
+        ["410", "UPI-SWIGGY-SWIGGY@YBL-DINNER", "2024-06-25", 2, "OTHERS", "12791"],
+        ["180", "UPI-CAFE COFFEE DAY-COFFEE@PAYTM", "2024-06-29", 2, "OTHERS", "12611"]
+      ]
+    }
+  ]
+}

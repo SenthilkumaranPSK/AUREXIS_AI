@@ -1,0 +1,99 @@
+{
+  "uanAccounts": [
+    {
+      "phoneNumber": {},
+      "rawDetails": {
+        "est_details": [
+          {
+            "est_name": "NEXGEN SOFTWARE SOLUTIONS",
+            "member_id": "MHPN*****************",
+            "office": "(RO)PUNE",
+            "doj_epf": "15-06-2013",
+            "doe_epf": "31-12-2016",
+            "doe_eps": "31-12-2016",
+            "pf_balance": {
+              "net_balance": "350000",
+              "employee_share": {
+                "credit": "160000",
+                "balance": "160000"
+              },
+              "employer_share": {
+                "credit": "160000",
+                "balance": "160000"
+              }
+            }
+          },
+          {
+            "est_name": "INNOVA ANALYTICS PVT LTD",
+            "member_id": "KABN*****************",
+            "office": "(RO)BENGALURU",
+            "doj_epf": "10-01-2017",
+            "doe_epf": "28-02-2020",
+            "doe_eps": "28-02-2020",
+            "pf_balance": {
+              "net_balance": "480000",
+              "employee_share": {
+                "credit": "220000",
+                "balance": "220000"
+              },
+              "employer_share": {
+                "credit": "220000",
+                "balance": "220000"
+              }
+            }
+          },
+          {
+            "est_name": "FINTECH FRONTIERS (INDIA)",
+            "member_id": "TNHY*****************",
+            "office": "(RO)HYDERABAD",
+            "doj_epf": "15-03-2020",
+            "doe_epf": "31-05-2022",
+            "doe_eps": "31-05-2022",
+            "pf_balance": {
+              "net_balance": "450000",
+              "employee_share": {
+                "credit": "210000",
+                "balance": "210000"
+              },
+              "employer_share": {
+                "credit": "210000",
+                "balance": "210000"
+              }
+            }
+          },
+          {
+            "est_name": "GLOBAL WEALTH MANAGEMENT CORP",
+            "member_id": "MHBANXXXXXXXXXXXXXXXXX",
+            "office": "(RO)BANDRA(MUMBAI-I)",
+            "doj_epf": "10-06-2022",
+            "doe_epf": "NOT AVAILABLE",
+            "doe_eps": "NOT AVAILABLE",
+            "pf_balance": {
+              "net_balance": "500000",
+              "employee_share": {
+                "credit": "230000",
+                "balance": "230000"
+              },
+              "employer_share": {
+                "credit": "230000",
+                "balance": "230000"
+              }
+            }
+          }
+        ],
+        "overall_pf_balance": {
+          "pension_balance": "550000",
+          "current_pf_balance": "1780000",
+          "employee_share_total": {
+            "credit": "820000",
+            "balance": "820000"
+          },
+          "employer_share_total": {
+            "credit": "820000",
+            "balance": "820000"
+          }
+        }
+      }
+    }
+  ]
+}

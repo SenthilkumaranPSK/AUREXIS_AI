@@ -1,0 +1,193 @@
+{
+  "netWorthResponse": {
+    "assetValues": [
+      {
+        "netWorthAttribute": "ASSET_TYPE_MUTUAL_FUND",
+        "value": {
+          "currencyCode": "INR",
+          "units": "5260000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_EPF",
+        "value": {
+          "currencyCode": "INR",
+          "units": "1950000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_NPS",
+        "value": {
+          "currencyCode": "INR",
+          "units": "2500000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_INDIAN_SECURITIES",
+        "value": {
+          "currencyCode": "INR",
+          "units": "3000000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_SAVINGS_ACCOUNTS",
+        "value": {
+          "currencyCode": "INR",
+          "units": "250000"
+        }
+      }
+    ],
+    "totalNetWorthValue": {
+      "currencyCode": "INR",
+      "units": "12960000"
+    }
+  },
+  "mfSchemeAnalytics": {
+    "schemeAnalytics": [
+      {
+        "schemeDetail": {
+          "amc": "PPFAS_MUTUAL_FUND",
+          "nameData": {
+            "longName": "Parag Parikh Flexi Cap Fund - Direct - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": { "currencyCode": "INR", "units": "75" },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF247L01578",
+          "categoryName": "FLEXI_CAP_FUND"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": { "currencyCode": "INR", "units": "1500000" },
+              "investedValue": { "currencyCode": "INR", "units": "1300000" },
+              "XIRR": 20.15,
+              "unrealisedReturns": { "currencyCode": "INR", "units": "200000" },
+              "units": 20000
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "NIPPON_INDIA_MUTUAL_FUND",
+          "nameData": {
+            "longName": "Nippon India Small Cap Fund - Direct - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": { "currencyCode": "INR", "units": "165" },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF204K01C95",
+          "categoryName": "SMALL_CAP_FUND"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": { "currencyCode": "INR", "units": "1650000" },
+              "investedValue": { "currencyCode": "INR", "units": "961000" },
+              "XIRR": 24.88,
+              "unrealisedReturns": { "currencyCode": "INR", "units": "689000" },
+              "units": 10000
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "MOTILAL_OSWAL",
+          "nameData": {
+            "longName": "Motilal Oswal Nasdaq 100 FOF - Direct - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": { "currencyCode": "INR", "units": "40" },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF247L01024",
+          "categoryName": "INTERNATIONAL_FUNDS"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": { "currencyCode": "INR", "units": "220000" },
+              "investedValue": { "currencyCode": "INR", "units": "185000" },
+              "XIRR": 22.5,
+              "unrealisedReturns": { "currencyCode": "INR", "units": "35000" },
+              "units": 5500
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "MIRAE_ASSET",
+          "nameData": {
+            "longName": "Mirae Asset ELSS Tax Saver Fund - Direct Plan - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": { "currencyCode": "INR", "units": "45" },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF090I01684",
+          "categoryName": "ELSS"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": { "currencyCode": "INR", "units": "1890000" },
+              "investedValue": { "currencyCode": "INR", "units": "1000000" },
+              "XIRR": 18.2,
+              "unrealisedReturns": { "currencyCode": "INR", "units": "890000" },
+              "units": 42000
+            }
+          }
+        }
+      }
+    ]
+  },
+  "accountDetailsBulkResponse": {
+    "accountDetailsMap": {
+      "uuid-mf-1": {
+        "accountDetails": { "fipId": "fip@kfintech", "maskedAccountNumber": "XXXX-FIRE-001", "accInstrumentType": "ACC_INSTRUMENT_TYPE_MUTUAL_FUNDS" },
+        "mutualFundSummary": { "currentValue": { "currencyCode": "INR", "units": "1500000" }, "holdingsInfo": [ { "isin": "INF247L01578", "folioNumber": "FIRE-001" } ] }
+      },
+      "uuid-mf-2": {
+        "accountDetails": { "fipId": "fip@cams", "maskedAccountNumber": "XXXX-FIRE-002", "accInstrumentType": "ACC_INSTRUMENT_TYPE_MUTUAL_FUNDS" },
+        "mutualFundSummary": { "currentValue": { "currencyCode": "INR", "units": "3750000" }, "holdingsInfo": [ { "isin": "INF204K01C95", "folioNumber": "FIRE-002" }, { "isin": "INF247L01024", "folioNumber": "FIRE-INTL1" }, { "isin": "INF090I01684", "folioNumber": "FIRE-TAX1" } ] }
+      },
+      "uuid-epf-1": {
+        "accountDetails": { "fipId": "fip@epfo", "maskedAccountNumber": "GUGGN-XXXX-XXXX", "accInstrumentType": "ACC_INSTRUMENT_TYPE_EPF" },
+        "epfSummary": { "currentBalance": { "currencyCode": "INR", "units": "1950000" } }
+      },
+      "uuid-nps-1": {
+        "accountDetails": { "fipId": "fip@nps", "maskedAccountNumber": "XXXXXX-NPS1", "accInstrumentType": "ACC_INSTRUMENT_TYPE_NPS" },
+        "npsSummary": { "accountId": "uuid-nps-1", "currentValue": { "currencyCode": "INR", "units": "2500000" } }
+      },
+      "uuid-stocks-1": {
+        "accountDetails": { "fipId": "fip@nsdl", "maskedAccountNumber": "XXXXXX-FIREDP", "accInstrumentType": "ACC_INSTRUMENT_TYPE_EQUITIES" },
+        "equitySummary": {
+          "currentValue": { "currencyCode": "INR", "units": "3000000" },
+          "holdingsInfo": [
+            { "isin": "INE155A01022", "issuerName": "TATA MOTORS LTD.", "units": 1000, "lastTradedPrice": { "units": "950" } },
+            { "isin": "INE021A01026", "issuerName": "ASIAN PAINTS LTD.", "units": 200, "lastTradedPrice": { "units": "2900" } },
+            { "isin": "INE118A01012", "issuerName": "TITAN COMPANY LTD", "units": 150, "lastTradedPrice": { "units": "3500" } },
+            { "isin": "INE476A01014", "issuerName": "BAJAJ FINANCE LIMITED", "units": 150, "lastTradedPrice": { "units": "6500" } }
+          ]
+        }
+      },
+      "uuid-savings-1": {
+        "accountDetails": { "fipId": "IDFCFirstBank-FIP", "maskedAccountNumber": "XXXXXX-FIRE-SB", "accInstrumentType": "ACC_INSTRUMENT_TYPE_DEPOSIT" },
+        "depositSummary": { "currentBalance": { "currencyCode": "INR", "units": "250000" }, "depositAccountType": "DEPOSIT_ACCOUNT_TYPE_SAVINGS" }
+      },
+      "uuid-cc-1": {
+        "accountDetails": { "fipId": "HDFC-FIP", "maskedAccountNumber": "XXXX-XXXX-XXXX-FIRE", "accInstrumentType": "ACC_INSTRUMENT_TYPE_CREDIT_CARD" },
+        "creditCardSummary": { "currentBalance": { "currencyCode": "INR", "units": "0" }, "creditLimit": { "currencyCode": "INR", "units": "1500000" } }
+      }
+    }
+  }
+}

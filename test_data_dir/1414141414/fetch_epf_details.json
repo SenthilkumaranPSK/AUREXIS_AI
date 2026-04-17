@@ -1,0 +1,42 @@
+{
+  "uanAccounts": [
+    {
+      "phoneNumber": {},
+      "rawDetails": {
+        "est_details": [
+          {
+            "est_name": "ALPHA OMEGA SERVICES LLP",
+            "member_id": "GJADIXXXXXXXXXXXXXXXXX",
+            "office": "(RO)AHMEDABAD",
+            "doj_epf": "10-02-2018",
+            "doe_epf": "NOT AVAILABLE",
+            "doe_eps": "NOT AVAILABLE",
+            "pf_balance": {
+              "net_balance": "125000",
+              "employee_share": {
+                "credit": "260000",
+                "balance": "60000"
+              },
+              "employer_share": {
+                "credit": "260000",
+                "balance": "60000"
+              }
+            }
+          }
+        ],
+        "overall_pf_balance": {
+          "pension_balance": "110000",
+          "current_pf_balance": "125000",
+          "employee_share_total": {
+            "credit": "260000",
+            "balance": "60000"
+          },
+          "employer_share_total": {
+            "credit": "260000",
+            "balance": "60000"
+          }
+        }
+      }
+    }
+  ]
+}

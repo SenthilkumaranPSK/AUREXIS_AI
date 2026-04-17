@@ -1,0 +1,258 @@
+{
+  "netWorthResponse": {
+    "assetValues": [
+      {
+        "netWorthAttribute": "ASSET_TYPE_EPF",
+        "value": {
+          "currencyCode": "INR",
+          "units": "125000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_SAVINGS_ACCOUNTS",
+        "value": {
+          "currencyCode": "INR",
+          "units": "12000"
+        }
+      },
+      {
+        "netWorthAttribute": "LIABILITY_TYPE_LOAN",
+        "value": {
+          "currencyCode": "INR",
+          "units": "-4330000"
+        }
+      },
+      {
+        "netWorthAttribute": "LIABILITY_TYPE_CREDIT_CARD",
+        "value": {
+          "currencyCode": "INR",
+          "units": "-272000"
+        }
+      }
+    ],
+    "totalNetWorthValue": {
+      "currencyCode": "INR",
+      "units": "-4465000"
+    }
+  },
+  "mfSchemeAnalytics": {
+    "schemeAnalytics": []
+  },
+  "accountDetailsBulkResponse": {
+    "accountDetailsMap": {
+      "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d": {
+        "accountDetails": {
+          "fipId": "fip@epfo",
+          "maskedAccountNumber": "GJADI-XXXX-XXXX",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_EPF",
+          "accountType": {
+            "epfAccountType": "EPF_ACCOUNT_TYPE_DEFAULT_TYPE"
+          },
+          "fipMeta": {
+            "name": "EPFO",
+            "displayName": "EPFO"
+          }
+        },
+        "epfSummary": {
+          "accountId": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+          "currentBalance": {
+            "currencyCode": "INR",
+            "units": "125000"
+          },
+          "balanceDate": "2024-05-21T00:00:00Z"
+        }
+      },
+      "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e": {
+        "accountDetails": {
+          "fipId": "KOTAK-FIP",
+          "maskedAccountNumber": "XXXXXX1010",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_DEPOSIT",
+          "ifscCode": "KKBK0000123",
+          "accountType": {
+            "depositAccountType": "DEPOSIT_ACCOUNT_TYPE_SAVINGS"
+          },
+          "fipMeta": {
+            "name": "Kotak Mahindra Bank",
+            "displayName": "Kotak",
+            "bank": "KOTAK"
+          }
+        },
+        "depositSummary": {
+          "accountId": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+          "currentBalance": {
+            "currencyCode": "INR",
+            "units": "12000"
+          },
+          "balanceDate": "2024-06-15T18:00:00Z",
+          "depositAccountType": "DEPOSIT_ACCOUNT_TYPE_SAVINGS",
+          "depositAccountStatus": "DEPOSIT_ACCOUNT_STATUS_ACTIVE"
+        }
+      },
+      "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f": {
+        "accountDetails": {
+          "fipId": "SBI-FIP",
+          "maskedAccountNumber": "XXXXXX1234",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_LOAN",
+          "accountType": {
+            "loanAccountType": "LOAN_ACCOUNT_TYPE_HOME"
+          },
+          "fipMeta": {
+            "name": "State Bank of India",
+            "displayName": "SBI"
+          }
+        },
+        "loanSummary": {
+          "accountId": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+          "currentOutstanding": {
+            "currencyCode": "INR",
+            "units": "3850000"
+          },
+          "loanStatus": "LOAN_STATUS_ACTIVE",
+          "originalLoanAmount": {
+            "currencyCode": "INR",
+            "units": "4000000"
+          }
+        }
+      },
+      "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9g": {
+        "accountDetails": {
+          "fipId": "PNB-FIP",
+          "maskedAccountNumber": "XXXXXX5678",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_LOAN",
+          "accountType": {
+            "loanAccountType": "LOAN_ACCOUNT_TYPE_AUTO"
+          },
+          "fipMeta": {
+            "name": "Punjab National Bank",
+            "displayName": "PNB"
+          }
+        },
+        "loanSummary": {
+          "accountId": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9g",
+          "currentOutstanding": {
+            "currencyCode": "INR",
+            "units": "450000"
+          },
+          "loanStatus": "LOAN_STATUS_ACTIVE",
+          "originalLoanAmount": {
+            "currencyCode": "INR",
+            "units": "700000"
+          }
+        }
+      },
+      "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9g0h": {
+        "accountDetails": {
+          "fipId": "TATA-FIP",
+          "maskedAccountNumber": "XXXXXX9012",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_LOAN",
+          "accountType": {
+            "loanAccountType": "LOAN_ACCOUNT_TYPE_CONSUMER"
+          },
+          "fipMeta": {
+            "name": "Tata Capital",
+            "displayName": "Tata Capital"
+          }
+        },
+        "loanSummary": {
+          "accountId": "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9g0h",
+          "currentOutstanding": {
+            "currencyCode": "INR",
+            "units": "30000"
+          },
+          "loanStatus": "LOAN_STATUS_ACTIVE",
+          "originalLoanAmount": {
+            "currencyCode": "INR",
+            "units": "80000"
+          }
+        }
+      },
+      "6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9g0h1i": {
+        "accountDetails": {
+          "fipId": "ICICI-FIP",
+          "maskedAccountNumber": "XXXX-XXXX-XXXX-1111",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_CREDIT_CARD",
+          "accountType": {
+            "creditCardAccountType": "CREDIT_CARD_ACCOUNT_TYPE_DEFAULT_TYPE"
+          },
+          "fipMeta": {
+            "name": "ICICI Bank",
+            "displayName": "ICICI Bank"
+          }
+        },
+        "creditCardSummary": {
+          "accountId": "6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9g0h1i",
+          "currentBalance": {
+            "currencyCode": "INR",
+            "units": "135000"
+          },
+          "creditLimit": {
+            "currencyCode": "INR",
+            "units": "150000"
+          },
+          "amountPastDue": {
+            "currencyCode": "INR",
+            "units": "6500"
+          }
+        }
+      },
+      "7a8b9c0d-1e2f-3a4b-5c6d-7e8f9g0h1i2j": {
+        "accountDetails": {
+          "fipId": "HDFC-FIP",
+          "maskedAccountNumber": "XXXX-XXXX-XXXX-2222",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_CREDIT_CARD",
+          "accountType": {
+            "creditCardAccountType": "CREDIT_CARD_ACCOUNT_TYPE_DEFAULT_TYPE"
+          },
+          "fipMeta": {
+            "name": "HDFC Bank",
+            "displayName": "HDFC Bank"
+          }
+        },
+        "creditCardSummary": {
+          "accountId": "7a8b9c0d-1e2f-3a4b-5c6d-7e8f9g0h1i2j",
+          "currentBalance": {
+            "currencyCode": "INR",
+            "units": "92000"
+          },
+          "creditLimit": {
+            "currencyCode": "INR",
+            "units": "100000"
+          },
+          "amountPastDue": {
+            "currencyCode": "INR",
+            "units": "4800"
+          }
+        }
+      },
+      "8b9c0d1e-2f3a-4b5c-6d7e-8f9g0h1i2j3k": {
+        "accountDetails": {
+          "fipId": "AMEX-FIP",
+          "maskedAccountNumber": "XXXX-XXXX-XXXX-3333",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_CREDIT_CARD",
+          "accountType": {
+            "creditCardAccountType": "CREDIT_CARD_ACCOUNT_TYPE_DEFAULT_TYPE"
+          },
+          "fipMeta": {
+            "name": "American Express",
+            "displayName": "American Express"
+          }
+        },
+        "creditCardSummary": {
+          "accountId": "8b9c0d1e-2f3a-4b5c-6d7e-8f9g0h1i2j3k",
+          "currentBalance": {
+            "currencyCode": "INR",
+            "units": "45000"
+          },
+          "creditLimit": {
+            "currencyCode": "INR",
+            "units": "200000"
+          },
+          "amountPastDue": {
+            "currencyCode": "INR",
+            "units": "0"
+          }
+        }
+      }
+    }
+  }
+}

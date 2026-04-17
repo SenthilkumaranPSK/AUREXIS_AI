@@ -1,0 +1,20 @@
+{
+  "schemaDescription": "A list of bank transactions. Each 'txns' field is a list of data arrays with schema: [transactionAmount, transactionNarration, transactionDate, transactionType (1 for CREDIT, 2 for DEBIT, 3 for OPENING, 4 for INTEREST, 5 for TDS, 6 for INSTALLMENT, 7 for CLOSING and 8 for OTHERS), transactionMode, currentBalance].\n We currently have have only last two month transaction, older transaction are coming soon...",
+  "bankTransactions": [
+    {
+      "bank": "Kotak Mahindra Bank",
+      "txns": [
+        ["25000", "NEFT CR-CLIENT ABC-JULY CONSULTING FEE", "2024-07-01", 1, "NEFT", "40000"],
+        ["11600", "ACH D-HDFCBANK-AUTO LOAN EMI-AL-XXXX", "2024-07-05", 6, "ACH", "28400"],
+        ["8500", "BILLPAY-SBI CREDIT CARD-XXXX1001", "2024-07-10", 2, "CARD_PAYMENT", "19900"],
+        ["450", "UPI-SWIGGY-SWIGGY@YBL-FOOD", "2024-07-18", 2, "OTHERS", "19450"],
+        ["550000", "LOAN DISBURSAL - HDFC BANK - AUTO LOAN", "2024-05-15", 1, "NEFT", "575000"],
+        ["545000", "RTGS-POPULAR MOTORS-CAR PURCHASE-REF12345", "2024-05-16", 2, "FT", "30000"],
+        ["11600", "ACH D-HDFCBANK-AUTO LOAN EMI-AL-XXXX", "2024-06-05", 6, "ACH", "18400"],
+        ["20000", "IMPS-FREELANCE PROJECT PAYMENT-REFXYZ", "2024-06-10", 1, "FT", "38400"],
+        ["5000", "BILLPAY-ICICI CREDIT CARD-XXXX2002", "2024-06-12", 2, "CARD_PAYMENT", "33400"],
+        ["1200", "UPI-AMAZON-SHOPPING-AMAZONPAY@APL", "2024-06-22", 2, "OTHERS", "32200"]
+      ]
+    }
+  ]
+}

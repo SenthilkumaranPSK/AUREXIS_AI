@@ -1,0 +1,98 @@
+{
+  "creditReports": [
+    {
+      "creditReportData": {
+        "userMessage": {
+          "userMessageText": "Normal Response"
+        },
+        "creditProfileHeader": {
+          "reportDate": "20240522",
+          "reportTime": "110510"
+        },
+        "currentApplication": {
+          "currentApplicationDetails": {
+            "enquiryReason": "0",
+            "amountFinanced": "0",
+            "durationOfAgreement": "0",
+            "currentApplicantDetails": {
+              "dateOfBirthApplicant": "20010415"
+            }
+          }
+        },
+        "creditAccount": {
+          "creditAccountSummary": {
+            "account": {
+              "creditAccountTotal": "1",
+              "creditAccountActive": "1",
+              "creditAccountDefault": "0",
+              "creditAccountClosed": "0",
+              "cadSuitFiledCurrentBalance": "0"
+            },
+            "totalOutstandingBalance": {
+              "outstandingBalanceSecured": "0",
+              "outstandingBalanceSecuredPercentage": "0",
+              "outstandingBalanceUnSecured": "1500",
+              "outstandingBalanceUnSecuredPercentage": "100",
+              "outstandingBalanceAll": "1500"
+            }
+          },
+          "creditAccountDetails": [
+            {
+              "subscriberName": "HDFC Bank",
+              "portfolioType": "R",
+              "accountType": "10",
+              "openDate": "20230810",
+              "creditLimitAmount": "50000",
+              "highestCreditOrOriginalLoanAmount": "50000",
+              "accountStatus": "11",
+              "paymentRating": "0",
+              "paymentHistoryProfile": "000000000",
+              "currentBalance": "1500",
+              "amountPastDue": "0",
+              "dateReported": "20240504",
+              "occupationCode": "S",
+              "rateOfInterest": "22.0",
+              "repaymentTenure": "0",
+              "dateOfAddition": "20230810",
+              "currencyCode": "INR",
+              "accountHolderTypeCode": "1"
+            }
+          ]
+        },
+        "matchResult": {
+          "exactMatch": "Y"
+        },
+        "totalCapsSummary": {
+          "totalCapsLast7Days": "0",
+          "totalCapsLast30Days": "0",
+          "totalCapsLast90Days": "0",
+          "totalCapsLast180Days": "0"
+        },
+        "nonCreditCaps": {
+          "nonCreditCapsSummary": {
+            "nonCreditCapsLast7Days": "0",
+            "nonCreditCapsLast30Days": "0",
+            "nonCreditCapsLast90Days": "0",
+            "nonCreditCapsLast180Days": "0"
+          },
+          "capsApplicationDetailsArray": []
+        },
+        "score": {
+          "bureauScore": "765",
+          "bureauScoreConfidenceLevel": "H"
+        },
+        "segment": {},
+        "caps": {
+          "capsSummary": {
+            "capsLast7Days": "0",
+            "capsLast30Days": "0",
+            "capsLast90Days": "0",
+            "capsLast180Days": "0"
+          },
+          "capsApplicationDetailsArray": []
+        }
+      },
+      "vendor": "EXPERIAN"
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "netWorthResponse": {
+    "assetValues": [
+      {
+        "netWorthAttribute": "ASSET_TYPE_MUTUAL_FUND",
+        "value": {
+          "currencyCode": "INR",
+          "units": "435250"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_EPF",
+        "value": {
+          "currencyCode": "INR",
+          "units": "115000"
+        }
+      },
+      {
+        "netWorthAttribute": "ASSET_TYPE_SAVINGS_ACCOUNTS",
+        "value": {
+          "currencyCode": "INR",
+          "units": "25000"
+        }
+      },
+      {
+        "netWorthAttribute": "LIABILITY_TYPE_LOAN",
+        "value": {
+          "currencyCode": "INR",
+          "units": "-542000"
+        }
+      },
+      {
+        "netWorthAttribute": "LIABILITY_TYPE_CREDIT_CARD",
+        "value": {
+          "currencyCode": "INR",
+          "units": "-30000"
+        }
+      }
+    ],
+    "totalNetWorthValue": {
+      "currencyCode": "INR",
+      "units": "3250"
+    }
+  },
+  "mfSchemeAnalytics": {
+    "schemeAnalytics": [
+      {
+        "schemeDetail": {
+          "amc": "SBI_MUTUAL_FUND",
+          "nameData": {
+            "longName": "SBI Bluechip Fund - Regular Plan - Growth"
+          },
+          "planType": "REGULAR",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "85"
+          },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF200K01VG7",
+          "categoryName": "LARGE_CAP_FUND"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "84300"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "40000"
+              },
+              "XIRR": 15.21,
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "44300"
+              },
+              "units": 991.51
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "KOTAK_MAHINDRA",
+          "nameData": {
+            "longName": "Kotak Flexi Cap Fund - Direct - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "80"
+          },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF174K01Z93",
+          "categoryName": "FLEXI_CAP_FUND"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "54840"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "25000"
+              },
+              "XIRR": 17.55,
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "29840"
+              },
+              "units": 685.5
+            }
+          }
+        }
+      },
+      {
+        "schemeDetail": {
+          "amc": "AXIS_MUTUAL_FUND",
+          "nameData": {
+            "longName": "Axis Long Term Equity Fund - Direct Plan - Growth"
+          },
+          "planType": "DIRECT",
+          "investmentType": "OPEN",
+          "optionType": "GROWTH",
+          "nav": {
+            "currencyCode": "INR",
+            "units": "105"
+          },
+          "assetClass": "EQUITY",
+          "isinNumber": "INF846K01135",
+          "categoryName": "ELSS"
+        },
+        "enrichedAnalytics": {
+          "analytics": {
+            "schemeDetails": {
+              "currentValue": {
+                "currencyCode": "INR",
+                "units": "296110"
+              },
+              "investedValue": {
+                "currencyCode": "INR",
+                "units": "150000"
+              },
+              "XIRR": 16.89,
+              "unrealisedReturns": {
+                "currencyCode": "INR",
+                "units": "146110"
+              },
+              "units": 2820.52
+            }
+          }
+        }
+      }
+    ]
+  },
+  "accountDetailsBulkResponse": {
+    "accountDetailsMap": {
+      "uuid-mf-1": {
+        "accountDetails": {
+          "fipId": "fip@cams",
+          "maskedAccountNumber": "XXXXXX-908070",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_MUTUAL_FUNDS"
+        },
+        "mutualFundSummary": {
+          "currentValue": { "currencyCode": "INR", "units": "84300" },
+          "holdingsInfo": [ { "isin": "INF200K01VG7", "folioNumber": "GP-908070" } ]
+        }
+      },
+      "uuid-mf-2": {
+        "accountDetails": {
+          "fipId": "fip@kfintech",
+          "maskedAccountNumber": "XXXXXX-112233",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_MUTUAL_FUNDS"
+        },
+        "mutualFundSummary": {
+          "currentValue": { "currencyCode": "INR", "units": "54840" },
+          "holdingsInfo": [ { "isin": "INF174K01Z93", "folioNumber": "GP-112233" } ]
+        }
+      },
+      "uuid-mf-3": {
+        "accountDetails": {
+          "fipId": "fip@cams",
+          "maskedAccountNumber": "XXXXXX-TAX4U",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_MUTUAL_FUNDS"
+        },
+        "mutualFundSummary": {
+          "currentValue": { "currencyCode": "INR", "units": "296110" },
+          "holdingsInfo": [ { "isin": "INF846K01135", "folioNumber": "GP-TAX4U" } ]
+        }
+      },
+      "uuid-epf-1": {
+        "accountDetails": {
+          "fipId": "fip@epfo",
+          "maskedAccountNumber": "KABN-XXXX-XXXX",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_EPF"
+        },
+        "epfSummary": {
+          "currentBalance": { "currencyCode": "INR", "units": "115000" },
+          "accountStatus": "EPF_ACCOUNT_STATUS_INACTIVE"
+        }
+      },
+      "uuid-savings-1": {
+        "accountDetails": {
+          "fipId": "KOTAK-FIP",
+          "maskedAccountNumber": "XXXXXX4455",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_DEPOSIT"
+        },
+        "depositSummary": {
+          "currentBalance": { "currencyCode": "INR", "units": "25000" },
+          "depositAccountType": "DEPOSIT_ACCOUNT_TYPE_SAVINGS"
+        }
+      },
+      "uuid-loan-1": {
+        "accountDetails": {
+          "fipId": "HDFC-FIP",
+          "maskedAccountNumber": "XXXXXX-LOAN1",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_LOAN"
+        },
+        "loanSummary": {
+          "currentOutstanding": { "currencyCode": "INR", "units": "542000" },
+          "loanType": "LOAN_ACCOUNT_TYPE_AUTO",
+          "loanStatus": "LOAN_STATUS_ACTIVE"
+        }
+      },
+      "uuid-cc-1": {
+        "accountDetails": {
+          "fipId": "SBI-FIP",
+          "maskedAccountNumber": "XXXX-XXXX-XXXX-1001",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_CREDIT_CARD"
+        },
+        "creditCardSummary": {
+          "currentBalance": { "currencyCode": "INR", "units": "18000" },
+          "creditLimit": { "currencyCode": "INR", "units": "120000" }
+        }
+      },
+      "uuid-cc-2": {
+        "accountDetails": {
+          "fipId": "ICICI-FIP",
+          "maskedAccountNumber": "XXXX-XXXX-XXXX-2002",
+          "accInstrumentType": "ACC_INSTRUMENT_TYPE_CREDIT_CARD"
+        },
+        "creditCardSummary": {
+          "currentBalance": { "currencyCode": "INR", "units": "12000" },
+          "creditLimit": { "currencyCode": "INR", "units": "80000" }
+        }
+      }
+    }
+  }
+}

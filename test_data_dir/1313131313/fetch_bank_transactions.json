@@ -1,0 +1,32 @@
+{
+  "schemaDescription": "A list of bank transactions. Each 'txns' field is a list of data arrays with schema: [transactionAmount, transactionNarration, transactionDate, transactionType (1 for CREDIT, 2 for DEBIT, 3 for OPENING, 4 for INTEREST, 5 for TDS, 6 for INSTALLMENT, 7 for CLOSING and 8 for OTHERS), transactionMode, currentBalance].\n We currently have have only last two month transaction, older transaction are coming soon...",
+  "bankTransactions": [
+    {
+      "bank": "HDFC Bank",
+      "txns": [
+        ["260000", "SALARY CREDIT - BIGTECH CORP - JULY 2024", "2024-07-01", 1, "NEFT", "515000"],
+        ["45000", "ACH D-HDFCHOMEFIN-HOME LOAN EMI-HL556677", "2024-07-05", 6, "ACH", "470000"],
+        ["25000", "IMPS-OAKRIDGE INTL SCHOOL-Q2 TUITION FEES", "2024-07-05", 2, "IMPS", "445000"],
+        ["20000", "ACH D-HDFCMF-SIP/FLEXICAP/WG-45001", "2024-07-07", 6, "ACH", "425000"],
+        ["15000", "ACH D-NIPPONMF-SIP/SMALLCAP/WG-45002", "2024-07-07", 6, "ACH", "410000"],
+        ["15000", "ACH D-MOTILALMF-SIP/SP500FUND/WG-INTL1", "2024-07-07", 6, "ACH", "395000"],
+        ["10000", "ACH D-MIRAEASSETMF-SIP/TAXSAVER/WG-ELSS1", "2024-07-07", 6, "ACH", "385000"],
+        ["65000", "PAYMENT TO HDFC CREDIT CARD XXXXXXXX8888", "2024-07-10", 2, "CARD_PAYMENT", "320000"],
+        ["40000", "PAYMENT TO AMEX CREDIT CARD XXXXXXXX9999", "2024-07-11", 2, "CARD_PAYMENT", "280000"],
+        ["850", "UPI-UBER-PREMIUM RIDE-UBER@HDFCBANK", "2024-07-15", 2, "OTHERS", "279150"],
+        ["5500", "UPI-OLIVE BAR & KITCHEN-DINING-OBK@ICICI", "2024-07-20", 2, "OTHERS", "273650"],
+        ["260000", "SALARY CREDIT - BIGTECH CORP - JUNE 2024", "2024-06-01", 1, "NEFT", "495000"],
+        ["45000", "ACH D-HDFCHOMEFIN-HOME LOAN EMI-HL556677", "2024-06-05", 6, "ACH", "450000"],
+        ["20000", "ACH D-HDFCMF-SIP/FLEXICAP/WG-45001", "2024-06-07", 6, "ACH", "430000"],
+        ["15000", "ACH D-NIPPONMF-SIP/SMALLCAP/WG-45002", "2024-06-07", 6, "ACH", "415000"],
+        ["15000", "ACH D-MOTILALMF-SIP/SP500FUND/WG-INTL1", "2024-06-07", 6, "ACH", "400000"],
+        ["10000", "ACH D-MIRAEASSETMF-SIP/TAXSAVER/WG-ELSS1", "2024-06-07", 6, "ACH", "390000"],
+        ["72000", "PAYMENT TO HDFC CREDIT CARD XXXXXXXX8888", "2024-06-10", 2, "CARD_PAYMENT", "318000"],
+        ["55000", "PAYMENT TO AMEX CREDIT CARD XXXXXXXX9999", "2024-06-11", 2, "CARD_PAYMENT", "263000"],
+        ["50000", "IMPS-ZERODHA-EQUITY FUNDING-REF12345", "2024-06-18", 2, "IMPS", "213000"],
+        ["1200", "UPI-AMAZON-SHOPPING-AMAZONPAY@APL", "2024-06-25", 2, "OTHERS", "211800"],
+        ["2200", "CREDIT INTEREST CAPITALISED", "2024-06-30", 4, "INTEREST", "214000"]
+      ]
+    }
+  ]
+}
