@@ -146,9 +146,16 @@ async def get_all_user_data_endpoint(user_id: str):
 
 @app.post("/api/chat")
 async def chat(request: ChatMessage):
+    # Use the proper identifier (user_number) to fetch user data
     user_id = request.user_id
-    user = get_user_by_id(user_id) or get_user_by_name(user_id) or {"number": user_id, "name": "User"}
-    financial_data = get_all_user_data(user.get("number", user_id))
+    # Try to locate the user by numeric ID first, then by name
+    user = get_user_by_id(user_id) or get_user_by_name(user_id)
+    if not user:
+        # Fallback to a minimal placeholder – this will result in empty data
+        user = {"number": user_id, "name": "User"}
+    # The user dict contains the key "user_number" (or "number" after login). Use it to load data.
+    user_number = user.get("user_number") or user.get("number") or user_id
+    financial_data = get_all_user_data(user_number)
 
     try:
         response = await call_ollama(request.message, user, financial_data)
