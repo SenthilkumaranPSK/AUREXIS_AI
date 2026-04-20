@@ -1,16 +1,48 @@
-# AUREXIS AI Backend Requirements
+# AUREXIS AI Backend Requirements - v2.0.0
 
-# Web Framework
+# ── Web Framework ──────────────────────────────────────────────────────────
 fastapi>=0.109.0
 uvicorn[standard]>=0.27.0
 pydantic>=2.5.0
+pydantic-settings>=2.1.0
 
-# ML / Forecasting
+# ── Security & Authentication ──────────────────────────────────────────────
+passlib[bcrypt]>=1.7.4
+python-jose[cryptography]>=3.3.0
+python-multipart>=0.0.6
+
+# ── Database ───────────────────────────────────────────────────────────────
+sqlalchemy>=2.0.0
+alembic>=1.13.0
+aiosqlite>=0.19.0
+
+# ── Caching & Rate Limiting ────────────────────────────────────────────────
+redis>=5.0.0
+slowapi>=0.1.9
+
+# ── ML / Forecasting ───────────────────────────────────────────────────────
 numpy>=1.26.0
 scikit-learn>=1.3.0
 statsmodels>=0.14.0
 xgboost>=2.0.0
+pandas>=2.1.0
 
-# Utilities
-python-dotenv>=1.0.0
+# ── Async & HTTP ───────────────────────────────────────────────────────────
 httpx>=0.27.0
+aiofiles>=23.2.1
+python-dotenv>=1.0.0
+
+# ── Monitoring & Logging ───────────────────────────────────────────────────
+prometheus-client>=0.19.0
+sentry-sdk[fastapi]>=1.40.0
+
+# ── Testing ────────────────────────────────────────────────────────────────
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+httpx>=0.27.0  # For testing
+
+# ── Development ────────────────────────────────────────────────────────────
+black>=23.12.0
+ruff>=0.1.9
+mypy>=1.8.0

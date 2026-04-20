@@ -61,6 +61,39 @@ def extract_credit_score(financial_data: Dict[str, Any]) -> int:
     return 750
 
 
+def extract_financials_summary(financial_data: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Extract and normalize financial metrics to monthly averages.
+    Returns: {monthly_income, monthly_expense, monthly_savings, savings_rate, net_worth, credit_score, num_months}
+    """
+    total_income, total_expense, transactions = extract_transactions(financial_data)
+    net_worth    = extract_net_worth(financial_data)
+    credit_score = extract_credit_score(financial_data)
+
+    # Count unique months in transaction data
+    txn_months = set()
+    for txn in transactions:
+        date = txn.get("date", "")
+        if date and len(date) >= 7:
+            txn_months.add(date[:7])
+    num_months = max(1, len(txn_months))
+
+    monthly_income  = round(total_income  / num_months)
+    monthly_expense = round(total_expense / num_months)
+    monthly_savings = monthly_income - monthly_expense
+    savings_rate    = round(monthly_savings / monthly_income * 100, 1) if monthly_income > 0 else 0.0
+
+    return {
+        "monthly_income":  monthly_income,
+        "monthly_expense": monthly_expense,
+        "monthly_savings": monthly_savings,
+        "savings_rate":    savings_rate,
+        "net_worth":       net_worth,
+        "credit_score":    credit_score,
+        "num_months":      num_months,
+    }
+
+
 def compute_metrics(financial_data: Dict[str, Any]) -> Dict[str, Any]:
     """Compute all key financial metrics."""
     income, expense, _ = extract_transactions(financial_data)

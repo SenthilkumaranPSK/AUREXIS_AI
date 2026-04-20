@@ -34,6 +34,7 @@ from analytics import (
     compute_goals,
     compute_risk,
     compute_simulation,
+    extract_financials_summary,
 )
 from recommendations import generate_recommendations
 from alerts import generate_alerts, generate_emis
@@ -48,6 +49,7 @@ from forecasting import (
 from report import generate_report
 from ml_forecasting import compute_ml_forecast
 from portfolio import compute_stocks, compute_mutual_funds
+from budget_optimizer import budget_optimizer
 
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "deepseek-v3.1:671b-cloud")
@@ -340,47 +342,132 @@ async def get_ml_forecast(user_id: str, steps: int = 6):
     return compute_ml_forecast(data, steps)
 
 
+# --- Budget Optimizer Endpoints ---
+
+@app.get("/api/user/{user_id}/budget/analyze")
+async def analyze_spending_patterns(user_id: str):
+    """Analyze spending patterns and provide insights."""
+    data = get_all_user_data(user_id)
+    transactions = data.get("fetch_bank_transactions", {}).get("transactions", [])
+    
+    analysis = budget_optimizer.analyze_spending_patterns(transactions)
+    return {
+        "user_id": user_id,
+        "analysis": analysis,
+        "timestamp": datetime.now().isoformat()
+    }
+
+
+@app.get("/api/user/{user_id}/budget/predict")
+async def predict_expenses(user_id: str, months_ahead: int = 3):
+    """Predict future expenses using ML."""
+    data = get_all_user_data(user_id)
+    transactions = data.get("fetch_bank_transactions", {}).get("transactions", [])
+    
+    predictions = budget_optimizer.predict_future_expenses(transactions, months_ahead)
+    return {
+        "user_id": user_id,
+        "predictions": predictions,
+        "timestamp": datetime.now().isoformat()
+    }
+
+
+@app.get("/api/user/{user_id}/budget/optimize")
+async def optimize_budget(user_id: str):
+    """Get optimal budget allocation recommendations."""
+    data = get_all_user_data(user_id)
+    
+    # Extract income
+    fm = extract_financials_summary(data)
+    income = fm["monthly_income"]
+    
+    # Extract current spending by category
+    transactions = data.get("fetch_bank_transactions", {}).get("transactions", [])
+    current_spending = {}
+    
+    for txn in transactions:
+        if txn.get("type") == "debit":
+            category = txn.get("category", "Other")
+            amount = abs(float(txn.get("amount", 0)))
+            current_spending[category] = current_spending.get(category, 0) + amount
+    
+    # Normalize to monthly (assuming data is for multiple months)
+    num_months = len(set(txn.get("date", "")[:7] for txn in transactions if txn.get("date")))
+    if num_months > 0:
+        current_spending = {k: v / num_months for k, v in current_spending.items()}
+    
+    # Get financial goals
+    goals_data = compute_goals(data).get("goals", [])
+    financial_goals = [
+        {
+            "target_amount": goal.get("target", 0) - goal.get("current", 0),
+            "months_remaining": max(1, int((datetime.strptime(goal.get("deadline", "2026-12-31"), "%Y-%m-%d") - datetime.now()).days / 30))
+        }
+        for goal in goals_data
+    ]
+    
+    optimization = budget_optimizer.suggest_optimal_budget(
+        income=income,
+        current_spending=current_spending,
+        financial_goals=financial_goals if financial_goals else None
+    )
+    
+    return {
+        "user_id": user_id,
+        "optimization": optimization,
+        "timestamp": datetime.now().isoformat()
+    }
+
+
+class AutoCategorizeRequest(BaseModel):
+    description: str
+    amount: float
+
+
+@app.post("/api/budget/categorize")
+async def auto_categorize(request: AutoCategorizeRequest):
+    """Auto-categorize a transaction using AI."""
+    category = budget_optimizer.auto_categorize_transaction(
+        request.description,
+        request.amount
+    )
+    return {
+        "description": request.description,
+        "amount": request.amount,
+        "suggested_category": category
+    }
+
+
+class SavingsPlanRequest(BaseModel):
+    user_id: str
+    target_amount: float
+    months: int
+
+
+@app.post("/api/budget/savings-plan")
+async def create_savings_plan(request: SavingsPlanRequest):
+    """Generate a personalized savings plan."""
+    data = get_all_user_data(request.user_id)
+    fm = extract_financials_summary(data)
+    
+    current_savings = fm["net_worth"] * 0.2  # Assume 20% is liquid savings
+    current_monthly_savings = fm["monthly_savings"]
+    
+    plan = budget_optimizer.generate_savings_plan(
+        current_savings=current_savings,
+        target_amount=request.target_amount,
+        months=request.months,
+        current_monthly_savings=current_monthly_savings
+    )
+    
+    return {
+        "user_id": request.user_id,
+        "plan": plan,
+        "timestamp": datetime.now().isoformat()
+    }
+
+
 # --- Helpers ---
-
-def _extract_financials(financial_data: Dict[str, Any]):
-    """Extract key financial metrics from raw data."""
-    net_worth_data = financial_data.get("fetch_net_worth", {})
-    total_net_worth = 0.0
-    if "netWorthResponse" in net_worth_data:
-        try:
-            total_net_worth = float(
-                net_worth_data["netWorthResponse"].get("totalNetWorthValue", {}).get("units", 0) or 0
-            )
-        except (ValueError, TypeError):
-            pass
-
-    monthly_income = 0.0
-    monthly_expense = 0.0
-    for bank in financial_data.get("fetch_bank_transactions", {}).get("bankTransactions", []):
-        for txn in bank.get("txns", []):
-            if len(txn) >= 4:
-                try:
-                    amount = float(txn[0]) if str(txn[0]).replace(".", "").replace("-", "").isdigit() else 0.0
-                except:
-                    amount = 0.0
-                if txn[3] == 1:
-                    monthly_income += amount
-                elif txn[3] == 2:
-                    monthly_expense += amount
-
-    credit_score = 750
-    for report in financial_data.get("fetch_credit_report", {}).get("creditReports", []):
-        score = report.get("creditReportData", {}).get("score", {}).get("bureauScore")
-        if score:
-            try:
-                credit_score = int(float(score))
-            except:
-                pass
-            break
-
-    savings_rate = round((monthly_income - monthly_expense) / monthly_income * 100, 1) if monthly_income > 0 else 0.0
-    return total_net_worth, monthly_income, monthly_expense, savings_rate, credit_score
-
 
 async def call_ollama(
     user_message: str,
@@ -389,26 +476,66 @@ async def call_ollama(
 ) -> Dict[str, Any]:
     """Call Ollama REST API directly for dynamic, personalized responses."""
     user_id = user_context.get("number", "guest")
-    name = user_context.get("name", "User")
-    net_worth, income, expense, savings_rate, credit_score = _extract_financials(financial_data)
+    name    = user_context.get("name", "User")
+    occ     = user_context.get("occupation", "Professional")
+    age     = user_context.get("age", 30)
+    city    = user_context.get("location", "")
 
-    system_prompt = f"""You are AUREXIS AI, a personal financial advisor for {name}.
+    # Use the centralized extractor with monthly normalization
+    fm = extract_financials_summary(financial_data)
+    monthly_income  = fm["monthly_income"]
+    monthly_expense = fm["monthly_expense"]
+    monthly_savings = fm["monthly_savings"]
+    savings_rate    = fm["savings_rate"]
+    net_worth       = fm["net_worth"]
+    credit_score    = fm["credit_score"]
+    num_months      = fm["num_months"]
 
-User's financial profile:
-- Net Worth: ₹{net_worth:,.0f}
-- Monthly Income: ₹{income:,.0f}
-- Monthly Expenses: ₹{expense:,.0f}
-- Savings Rate: {savings_rate}%
-- Credit Score: {credit_score}
-- Bank: {user_context.get("bank_name", "N/A")} ({user_context.get("account_type", "Savings")})
-- Location: {user_context.get("location", "N/A")}
-- Credit Card: {user_context.get("credit_card", "No")}
+    dti              = round(monthly_expense / monthly_income * 100, 1) if monthly_income > 0 else 0
+    emergency_months = round(net_worth * 0.2 / monthly_expense, 1) if monthly_expense > 0 else 0
+    health_score     = min(100, max(0, int(50 + savings_rate)))
+    risk_level       = "Low" if savings_rate > 30 else "Medium" if savings_rate > 10 else "High"
 
-Guidelines:
-- Give personalized advice using the user's actual numbers above
-- Be concise and actionable (2-4 sentences unless asked for more)
+    # Get EPF balance
+    epf_balance = 0
+    epf = financial_data.get("fetch_epf_details", {}).get("epfDetails", {})
+    if epf:
+        epf_balance = epf.get("totalBalance", 0)
+
+    # Get MF value
+    mf_value = 0
+    for scheme in financial_data.get("fetch_mf_transactions", {}).get("mfTransactions", []):
+        for txn in scheme.get("txns", []):
+            if len(txn) >= 5 and txn[0] == 1:
+                mf_value += txn[4]
+
+    system_prompt = f"""You are AUREXIS AI, an expert personal financial advisor for {name}.
+
+=== USER FINANCIAL PROFILE ===
+Name: {name} | Age: {age} | Occupation: {occ} | Location: {city}
+Credit Score: {credit_score} | Risk Profile: {risk_level}
+
+=== MONTHLY FINANCIALS (avg over {num_months} months) ===
+Monthly Income:   ₹{monthly_income:,.0f}
+Monthly Expenses: ₹{monthly_expense:,.0f}
+Monthly Savings:  ₹{monthly_savings:,.0f}
+Savings Rate:     {savings_rate}%
+Expense Ratio:    {dti}%
+
+=== WEALTH SNAPSHOT ===
+Net Worth:        ₹{net_worth:,.0f}
+EPF Balance:      ₹{epf_balance:,.0f}
+MF Invested:      ₹{mf_value:,.0f}
+Emergency Fund:   {emergency_months} months covered
+Health Score:     {health_score}/100
+
+=== YOUR ROLE ===
+- Give specific, personalized advice using the EXACT numbers above
+- Be direct and actionable (3-5 sentences)
+- Always reference actual rupee amounts from the profile
+- Highlight risks if any exist
 - Use ₹ for all currency values
-- Focus on practical steps the user can take"""
+- Never say you don't have data — use the profile above"""
 
     # Maintain per-user conversation history
     if user_id not in conversation_history:
@@ -439,6 +566,7 @@ Guidelines:
             f"Savings rate: {savings_rate}%",
             f"Net worth: ₹{net_worth:,.0f}",
             f"Credit score: {credit_score}",
+            f"Health score: {health_score}/100",
         ],
         "recommendations": [],
         "confidence": 0.85,
@@ -447,9 +575,15 @@ Guidelines:
 
 def build_user_profile(user: Dict[str, Any]) -> Dict[str, Any]:
     """Build the full user profile object for the frontend."""
-    user_id = user.get("number", "")
+    user_id      = user.get("number", "")
     financial_data = user.get("financial_data", {})
-    net_worth, income, expense, savings_rate, credit_score = _extract_financials(financial_data)
+
+    fm = extract_financials_summary(financial_data)
+    income       = fm["monthly_income"]
+    expense      = fm["monthly_expense"]
+    savings_rate = fm["savings_rate"]
+    net_worth    = fm["net_worth"]
+    credit_score = fm["credit_score"]
 
     expenses = [
         {"category": "Housing",   "amount": int(expense * 0.40), "percentage": 40, "trend": "stable", "color": "#3B82F6"},
