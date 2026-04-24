@@ -6,7 +6,7 @@ for financial time series forecasting.
 
 import numpy as np
 from typing import List, Dict, Any, Tuple
-from analytics import extract_transactions, extract_net_worth
+from analytics_legacy import extract_transactions, extract_net_worth
 
 
 # ── Data Preparation ───────────────────────────────────────────────────────────

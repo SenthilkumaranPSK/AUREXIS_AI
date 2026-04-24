@@ -3,6 +3,7 @@ AUREXIS AI — Configuration Management
 Centralized settings with validation and environment-specific configs
 """
 
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 from typing import List, Optional
 from functools import lru_cache
@@ -98,10 +99,11 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: Optional[str] = None
     EMAIL_FROM: str = "noreply@aurexis.ai"
     
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = True
+    model_config = ConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+    )
 
 
 @lru_cache()

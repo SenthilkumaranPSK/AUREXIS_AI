@@ -1,0 +1,80 @@
+# Git
+.git
+.gitignore
+.github
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnpm-store/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+*.sqlite3
+aurexis.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Test
+test-results/
+playwright-report/
+
+# Documentation
+*.md
+!README.md
+DOCS/
+docs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# BMad skills (not needed in production)
+.claude/
+.gemini/
+_bmad/
+_bmad-output/
+
+# User data (sensitive - should use volumes in production)
+user_data/

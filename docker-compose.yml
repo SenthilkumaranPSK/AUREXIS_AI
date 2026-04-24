@@ -1,0 +1,82 @@
+# AUREXIS AI - Docker Compose Configuration
+# Development and production deployment
+
+version: '3.8'
+
+services:
+  # Backend API Service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aurexis-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=sqlite:///./aurexis.db
+      - SECRET_KEY=${SECRET_KEY:-change-this-in-production}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-deepseek-v3.1:671b-cloud}
+      - LOG_LEVEL=INFO
+      - RATE_LIMIT_ENABLED=true
+      - CACHE_ENABLED=true
+    volumes:
+      - backend-data:/app/data
+      - backend-logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - aurexis-network
+
+  # Frontend Web Service
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: aurexis-frontend
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - aurexis-network
+
+  # Redis Cache (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: aurexis-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    networks:
+      - aurexis-network
+
+volumes:
+  backend-data:
+    driver: local
+  backend-logs:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  aurexis-network:
+    driver: bridge

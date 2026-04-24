@@ -7,10 +7,10 @@ import json
 import aiofiles
 from pathlib import Path
 from typing import Optional, Dict, Any, List
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy.orm import Session
-from database import User, get_db_context, create_user, get_user_by_id, get_user_by_name, get_user_by_email
+from database_legacy import User, get_db_context, create_user, get_user_by_id, get_user_by_name, get_user_by_email
 from security import hash_password, verify_password
 from cache import cache, cache_user_data, get_cached_user_data
 from logger import logger
@@ -22,20 +22,23 @@ USER_DATA_DIR = BASE_DIR / settings.USER_DATA_DIR
 
 
 # ── Legacy User Data (for migration) ───────────────────────────────────────
+# SECURITY NOTE: Passwords removed from source code. Users must be migrated
+# to database with hashed passwords via migrate_legacy_users_to_db().
+# Temporary placeholder passwords will be rejected - users must reset password.
 
 LEGACY_USERS = [
-    {"si_no": 1,  "name": "Senthilkumaran", "user_number": "1010101010", "email": "sk@gmail.com",   "occupation": "Software Engineer",   "age": 24, "password": "Senthilkumaran@2000", "account_number": "1010101010", "bank_name": "Indian", "account_type": "Savings", "bank_location": "Salem",      "credit_card": "Yes", "location": "Salem",      "number": "22243045"},
-    {"si_no": 2,  "name": "Imayavarman",    "user_number": "1111111111", "email": "imi@gmail.com",  "occupation": "Doctor",              "age": 32, "password": "Imayavarman@2000",    "account_number": "1111111111", "bank_name": "KVB",    "account_type": "Savings", "bank_location": "Erode",      "credit_card": "Yes", "location": "Erode",      "number": "22243017"},
-    {"si_no": 3,  "name": "Srivarshan",     "user_number": "1212121212", "email": "sri@gmail.com",  "occupation": "Business Owner",      "age": 40, "password": "Srivarshan@2000",     "account_number": "1212121212", "bank_name": "Canara", "account_type": "Current", "bank_location": "Theni",      "credit_card": "Yes", "location": "Theni",      "number": "22243050"},
-    {"si_no": 4,  "name": "Rahulprasath",   "user_number": "1313131313", "email": "rp@gmail.com",   "occupation": "Teacher",             "age": 30, "password": "Rahulprasath@2000",   "account_number": "1313131313", "bank_name": "AXIS",   "account_type": "Savings", "bank_location": "Omalur",     "credit_card": "No",  "location": "Omalur",     "number": "22243040"},
-    {"si_no": 5,  "name": "Magudesh",       "user_number": "1414141414", "email": "magu@gmail.com", "occupation": "Freelancer",          "age": 28, "password": "Magudesh@2000",       "account_number": "1414141414", "bank_name": "Canara", "account_type": "Savings", "bank_location": "Bangalore",  "credit_card": "No",  "location": "Bangalore",  "number": "22243055"},
-    {"si_no": 6,  "name": "Deepak",         "user_number": "2020202020", "email": "dee@gmail.com",  "occupation": "CA",                  "age": 29, "password": "Deepak@2000",         "account_number": "2020202020", "bank_name": "KVB",    "account_type": "Current", "bank_location": "Chennai",    "credit_card": "No",  "location": "Chennai",    "number": "22243009"},
-    {"si_no": 7,  "name": "Mani",           "user_number": "2121212121", "email": "mani@gmail.com", "occupation": "Government Employee", "age": 38, "password": "Mani@2000",           "account_number": "2121212121", "bank_name": "SBI",    "account_type": "Savings", "bank_location": "Edapadi",    "credit_card": "Yes", "location": "Edapadi",    "number": "22243060"},
-    {"si_no": 8,  "name": "Dineshkumar",    "user_number": "2222222222", "email": "dk@gmail.com",   "occupation": "Lawyer",              "age": 52, "password": "Dineshkumar@2000",    "account_number": "2222222222", "bank_name": "Indian", "account_type": "Savings", "bank_location": "Sangagari",  "credit_card": "Yes", "location": "Sangagari",  "number": "22243012"},
-    {"si_no": 9,  "name": "Avinash",        "user_number": "2525252525", "email": "avi@gmail.com",  "occupation": "IPS",                 "age": 28, "password": "Avinash@2000",        "account_number": "2525252525", "bank_name": "AXIS",   "account_type": "Savings", "bank_location": "Ambur",      "credit_card": "No",  "location": "Ambur",      "number": "22243007"},
-    {"si_no": 10, "name": "Kumar",          "user_number": "3333333333", "email": "kum@gmail.com",  "occupation": "Content Creator",     "age": 23, "password": "Kumar@2000",          "account_number": "3333333333", "bank_name": "Indian", "account_type": "Current", "bank_location": "Coimbatore", "credit_card": "No",  "location": "Coimbatore", "number": "22243020"},
-    {"si_no": 11, "name": "Hari",           "user_number": "4444444444", "email": "hari@gmail.com", "occupation": "Startup Founder",     "age": 44, "password": "Hari@2000",           "account_number": "4444444444", "bank_name": "Canara", "account_type": "Current", "bank_location": "Karur",      "credit_card": "Yes", "location": "Karur",      "number": "22243016"},
-    {"si_no": 12, "name": "Janakrishnan",   "user_number": "5555555555", "email": "jk@gmail.com",   "occupation": "Government Employee", "age": 22, "password": "Janakrishnan@2000",   "account_number": "5555555555", "bank_name": "SBI",    "account_type": "Savings", "bank_location": "Rasipuram",  "credit_card": "Yes", "location": "Rasipuram",  "number": "22243019"},
+    {"si_no": 1,  "name": "Senthilkumaran", "user_number": "1010101010", "email": "sk@gmail.com",   "occupation": "Software Engineer",   "age": 24, "password_hash": None, "account_number": "1010101010", "bank_name": "Indian", "account_type": "Savings", "bank_location": "Salem",      "credit_card": "Yes", "location": "Salem",      "number": "22243045"},
+    {"si_no": 2,  "name": "Imayavarman",    "user_number": "1111111111", "email": "imi@gmail.com",  "occupation": "Doctor",              "age": 32, "password_hash": None, "account_number": "1111111111", "bank_name": "KVB",    "account_type": "Savings", "bank_location": "Erode",      "credit_card": "Yes", "location": "Erode",      "number": "22243017"},
+    {"si_no": 3,  "name": "Srivarshan",     "user_number": "1212121212", "email": "sri@gmail.com",  "occupation": "Business Owner",      "age": 40, "password_hash": None, "account_number": "1212121212", "bank_name": "Canara", "account_type": "Current", "bank_location": "Theni",      "credit_card": "Yes", "location": "Theni",      "number": "22243050"},
+    {"si_no": 4,  "name": "Rahulprasath",   "user_number": "1313131313", "email": "rp@gmail.com",   "occupation": "Teacher",             "age": 30, "password_hash": None, "account_number": "1313131313", "bank_name": "AXIS",   "account_type": "Savings", "bank_location": "Omalur",     "credit_card": "No",  "location": "Omalur",     "number": "22243040"},
+    {"si_no": 5,  "name": "Magudesh",       "user_number": "1414141414", "email": "magu@gmail.com", "occupation": "Freelancer",          "age": 28, "password_hash": None, "account_number": "1414141414", "bank_name": "Canara", "account_type": "Savings", "bank_location": "Bangalore",  "credit_card": "No",  "location": "Bangalore",  "number": "22243055"},
+    {"si_no": 6,  "name": "Deepak",         "user_number": "2020202020", "email": "dee@gmail.com",  "occupation": "CA",                  "age": 29, "password_hash": None, "account_number": "2020202020", "bank_name": "KVB",    "account_type": "Current", "bank_location": "Chennai",    "credit_card": "No",  "location": "Chennai",    "number": "22243009"},
+    {"si_no": 7,  "name": "Mani",           "user_number": "2121212121", "email": "mani@gmail.com", "occupation": "Government Employee", "age": 38, "password_hash": None, "account_number": "2121212121", "bank_name": "SBI",    "account_type": "Savings", "bank_location": "Edapadi",    "credit_card": "Yes", "location": "Edapadi",    "number": "22243060"},
+    {"si_no": 8,  "name": "Dineshkumar",    "user_number": "2222222222", "email": "dk@gmail.com",   "occupation": "Lawyer",              "age": 52, "password_hash": None, "account_number": "2222222222", "bank_name": "Indian", "account_type": "Savings", "bank_location": "Sangagari",  "credit_card": "Yes", "location": "Sangagari",  "number": "22243012"},
+    {"si_no": 9,  "name": "Avinash",        "user_number": "2525252525", "email": "avi@gmail.com",  "occupation": "IPS",                 "age": 28, "password_hash": None, "account_number": "2525252525", "bank_name": "AXIS",   "account_type": "Savings", "bank_location": "Ambur",      "credit_card": "No",  "location": "Ambur",      "number": "22243007"},
+    {"si_no": 10, "name": "Kumar",          "user_number": "3333333333", "email": "kum@gmail.com",  "occupation": "Content Creator",     "age": 23, "password_hash": None, "account_number": "3333333333", "bank_name": "Indian", "account_type": "Current", "bank_location": "Coimbatore", "credit_card": "No",  "location": "Coimbatore", "number": "22243020"},
+    {"si_no": 11, "name": "Hari",           "user_number": "4444444444", "email": "hari@gmail.com", "occupation": "Startup Founder",     "age": 44, "password_hash": None, "account_number": "4444444444", "bank_name": "Canara", "account_type": "Current", "bank_location": "Karur",      "credit_card": "Yes", "location": "Karur",      "number": "22243016"},
+    {"si_no": 12, "name": "Janakrishnan",   "user_number": "5555555555", "email": "jk@gmail.com",   "occupation": "Government Employee", "age": 22, "password_hash": None, "account_number": "5555555555", "bank_name": "SBI",    "account_type": "Savings", "bank_location": "Rasipuram",  "credit_card": "Yes", "location": "Rasipuram",  "number": "22243019"},
 ]
 
 
@@ -102,30 +105,21 @@ async def get_all_user_data_async(user_id: str) -> Dict[str, Any]:
 
 def authenticate_user_legacy(username: str, password: str) -> Optional[Dict[str, Any]]:
     """
-    Legacy authentication (for backward compatibility)
-    Uses hardcoded user list
+    Legacy authentication (DEPRECATED - for migration only)
+    SECURITY: Passwords removed from source code. Users must migrate to database auth.
     """
     # Find user by name
     user_data = next((u for u in LEGACY_USERS if u["name"].lower() == username.lower()), None)
-    
+
     if not user_data:
         logger.warning(f"User not found: {username}")
         return None
-    
-    # Verify password
-    if password.strip() != user_data["password"]:
-        logger.warning(f"Invalid password for user: {username}")
-        return None
-    
-    user_id = user_data["user_number"]
-    
-    logger.info(f"User authenticated (legacy): {username} ({user_id})")
-    
-    return {
-        **user_data,
-        "id": user_id,
-        "number": user_id,
-    }
+
+    # SECURITY: Legacy auth disabled - passwords removed for security
+    # Users must be migrated to database authentication
+    logger.error(f"Legacy auth attempt for user '{username}' - requires database migration")
+    logger.error("Run: python -m backend.migrate to migrate legacy users to database")
+    return None
 
 
 def authenticate_user_db(db: Session, username: str, password: str) -> Optional[User]:
@@ -145,7 +139,7 @@ def authenticate_user_db(db: Session, username: str, password: str) -> Optional[
         return None
     
     # Update last login
-    user.last_login = datetime.utcnow()
+    user.last_login = datetime.now(timezone.utc)
     db.commit()
     
     logger.info(f"User authenticated (database): {user.name} ({user.id})")

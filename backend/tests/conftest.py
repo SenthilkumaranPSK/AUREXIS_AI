@@ -1,62 +1,19 @@
-"""
-Pytest Configuration and Fixtures
-"""
+"""Pytest configuration and shared fixtures."""
 
 import pytest
 import sys
 from pathlib import Path
+from fastapi.testclient import TestClient
 
 # Add backend to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-from database import Base, get_db
-from config import settings
-
-
-# ── Test Database ──────────────────────────────────────────────────────────
-
-TEST_DATABASE_URL = "sqlite:///./test_aurexis.db"
-
-engine = create_engine(
-    TEST_DATABASE_URL,
-    connect_args={"check_same_thread": False}
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-@pytest.fixture(scope="function")
-def db():
-    """Create a fresh database for each test"""
-    Base.metadata.create_all(bind=engine)
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-        Base.metadata.drop_all(bind=engine)
-
-
-# ── Test Client ────────────────────────────────────────────────────────────
 
 @pytest.fixture(scope="module")
 def client():
-    """Create a test client"""
+    """Create a test client for FastAPI app."""
     from server import app
-    
-    # Override database dependency
-    def override_get_db():
-        try:
-            db = TestingSessionLocal()
-            yield db
-        finally:
-            db.close()
-    
-    app.dependency_overrides[get_db] = override_get_db
-    
+
     with TestClient(app) as test_client:
         yield test_client
 
@@ -108,15 +65,22 @@ def sample_financial_data():
 
 @pytest.fixture
 def auth_headers(client, sample_user_data):
-    """Get authentication headers"""
-    # Create user and login
-    response = client.post("/api/login", json={
-        "username": sample_user_data["name"],
-        "password": sample_user_data["password"]
-    })
-    
-    if response.status_code == 200:
-        token = response.json().get("access_token")
-        return {"Authorization": f"Bearer {token}"}
-    
-    return {}
+    """Create auth token and return headers for protected routes."""
+    email = sample_user_data["email"]
+    password = sample_user_data["password"]
+
+    client.post(
+        "/api/auth/signup",
+        json={
+            "name": sample_user_data["name"],
+            "email": email,
+            "password": password,
+            "occupation": sample_user_data["occupation"],
+            "age": sample_user_data["age"],
+            "location": sample_user_data["location"],
+        },
+    )
+    response = client.post("/api/auth/login", json={"email": email, "password": password})
+
+    token = response.json().get("access_token") if response.status_code == 200 else ""
+    return {"Authorization": f"Bearer {token}"} if token else {}

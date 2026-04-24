@@ -5,12 +5,12 @@ All logic in Python — frontend just renders the JSON.
 """
 
 from typing import Dict, Any
-from analytics import (
+from analytics_legacy import (
     extract_transactions, extract_net_worth, extract_credit_score,
     compute_metrics, compute_risk, compute_expenses, compute_investments, compute_goals
 )
 from health import compute_health
-from recommendations import generate_recommendations
+from recommendations_legacy import generate_recommendations
 from alerts import generate_alerts
 from forecasting import compute_net_worth_forecast, compute_goal_forecast, compute_savings_projection
 from datetime import datetime

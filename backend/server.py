@@ -9,14 +9,21 @@ import httpx
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 from contextlib import asynccontextmanager
+from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 from dotenv import load_dotenv
 load_dotenv(Path(__file__).parent / ".env")
 
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException, Body, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from user_manager import (
     authenticate_user,
@@ -26,7 +33,7 @@ from user_manager import (
     get_all_user_data,
     load_user_data,
 )
-from analytics import (
+from analytics_legacy import (
     compute_metrics,
     compute_forecast,
     compute_expenses,
@@ -36,7 +43,7 @@ from analytics import (
     compute_simulation,
     extract_financials_summary,
 )
-from recommendations import generate_recommendations
+from recommendations_legacy import generate_recommendations
 from alerts import generate_alerts, generate_emis
 from health import compute_health
 from forecasting import (
@@ -50,6 +57,34 @@ from report import generate_report
 from ml_forecasting import compute_ml_forecast
 from portfolio import compute_stocks, compute_mutual_funds
 from budget_optimizer import budget_optimizer
+from credit_score_predictor import credit_score_predictor
+from tax_planner import tax_planner
+from fraud_detector import fraud_detector
+from realtime_alerts import realtime_alert_system
+from multi_agent_system import multi_agent_coordinator
+from explainable_recommendations import explainable_recommendation_engine
+from chat_memory import chat_memory_manager
+import uuid
+
+# NEW: Import modular routes
+from routes import (
+    auth_router,
+    financial_router,
+    forecast_router,
+    chat_router,
+    reports_router
+)
+from routes.advanced_analytics import router as advanced_analytics_router
+from routes.ml_forecasting import router as ml_forecasting_router
+from routes.investment_optimization import router as investment_optimization_router
+from routes.notifications import router as notifications_router
+from routes.websocket_routes import router as websocket_router
+from routes.agent_monitoring import router as agent_monitoring_router
+from database.connection import init_database
+from middleware.logging_middleware import LoggingMiddleware
+from middleware.validation_middleware import ValidationMiddleware
+from middleware.caching_middleware import CachingMiddleware
+from config import settings
 
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "deepseek-v3.1:671b-cloud")
@@ -65,6 +100,8 @@ class ChatMessage(BaseModel):
     user_id: str
     message: str
     conversation_history: Optional[List[Dict[str, str]]] = None
+    session_id: Optional[str] = None
+    use_memory: bool = True
 
 
 # --- Global state ---
@@ -75,29 +112,117 @@ conversation_history: Dict[str, List[Dict[str, str]]] = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print(f"🚀 AUREXIS AI Backend starting — model: {OLLAMA_MODEL}")
+    logger.info(f"AUREXIS AI Backend starting — model: {OLLAMA_MODEL}")
+
+    # Initialize database on startup
+    try:
+        init_database()
+        logger.info("Database initialized")
+    except Exception as e:
+        logger.warning(f"Database initialization warning: {e}")
+
     yield
-    print("👋 Server shutting down...")
+    logger.info("Server shutting down...")
 
 
 # --- App ---
 
-app = FastAPI(title="AUREXIS AI Backend", version="1.0.0", lifespan=lifespan)
+# Initialize rate limiter with stricter limits for auth endpoints
+limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
+
+# Stricter rate limit for authentication endpoints (5 requests per minute)
+AUTH_RATE_LIMIT = "5/minute"
+
+app = FastAPI(
+    title="AUREXIS AI Backend",
+    description="AI-powered financial planning and analysis API",
+    version="2.0.0",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json",
+    lifespan=lifespan
+)
+
+# Add rate limiter to app state
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=settings.ALLOWED_METHODS,
+    allow_headers=settings.ALLOWED_HEADERS,
 )
+
+# Add logging middleware
+app.add_middleware(LoggingMiddleware)
+
+# Add validation middleware
+app.add_middleware(ValidationMiddleware)
+
+# Add caching middleware
+app.add_middleware(CachingMiddleware)
+
+
+# ==================== NEW MODULAR ROUTES ====================
+# Register new API routes with proper authentication and validation
+app.include_router(auth_router)
+app.include_router(financial_router)
+app.include_router(forecast_router)
+app.include_router(chat_router)
+app.include_router(reports_router)
+
+# Phase 3: Advanced Features Routes
+app.include_router(advanced_analytics_router)
+app.include_router(ml_forecasting_router)
+app.include_router(investment_optimization_router)
+
+# Phase 4: AI & Intelligence Routes
+app.include_router(notifications_router)
+app.include_router(websocket_router)
+app.include_router(agent_monitoring_router)
+
+logger.info("New API routes registered:")
+logger.info("  - /api/auth (7 endpoints)")
+logger.info("  - /api/financial (20+ endpoints)")
+logger.info("  - /api/forecast (7 endpoints)")
+logger.info("  - /api/chat (7 endpoints)")
+logger.info("  - /api/reports (5 endpoints)")
+logger.info("  - /api/analytics (9 endpoints) [Phase 3]")
+logger.info("  - /api/ml (9 endpoints) [Phase 3]")
+logger.info("  - /api/investments (10 endpoints) [Phase 3]")
+logger.info("  - /api/notifications (12 endpoints) [Phase 4]")
+logger.info("  - /ws (WebSocket + 3 endpoints) [Phase 4]")
+logger.info("  - /api/agents (9 endpoints) [Phase 4]")
+# ============================================================
 
 
 # --- Endpoints ---
 
 @app.get("/")
-async def root():
+@limiter.limit("60/minute")
+async def root(request: Request):
     return {"status": "online", "service": "AUREXIS AI Backend", "model": OLLAMA_MODEL}
+
+
+@app.get("/health")
+@limiter.limit("30/minute")
+async def health_check(request: Request):
+    """Health check endpoint for monitoring"""
+    from datetime import datetime
+    
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "service": "AUREXIS AI Backend",
+        "version": "2.0",
+        "model": OLLAMA_MODEL,
+        "components": {
+            "api": "healthy",
+            "database": "healthy"
+        }
+    }
 
 
 @app.get("/api/users")
@@ -158,10 +283,52 @@ async def chat(request: ChatMessage):
     # The user dict contains the key "user_number" (or "number" after login). Use it to load data.
     user_number = user.get("user_number") or user.get("number") or user_id
     financial_data = get_all_user_data(user_number)
+    
+    # Generate session ID if not provided
+    session_id = request.session_id or f"session_{user_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     try:
-        response = await call_ollama(request.message, user, financial_data)
-        return {"success": True, "response": response, "user_id": user_id}
+        # Save user message to memory if enabled
+        if request.use_memory:
+            chat_memory_manager.save_message(
+                user_id=user_id,
+                role="user",
+                message=request.message,
+                session_id=session_id,
+                metadata={
+                    "timestamp": datetime.now().isoformat(),
+                    "has_financial_data": bool(financial_data)
+                }
+            )
+        
+        # Get response from Ollama with memory context
+        response = await call_ollama(
+            request.message, 
+            user, 
+            financial_data,
+            user_id=user_id,
+            use_memory=request.use_memory
+        )
+        
+        # Save assistant response to memory if enabled
+        if request.use_memory:
+            chat_memory_manager.save_message(
+                user_id=user_id,
+                role="assistant",
+                message=response.get("content", ""),
+                session_id=session_id,
+                metadata={
+                    "timestamp": datetime.now().isoformat(),
+                    "confidence": response.get("confidence", 0)
+                }
+            )
+        
+        return {
+            "success": True, 
+            "response": response, 
+            "user_id": user_id,
+            "session_id": session_id
+        }
     except Exception as e:
         print(f"Ollama Error: {e}")
         import traceback; traceback.print_exc()
@@ -173,6 +340,7 @@ async def chat(request: ChatMessage):
                 "insights": [], "recommendations": [], "confidence": 0,
             },
             "user_id": user_id,
+            "session_id": session_id
         }
 
 
@@ -467,15 +635,371 @@ async def create_savings_plan(request: SavingsPlanRequest):
     }
 
 
+# --- Credit Score Predictor Endpoints ---
+
+@app.get("/api/user/{user_id}/credit-score/predict")
+async def predict_credit_score(user_id: str):
+    """Predict future credit score and get improvement recommendations."""
+    data = get_all_user_data(user_id)
+    prediction = credit_score_predictor.predict_credit_score(data)
+    
+    return {
+        "user_id": user_id,
+        "prediction": prediction,
+        "timestamp": datetime.now().isoformat()
+    }
+
+
+# --- Tax Planning Endpoints ---
+
+class TaxCalculationRequest(BaseModel):
+    annual_income: float
+    regime: str = "new"
+    deductions: Optional[Dict[str, float]] = None
+
+
+@app.post("/api/tax/calculate")
+async def calculate_tax(request: TaxCalculationRequest):
+    """Calculate tax liability under new or old regime."""
+    result = tax_planner.calculate_tax_liability(
+        annual_income=request.annual_income,
+        regime=request.regime,
+        deductions=request.deductions
+    )
+    return result
+
+
+@app.post("/api/tax/compare-regimes")
+async def compare_tax_regimes(request: TaxCalculationRequest):
+    """Compare tax liability between old and new regime."""
+    result = tax_planner.compare_tax_regimes(
+        annual_income=request.annual_income,
+        potential_deductions=request.deductions or {}
+    )
+    return result
+
+
+@app.get("/api/user/{user_id}/tax/analyze")
+async def analyze_tax_efficiency(user_id: str):
+    """Analyze overall tax efficiency and provide optimization suggestions."""
+    data = get_all_user_data(user_id)
+    analysis = tax_planner.analyze_tax_efficiency(data)
+    
+    return {
+        "user_id": user_id,
+        "analysis": analysis,
+        "timestamp": datetime.now().isoformat()
+    }
+
+
+class TaxInvestmentRequest(BaseModel):
+    annual_income: float
+    current_investments: Dict[str, float]
+    risk_profile: str = "moderate"
+
+
+@app.post("/api/tax/investment-suggestions")
+async def get_tax_investment_suggestions(request: TaxInvestmentRequest):
+    """Get tax-saving investment suggestions."""
+    suggestions = tax_planner.suggest_tax_saving_investments(
+        annual_income=request.annual_income,
+        current_investments=request.current_investments,
+        risk_profile=request.risk_profile
+    )
+    return suggestions
+
+
+@app.post("/api/tax/advance-tax")
+async def calculate_advance_tax(request: TaxCalculationRequest):
+    """Calculate advance tax payment schedule."""
+    schedule = tax_planner.calculate_advance_tax(
+        annual_income=request.annual_income,
+        regime=request.regime
+    )
+    return schedule
+
+
+# --- Fraud Detection Endpoints ---
+
+class TransactionAnalysisRequest(BaseModel):
+    user_id: str
+    transaction: Dict[str, Any]
+
+
+@app.post("/api/fraud/analyze-transaction")
+async def analyze_transaction_fraud(request: TransactionAnalysisRequest):
+    """Analyze a single transaction for fraud indicators."""
+    data = get_all_user_data(request.user_id)
+    transactions = data.get("fetch_bank_transactions", {}).get("transactions", [])
+    user_profile = get_user_by_id(request.user_id) or {}
+    
+    analysis = fraud_detector.analyze_transaction(
+        transaction=request.transaction,
+        user_history=transactions,
+        user_profile=user_profile
+    )
+    
+    return {
+        "user_id": request.user_id,
+        "analysis": analysis,
+        "timestamp": datetime.now().isoformat()
+    }
+
+
+@app.get("/api/user/{user_id}/fraud/report")
+async def get_fraud_report(user_id: str):
+    """Generate comprehensive fraud analysis report."""
+    data = get_all_user_data(user_id)
+    transactions = data.get("fetch_bank_transactions", {}).get("transactions", [])
+    user_profile = get_user_by_id(user_id) or {}
+    
+    report = fraud_detector.generate_fraud_report(transactions, user_profile)
+    
+    return {
+        "user_id": user_id,
+        "report": report,
+        "timestamp": datetime.now().isoformat()
+    }
+
+
+@app.get("/api/user/{user_id}/fraud/account-takeover")
+async def check_account_takeover(user_id: str):
+    """Check for potential account takeover attempts."""
+    data = get_all_user_data(user_id)
+    transactions = data.get("fetch_bank_transactions", {}).get("transactions", [])
+    user_profile = get_user_by_id(user_id) or {}
+    
+    analysis = fraud_detector.detect_account_takeover(transactions[-20:], user_profile)
+    
+    return {
+        "user_id": user_id,
+        "analysis": analysis,
+        "timestamp": datetime.now().isoformat()
+    }
+
+
+# --- Real-time Alerts Endpoints ---
+
+@app.get("/api/user/{user_id}/alerts/realtime")
+async def get_realtime_alerts(user_id: str):
+    """Get real-time financial alerts."""
+    data = get_all_user_data(user_id)
+    user_profile = get_user_by_id(user_id) or {}
+    
+    alerts = realtime_alert_system.generate_realtime_alerts(data, user_profile)
+    summary = realtime_alert_system.get_alert_summary(alerts)
+    
+    return {
+        "user_id": user_id,
+        "alerts": alerts,
+        "summary": summary,
+        "timestamp": datetime.now().isoformat()
+    }
+
+
+# --- Multi-Agent System Endpoints ---
+
+class WorkflowRequest(BaseModel):
+    workflow_type: str
+    data: Dict[str, Any]
+
+
+@app.post("/api/multi-agent/workflow")
+async def execute_workflow(user_id: str, request: WorkflowRequest):
+    """Execute a multi-agent workflow."""
+    # Get user data
+    financial_data = get_all_user_data(user_id)
+    user_profile = get_user_by_id(user_id) or {}
+    
+    # Merge with request data
+    workflow_data = {
+        **request.data,
+        "transactions": financial_data.get("fetch_bank_transactions", {}).get("transactions", []),
+        "user_profile": user_profile,
+        "monthly_income": financial_data.get("monthly_income", 0),
+        "monthly_expense": financial_data.get("monthly_expense", 0),
+        "net_worth": financial_data.get("fetch_net_worth", {}).get("totalAssets", 0),
+    }
+    
+    result = await multi_agent_coordinator.execute_workflow(
+        workflow_type=request.workflow_type,
+        data=workflow_data
+    )
+    
+    return {
+        "user_id": user_id,
+        **result
+    }
+
+
+@app.get("/api/multi-agent/status")
+async def get_agent_status():
+    """Get status of all AI agents."""
+    return multi_agent_coordinator.get_agent_status()
+
+
+@app.get("/api/multi-agent/workflows")
+async def list_workflows():
+    """List available workflows."""
+    return {
+        "workflows": [
+            {
+                "type": "comprehensive_analysis",
+                "description": "Complete financial analysis with spending, income, trends, recommendations, and risk assessment",
+                "agents_involved": ["analyst", "advisor"],
+                "estimated_time": "2-3 seconds"
+            },
+            {
+                "type": "goal_planning",
+                "description": "Create detailed plan to achieve financial goals with milestones and budget",
+                "agents_involved": ["planner", "advisor"],
+                "estimated_time": "1-2 seconds"
+            },
+            {
+                "type": "financial_checkup",
+                "description": "Complete health checkup with spending analysis, anomalies, risk assessment, and projections",
+                "agents_involved": ["analyst", "advisor", "planner"],
+                "estimated_time": "2-3 seconds"
+            }
+        ]
+    }
+
+
+# --- Explainable Recommendations Endpoints ---
+
+@app.get("/api/user/{user_id}/recommendations/explainable")
+async def get_explainable_recommendations(user_id: str):
+    """Get recommendations with full explanations and reasoning."""
+    financial_data = get_all_user_data(user_id)
+    user_profile = get_user_by_id(user_id) or {}
+    
+    recommendations = explainable_recommendation_engine.generate_recommendations(
+        financial_data=financial_data,
+        user_profile=user_profile
+    )
+    
+    return {
+        "user_id": user_id,
+        "recommendations": [rec.to_dict() for rec in recommendations],
+        "total_count": len(recommendations),
+        "timestamp": datetime.now().isoformat()
+    }
+
+
+# --- Chat Memory Endpoints ---
+
+@app.get("/api/user/{user_id}/chat/history")
+async def get_chat_history(
+    user_id: str,
+    limit: int = 50,
+    session_id: Optional[str] = None,
+    days: Optional[int] = None
+):
+    """Get conversation history for a user."""
+    history = chat_memory_manager.get_conversation_history(
+        user_id=user_id,
+        limit=limit,
+        session_id=session_id,
+        days=days
+    )
+    
+    return {
+        "user_id": user_id,
+        "history": history,
+        "count": len(history),
+        "session_id": session_id
+    }
+
+
+@app.get("/api/user/{user_id}/chat/sessions")
+async def get_chat_sessions(user_id: str, limit: int = 20):
+    """Get list of conversation sessions for a user."""
+    sessions = chat_memory_manager.get_conversation_sessions(
+        user_id=user_id,
+        limit=limit
+    )
+    
+    return {
+        "user_id": user_id,
+        "sessions": sessions,
+        "count": len(sessions)
+    }
+
+
+@app.get("/api/user/{user_id}/chat/stats")
+async def get_chat_stats(user_id: str):
+    """Get conversation statistics for a user."""
+    stats = chat_memory_manager.get_conversation_stats(user_id)
+    
+    return {
+        "user_id": user_id,
+        "stats": stats
+    }
+
+
+@app.get("/api/user/{user_id}/chat/preferences")
+async def get_chat_preferences(user_id: str):
+    """Get user preferences extracted from conversation history."""
+    preferences = chat_memory_manager.get_user_preferences(user_id)
+    
+    return {
+        "user_id": user_id,
+        "preferences": preferences
+    }
+
+
+@app.post("/api/user/{user_id}/chat/search")
+async def search_chat_history(
+    user_id: str,
+    search_term: str = Body(..., embed=True),
+    limit: int = 20
+):
+    """Search conversation history for a term."""
+    results = chat_memory_manager.search_conversations(
+        user_id=user_id,
+        search_term=search_term,
+        limit=limit
+    )
+    
+    return {
+        "user_id": user_id,
+        "search_term": search_term,
+        "results": results,
+        "count": len(results)
+    }
+
+
+@app.delete("/api/user/{user_id}/chat/clear")
+async def clear_chat_history(
+    user_id: str,
+    session_id: Optional[str] = None,
+    days: Optional[int] = None
+):
+    """Clear conversation history for a user."""
+    count = chat_memory_manager.clear_user_history(
+        user_id=user_id,
+        session_id=session_id,
+        days=days
+    )
+    
+    return {
+        "user_id": user_id,
+        "deleted_count": count,
+        "message": f"Cleared {count} messages"
+    }
+
+
 # --- Helpers ---
 
 async def call_ollama(
     user_message: str,
     user_context: Dict[str, Any],
     financial_data: Dict[str, Any],
+    user_id: Optional[str] = None,
+    use_memory: bool = True
 ) -> Dict[str, Any]:
     """Call Ollama REST API directly for dynamic, personalized responses."""
-    user_id = user_context.get("number", "guest")
+    user_id = user_id or user_context.get("number", "guest")
     name    = user_context.get("name", "User")
     occ     = user_context.get("occupation", "Professional")
     age     = user_context.get("age", 30)
@@ -509,6 +1033,23 @@ async def call_ollama(
             if len(txn) >= 5 and txn[0] == 1:
                 mf_value += txn[4]
 
+    # Get agent status
+    agent_status = multi_agent_coordinator.get_agent_status()
+    agent_info = "\n".join([
+        f"- {name.title()}: {info['role']} ({info['status']}) - {len(info['capabilities'])} capabilities"
+        for name, info in agent_status.items()
+    ])
+    
+    # Get user preferences from memory if enabled
+    preferences_info = ""
+    if use_memory:
+        preferences = chat_memory_manager.get_user_preferences(user_id)
+        if preferences.get("topics_of_interest"):
+            preferences_info = f"\n\n=== USER PREFERENCES (from conversation history) ===\n"
+            preferences_info += f"Topics of Interest: {', '.join(preferences['topics_of_interest'][:5])}\n"
+            if preferences.get("financial_goals"):
+                preferences_info += f"Financial Goals: {', '.join(preferences['financial_goals'][:3])}\n"
+
     system_prompt = f"""You are AUREXIS AI, an expert personal financial advisor for {name}.
 
 === USER FINANCIAL PROFILE ===
@@ -529,35 +1070,53 @@ MF Invested:      ₹{mf_value:,.0f}
 Emergency Fund:   {emergency_months} months covered
 Health Score:     {health_score}/100
 
+=== AI AGENT TEAM ===
+I have a team of specialized AI agents working for you:
+{agent_info}
+
+These agents can:
+- Analyst: Analyze spending, income, trends, and detect anomalies
+- Advisor: Generate recommendations, assess risks, identify opportunities
+- Planner: Create goal plans, budgets, and timeline projections
+
+When you ask about agents, workflows, or need complex analysis, I can coordinate these agents to help you!
+{preferences_info}
 === YOUR ROLE ===
 - Give specific, personalized advice using the EXACT numbers above
 - Be direct and actionable (3-5 sentences)
 - Always reference actual rupee amounts from the profile
 - Highlight risks if any exist
 - Use ₹ for all currency values
+- When asked about agents, explain what each agent does
+- If user asks for complex analysis, mention you can run multi-agent workflows
+- Remember context from previous conversations when available
 - Never say you don't have data — use the profile above"""
 
-    # Maintain per-user conversation history
-    if user_id not in conversation_history:
-        conversation_history[user_id] = []
-    conversation_history[user_id].append({"role": "user", "content": user_message})
-
-    # Keep last 10 turns for context window
-    recent = conversation_history[user_id][-10:]
+    # Get conversation context from memory if enabled
+    if use_memory:
+        recent_context = chat_memory_manager.get_recent_context(user_id, num_messages=10)
+    else:
+        # Fallback to in-memory conversation history
+        if user_id not in conversation_history:
+            conversation_history[user_id] = []
+        conversation_history[user_id].append({"role": "user", "content": user_message})
+        recent_context = conversation_history[user_id][-10:]
 
     async with httpx.AsyncClient(timeout=120.0) as client:
         resp = await client.post(
             f"{OLLAMA_BASE_URL}/api/chat",
             json={
                 "model": OLLAMA_MODEL,
-                "messages": [{"role": "system", "content": system_prompt}, *recent],
+                "messages": [{"role": "system", "content": system_prompt}, *recent_context, {"role": "user", "content": user_message}],
                 "stream": False,
             },
         )
         resp.raise_for_status()
         reply = resp.json().get("message", {}).get("content", "")
 
-    conversation_history[user_id].append({"role": "assistant", "content": reply})
+    # Update in-memory history if not using persistent memory
+    if not use_memory:
+        conversation_history[user_id].append({"role": "assistant", "content": reply})
 
     return {
         "summary": "AUREXIS AI",

@@ -4,7 +4,7 @@ Computes detailed financial health breakdown with sub-scores.
 """
 
 from typing import Dict, Any
-from analytics import extract_transactions, extract_net_worth, extract_credit_score
+from analytics_legacy import extract_transactions, extract_net_worth, extract_credit_score
 
 
 def compute_health(financial_data: Dict[str, Any]) -> Dict[str, Any]:

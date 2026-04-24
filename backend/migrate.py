@@ -9,7 +9,7 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from database import init_db, drop_db
+from database_legacy import init_db, drop_db
 from user_manager_v2 import migrate_legacy_users_to_db
 from logger import logger
 from config import settings
