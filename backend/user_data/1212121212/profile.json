@@ -1,0 +1,17 @@
+{
+  "user_id": "1212121212",
+  "name": "Srivarshan",
+  "occupation": "Business Owner",
+  "age": 40,
+  "monthly_income": 250000,
+  "city": "Theni",
+  "risk_profile": "High",
+  "financial_goals": [
+    "Emergency Fund",
+    "Retirement Planning",
+    "Investment Growth"
+  ],
+  "dependents": 0,
+  "marital_status": "Married",
+  "investment_preference": "Equity and Mutual Funds"
+}

@@ -1,0 +1,239 @@
+{
+  "stockTransactions": [
+    {
+      "symbol": "RELIANCE",
+      "companyName": "Reliance Industries Ltd",
+      "exchange": "NSE",
+      "currentPrice": 3274.91,
+      "totalQuantity": 15,
+      "currentValue": 49123.68,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-04-15",
+          "symbol": "RELIANCE",
+          "quantity": 3,
+          "price": 2762.01,
+          "amount": 8286.04
+        },
+        {
+          "type": "BUY",
+          "date": "2025-06-23",
+          "symbol": "RELIANCE",
+          "quantity": 3,
+          "price": 2773.3,
+          "amount": 8319.9
+        },
+        {
+          "type": "BUY",
+          "date": "2025-07-18",
+          "symbol": "RELIANCE",
+          "quantity": 3,
+          "price": 2879.79,
+          "amount": 8639.36
+        },
+        {
+          "type": "BUY",
+          "date": "2025-11-22",
+          "symbol": "RELIANCE",
+          "quantity": 3,
+          "price": 2840.32,
+          "amount": 8520.97
+        },
+        {
+          "type": "BUY",
+          "date": "2026-02-13",
+          "symbol": "RELIANCE",
+          "quantity": 3,
+          "price": 2881.2,
+          "amount": 8643.61
+        }
+      ]
+    },
+    {
+      "symbol": "WIPRO",
+      "companyName": "Wipro Ltd",
+      "exchange": "NSE",
+      "currentPrice": 509.73,
+      "totalQuantity": 80,
+      "currentValue": 40778.12,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-05-08",
+          "symbol": "WIPRO",
+          "quantity": 20,
+          "price": 470.9,
+          "amount": 9418.04
+        },
+        {
+          "type": "BUY",
+          "date": "2025-09-17",
+          "symbol": "WIPRO",
+          "quantity": 20,
+          "price": 464.85,
+          "amount": 9297.08
+        },
+        {
+          "type": "BUY",
+          "date": "2026-02-25",
+          "symbol": "WIPRO",
+          "quantity": 20,
+          "price": 465.38,
+          "amount": 9307.57
+        },
+        {
+          "type": "BUY",
+          "date": "2026-03-09",
+          "symbol": "WIPRO",
+          "quantity": 20,
+          "price": 454.81,
+          "amount": 9096.17
+        }
+      ]
+    },
+    {
+      "symbol": "SBIN",
+      "companyName": "State Bank of India",
+      "exchange": "NSE",
+      "currentPrice": 925.29,
+      "totalQuantity": 48,
+      "currentValue": 44413.81,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-05-16",
+          "symbol": "SBIN",
+          "quantity": 12,
+          "price": 812.66,
+          "amount": 9751.91
+        },
+        {
+          "type": "BUY",
+          "date": "2025-06-17",
+          "symbol": "SBIN",
+          "quantity": 12,
+          "price": 790.73,
+          "amount": 9488.8
+        },
+        {
+          "type": "BUY",
+          "date": "2025-10-06",
+          "symbol": "SBIN",
+          "quantity": 12,
+          "price": 827.96,
+          "amount": 9935.56
+        },
+        {
+          "type": "BUY",
+          "date": "2026-03-21",
+          "symbol": "SBIN",
+          "quantity": 12,
+          "price": 846.63,
+          "amount": 10159.61
+        }
+      ]
+    },
+    {
+      "symbol": "TATAMOTORS",
+      "companyName": "Tata Motors Ltd",
+      "exchange": "NSE",
+      "currentPrice": 1085.35,
+      "totalQuantity": 50,
+      "currentValue": 54267.56,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-04-21",
+          "symbol": "TATAMOTORS",
+          "quantity": 10,
+          "price": 967.06,
+          "amount": 9670.63
+        },
+        {
+          "type": "BUY",
+          "date": "2025-08-10",
+          "symbol": "TATAMOTORS",
+          "quantity": 10,
+          "price": 988.73,
+          "amount": 9887.27
+        },
+        {
+          "type": "BUY",
+          "date": "2025-09-17",
+          "symbol": "TATAMOTORS",
+          "quantity": 10,
+          "price": 980.89,
+          "amount": 9808.91
+        },
+        {
+          "type": "BUY",
+          "date": "2025-10-23",
+          "symbol": "TATAMOTORS",
+          "quantity": 10,
+          "price": 982.47,
+          "amount": 9824.72
+        },
+        {
+          "type": "BUY",
+          "date": "2025-11-07",
+          "symbol": "TATAMOTORS",
+          "quantity": 10,
+          "price": 954.21,
+          "amount": 9542.05
+        }
+      ]
+    },
+    {
+      "symbol": "ICICIBANK",
+      "companyName": "ICICI Bank Ltd",
+      "exchange": "NSE",
+      "currentPrice": 1268.77,
+      "totalQuantity": 45,
+      "currentValue": 57094.58,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-04-12",
+          "symbol": "ICICIBANK",
+          "quantity": 9,
+          "price": 1138.77,
+          "amount": 10248.89
+        },
+        {
+          "type": "BUY",
+          "date": "2025-06-23",
+          "symbol": "ICICIBANK",
+          "quantity": 9,
+          "price": 1189.3,
+          "amount": 10703.7
+        },
+        {
+          "type": "BUY",
+          "date": "2025-07-21",
+          "symbol": "ICICIBANK",
+          "quantity": 9,
+          "price": 1170.27,
+          "amount": 10532.47
+        },
+        {
+          "type": "BUY",
+          "date": "2025-08-14",
+          "symbol": "ICICIBANK",
+          "quantity": 9,
+          "price": 1141.94,
+          "amount": 10277.49
+        },
+        {
+          "type": "BUY",
+          "date": "2025-09-21",
+          "symbol": "ICICIBANK",
+          "quantity": 9,
+          "price": 1118.37,
+          "amount": 10065.37
+        }
+      ]
+    }
+  ],
+  "schemaDescription": "Stock transactions with buy/sell history"
+}

@@ -1,0 +1,171 @@
+{
+  "stockTransactions": [
+    {
+      "symbol": "RELIANCE",
+      "companyName": "Reliance Industries Ltd",
+      "exchange": "NSE",
+      "currentPrice": 3201.08,
+      "totalQuantity": 16,
+      "currentValue": 51217.23,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-04-23",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 2938.72,
+          "amount": 5877.44
+        },
+        {
+          "type": "BUY",
+          "date": "2025-05-24",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 2992.18,
+          "amount": 5984.36
+        },
+        {
+          "type": "BUY",
+          "date": "2025-06-20",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 3037.79,
+          "amount": 6075.58
+        },
+        {
+          "type": "BUY",
+          "date": "2025-07-12",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 3127.79,
+          "amount": 6255.59
+        },
+        {
+          "type": "BUY",
+          "date": "2025-08-25",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 3113.91,
+          "amount": 6227.82
+        },
+        {
+          "type": "BUY",
+          "date": "2025-10-25",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 3197.11,
+          "amount": 6394.21
+        },
+        {
+          "type": "BUY",
+          "date": "2025-12-11",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 3104.11,
+          "amount": 6208.21
+        },
+        {
+          "type": "BUY",
+          "date": "2026-01-13",
+          "symbol": "RELIANCE",
+          "quantity": 2,
+          "price": 3027.82,
+          "amount": 6055.64
+        }
+      ]
+    },
+    {
+      "symbol": "ICICIBANK",
+      "companyName": "ICICI Bank Ltd",
+      "exchange": "NSE",
+      "currentPrice": 1286.03,
+      "totalQuantity": 35,
+      "currentValue": 45011.02,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-06-17",
+          "symbol": "ICICIBANK",
+          "quantity": 5,
+          "price": 1103.43,
+          "amount": 5517.17
+        },
+        {
+          "type": "BUY",
+          "date": "2025-07-20",
+          "symbol": "ICICIBANK",
+          "quantity": 5,
+          "price": 1103.46,
+          "amount": 5517.32
+        },
+        {
+          "type": "BUY",
+          "date": "2025-11-06",
+          "symbol": "ICICIBANK",
+          "quantity": 5,
+          "price": 1110.2,
+          "amount": 5550.99
+        },
+        {
+          "type": "BUY",
+          "date": "2025-12-08",
+          "symbol": "ICICIBANK",
+          "quantity": 5,
+          "price": 1105.2,
+          "amount": 5526.0
+        },
+        {
+          "type": "BUY",
+          "date": "2026-01-17",
+          "symbol": "ICICIBANK",
+          "quantity": 5,
+          "price": 1087.08,
+          "amount": 5435.42
+        },
+        {
+          "type": "BUY",
+          "date": "2026-02-07",
+          "symbol": "ICICIBANK",
+          "quantity": 5,
+          "price": 1060.99,
+          "amount": 5304.97
+        },
+        {
+          "type": "BUY",
+          "date": "2026-03-20",
+          "symbol": "ICICIBANK",
+          "quantity": 5,
+          "price": 1112.79,
+          "amount": 5563.97
+        }
+      ]
+    },
+    {
+      "symbol": "WIPRO",
+      "companyName": "Wipro Ltd",
+      "exchange": "NSE",
+      "currentPrice": 549.93,
+      "totalQuantity": 24,
+      "currentValue": 13198.28,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-08-11",
+          "symbol": "WIPRO",
+          "quantity": 12,
+          "price": 478.31,
+          "amount": 5739.77
+        },
+        {
+          "type": "BUY",
+          "date": "2026-02-17",
+          "symbol": "WIPRO",
+          "quantity": 12,
+          "price": 467.63,
+          "amount": 5611.62
+        }
+      ]
+    }
+  ],
+  "schemaDescription": "Stock transactions with buy/sell history"
+}

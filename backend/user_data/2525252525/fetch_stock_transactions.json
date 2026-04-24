@@ -1,0 +1,121 @@
+{
+  "stockTransactions": [
+    {
+      "symbol": "ICICIBANK",
+      "companyName": "ICICI Bank Ltd",
+      "exchange": "NSE",
+      "currentPrice": 1114.82,
+      "totalQuantity": 24,
+      "currentValue": 26755.78,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-04-17",
+          "symbol": "ICICIBANK",
+          "quantity": 3,
+          "price": 1083.58,
+          "amount": 3250.74
+        },
+        {
+          "type": "BUY",
+          "date": "2025-05-09",
+          "symbol": "ICICIBANK",
+          "quantity": 3,
+          "price": 1070.52,
+          "amount": 3211.56
+        },
+        {
+          "type": "BUY",
+          "date": "2025-06-21",
+          "symbol": "ICICIBANK",
+          "quantity": 3,
+          "price": 1040.28,
+          "amount": 3120.84
+        },
+        {
+          "type": "BUY",
+          "date": "2025-07-25",
+          "symbol": "ICICIBANK",
+          "quantity": 3,
+          "price": 1039.58,
+          "amount": 3118.74
+        },
+        {
+          "type": "BUY",
+          "date": "2025-09-22",
+          "symbol": "ICICIBANK",
+          "quantity": 3,
+          "price": 1061.65,
+          "amount": 3184.94
+        },
+        {
+          "type": "BUY",
+          "date": "2025-12-05",
+          "symbol": "ICICIBANK",
+          "quantity": 3,
+          "price": 1038.98,
+          "amount": 3116.94
+        },
+        {
+          "type": "BUY",
+          "date": "2026-01-19",
+          "symbol": "ICICIBANK",
+          "quantity": 3,
+          "price": 1017.43,
+          "amount": 3052.3
+        },
+        {
+          "type": "BUY",
+          "date": "2026-02-20",
+          "symbol": "ICICIBANK",
+          "quantity": 3,
+          "price": 1031.46,
+          "amount": 3094.37
+        }
+      ]
+    },
+    {
+      "symbol": "HDFCBANK",
+      "companyName": "HDFC Bank Ltd",
+      "exchange": "NSE",
+      "currentPrice": 1895.56,
+      "totalQuantity": 8,
+      "currentValue": 15164.48,
+      "transactions": [
+        {
+          "type": "BUY",
+          "date": "2025-05-08",
+          "symbol": "HDFCBANK",
+          "quantity": 2,
+          "price": 1656.06,
+          "amount": 3312.11
+        },
+        {
+          "type": "BUY",
+          "date": "2025-07-09",
+          "symbol": "HDFCBANK",
+          "quantity": 2,
+          "price": 1686.61,
+          "amount": 3373.22
+        },
+        {
+          "type": "BUY",
+          "date": "2025-12-20",
+          "symbol": "HDFCBANK",
+          "quantity": 2,
+          "price": 1741.9,
+          "amount": 3483.8
+        },
+        {
+          "type": "BUY",
+          "date": "2026-01-13",
+          "symbol": "HDFCBANK",
+          "quantity": 2,
+          "price": 1717.48,
+          "amount": 3434.95
+        }
+      ]
+    }
+  ],
+  "schemaDescription": "Stock transactions with buy/sell history"
+}

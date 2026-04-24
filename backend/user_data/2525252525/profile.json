@@ -1,0 +1,17 @@
+{
+  "user_id": "2525252525",
+  "name": "Avinash",
+  "occupation": "IPS",
+  "age": 28,
+  "monthly_income": 70000,
+  "city": "Ambur",
+  "risk_profile": "Low",
+  "financial_goals": [
+    "Emergency Fund",
+    "Retirement Planning",
+    "Investment Growth"
+  ],
+  "dependents": 3,
+  "marital_status": "Single",
+  "investment_preference": "Debt and FD"
+}

@@ -1,0 +1,17 @@
+{
+  "user_id": "2222222222",
+  "name": "Dineshkumar",
+  "occupation": "Lawyer",
+  "age": 52,
+  "monthly_income": 120000,
+  "city": "Sangagari",
+  "risk_profile": "Moderate",
+  "financial_goals": [
+    "Emergency Fund",
+    "Retirement Planning",
+    "Investment Growth"
+  ],
+  "dependents": 1,
+  "marital_status": "Married",
+  "investment_preference": "Debt and FD"
+}

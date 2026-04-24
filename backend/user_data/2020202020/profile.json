@@ -1,0 +1,17 @@
+{
+  "user_id": "2020202020",
+  "name": "Deepak",
+  "occupation": "CA",
+  "age": 29,
+  "monthly_income": 90000,
+  "city": "Chennai",
+  "risk_profile": "Low",
+  "financial_goals": [
+    "Emergency Fund",
+    "Retirement Planning",
+    "Investment Growth"
+  ],
+  "dependents": 1,
+  "marital_status": "Married",
+  "investment_preference": "Debt and FD"
+}

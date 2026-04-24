@@ -1,0 +1,17 @@
+{
+  "user_id": "3333333333",
+  "name": "Kumar",
+  "occupation": "Content Creator",
+  "age": 23,
+  "monthly_income": 35000,
+  "city": "Coimbatore",
+  "risk_profile": "High",
+  "financial_goals": [
+    "Emergency Fund",
+    "Retirement Planning",
+    "Investment Growth"
+  ],
+  "dependents": 2,
+  "marital_status": "Single",
+  "investment_preference": "Equity and Mutual Funds"
+}

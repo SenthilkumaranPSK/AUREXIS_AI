@@ -1,0 +1,63 @@
+{
+  "creditReports": [
+    {
+      "creditReportData": {
+        "creditProfileHeader": {
+          "reportDate": "20260417",
+          "reportTime": "215451"
+        },
+        "creditAccount": {
+          "creditAccountSummary": {
+            "account": {
+              "creditAccountTotal": "3",
+              "creditAccountActive": "2",
+              "creditAccountDefault": "0",
+              "creditAccountClosed": "1"
+            },
+            "totalOutstandingBalance": {
+              "outstandingBalanceUnSecured": "51750",
+              "outstandingBalanceAll": "51750"
+            }
+          },
+          "creditAccountDetails": [
+            {
+              "subscriberName": "SBI Card",
+              "portfolioType": "R",
+              "accountType": "10",
+              "openDate": "20220101",
+              "creditLimitAmount": "225000",
+              "currentBalance": "33750",
+              "amountPastDue": "0",
+              "paymentHistoryProfile": "000000000000000000000000000000000000",
+              "rateOfInterest": "20.0",
+              "accountStatus": "11"
+            },
+            {
+              "subscriberName": "HDFC Bank",
+              "portfolioType": "R",
+              "accountType": "10",
+              "openDate": "20240601",
+              "creditLimitAmount": "150000",
+              "currentBalance": "18000",
+              "amountPastDue": "0",
+              "paymentHistoryProfile": "000000000000000000000000",
+              "rateOfInterest": "21.5",
+              "accountStatus": "11"
+            }
+          ]
+        },
+        "score": {
+          "bureauScore": "810",
+          "bureauScoreConfidenceLevel": "H"
+        },
+        "totalCapsSummary": {
+          "totalCapsLast7Days": "0",
+          "totalCapsLast30Days": "1",
+          "totalCapsLast90Days": "2",
+          "totalCapsLast180Days": "3"
+        }
+      },
+      "vendor": "EXPERIAN"
+    }
+  ]
+}

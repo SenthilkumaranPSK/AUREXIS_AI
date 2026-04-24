@@ -1,0 +1,17 @@
+{
+  "user_id": "1010101010",
+  "name": "Senthilkumaran",
+  "occupation": "Software Engineer",
+  "age": 24,
+  "monthly_income": 78000,
+  "city": "Salem",
+  "risk_profile": "Moderate",
+  "financial_goals": [
+    "Emergency Fund",
+    "Retirement Planning",
+    "Investment Growth"
+  ],
+  "dependents": 3,
+  "marital_status": "Single",
+  "investment_preference": "Debt and FD"
+}

@@ -1,0 +1,17 @@
+{
+  "user_id": "1111111111",
+  "name": "Imayavarman",
+  "occupation": "Doctor",
+  "age": 32,
+  "monthly_income": 150000,
+  "city": "Erode",
+  "risk_profile": "Low",
+  "financial_goals": [
+    "Emergency Fund",
+    "Retirement Planning",
+    "Investment Growth"
+  ],
+  "dependents": 1,
+  "marital_status": "Married",
+  "investment_preference": "Debt and FD"
+}

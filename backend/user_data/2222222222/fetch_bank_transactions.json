@@ -1,0 +1,1034 @@
+{
+  "schemaDescription": "Bank transactions. txns schema: [amount, narration, date, type(1=CREDIT,2=DEBIT,4=INTEREST,6=INSTALLMENT), mode, balance]",
+  "bankTransactions": [
+    {
+      "bank": "State Bank of India",
+      "txns": [
+        [
+          "119353",
+          "SALARY CREDIT - DINESHKUMAR - Apr 2025",
+          "2025-04-01",
+          1,
+          "NEFT",
+          "379757"
+        ],
+        [
+          "26400",
+          "IMPS-LANDLORD-Apr RENT-SANGAGARI",
+          "2025-04-02",
+          2,
+          "FT",
+          "323645"
+        ],
+        [
+          "9600",
+          "ACH D-MUTUALFUND-SIP/20250405/MF19567",
+          "2025-04-05",
+          6,
+          "ACH",
+          "205201"
+        ],
+        [
+          "6000",
+          "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX2106",
+          "2025-04-05",
+          6,
+          "ACH",
+          "184493"
+        ],
+        [
+          "12000",
+          "CREDIT CARD BILL PAYMENT-XXXXXXXX4534",
+          "2025-04-10",
+          2,
+          "CARD_PAYMENT",
+          "155150"
+        ],
+        [
+          "1840",
+          "UPI-GROCER-GROCERIES@UPI-SANGAGARI",
+          "2025-04-15",
+          2,
+          "UPI",
+          "169538"
+        ],
+        [
+          "1804",
+          "BESCOM/TNEB ELECTRICITY BILL-Apr2025",
+          "2025-04-18",
+          2,
+          "BILLPAY",
+          "149554"
+        ],
+        [
+          "800",
+          "AIRTEL/JIO RECHARGE-DINESHKUMAR",
+          "2025-04-20",
+          2,
+          "UPI",
+          "128651"
+        ],
+        [
+          "2421",
+          "UPI-PETROL BUNK-FUEL@UPI-SANGAGARI",
+          "2025-04-22",
+          2,
+          "UPI",
+          "104967"
+        ],
+        [
+          "1543",
+          "SWIGGY/ZOMATO-FOOD ORDER-DINESHKUMAR",
+          "2025-04-25",
+          2,
+          "UPI",
+          "111759"
+        ],
+        [
+          "15946",
+          "UPI-INSURANCE PREMIUM-DINESHKUMAR",
+          "2025-04-28",
+          2,
+          "UPI",
+          "108122"
+        ],
+        [
+          "122276",
+          "SALARY CREDIT - DINESHKUMAR - May 2025",
+          "2025-05-01",
+          1,
+          "NEFT",
+          "322780"
+        ],
+        [
+          "26400",
+          "IMPS-LANDLORD-May RENT-SANGAGARI",
+          "2025-05-02",
+          2,
+          "FT",
+          "284407"
+        ],
+        [
+          "9600",
+          "ACH D-MUTUALFUND-SIP/20250505/MF86865",
+          "2025-05-05",
+          6,
+          "ACH",
+          "249669"
+        ],
+        [
+          "6000",
+          "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX2083",
+          "2025-05-05",
+          6,
+          "ACH",
+          "203698"
+        ],
+        [
+          "12000",
+          "CREDIT CARD BILL PAYMENT-XXXXXXXX8167",
+          "2025-05-10",
+          2,
+          "CARD_PAYMENT",
+          "192417"
+        ],
+        [
+          "3019",
+          "UPI-GROCER-GROCERIES@UPI-SANGAGARI",
+          "2025-05-15",
+          2,
+          "UPI",
+          "135309"
+        ],
+        [
+          "1502",
+          "BESCOM/TNEB ELECTRICITY BILL-May2025",
+          "2025-05-18",
+          2,
+          "BILLPAY",
+          "141169"
+        ],
+        [
+          "792",
+          "AIRTEL/JIO RECHARGE-DINESHKUMAR",
+          "2025-05-20",
+          2,
+          "UPI",
+          "136309"
+        ],
+        [
+          "1990",
+          "UPI-PETROL BUNK-FUEL@UPI-SANGAGARI",
+          "2025-05-22",
+          2,
+          "UPI",
+          "128700"
+        ],
+        [
+          "1788",
+          "SWIGGY/ZOMATO-FOOD ORDER-DINESHKUMAR",
+          "2025-05-25",
+          2,
+          "UPI",
+          "95669"
+        ],
+        [
+          "120967",
+          "SALARY CREDIT - DINESHKUMAR - Jun 2025",
+          "2025-06-01",
+          1,
+          "NEFT",
+          "323693"
+        ],
+        [
+          "26400",
+          "IMPS-LANDLORD-Jun RENT-SANGAGARI",
+          "2025-06-02",
+          2,
+          "FT",
+          "340771"
+        ],
+        [
+          "9600",
+          "ACH D-MUTUALFUND-SIP/20250605/MF78551",
+          "2025-06-05",
+          6,
+          "ACH",
+          "241240"
+        ],
+        [
+          "6000",
+          "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX5247",
+          "2025-06-05",
+          6,
+          "ACH",
+          "194419"
+        ],
+        [
+          "12000",
+          "CREDIT CARD BILL PAYMENT-XXXXXXXX3079",
+          "2025-06-10",
+          2,
+          "CARD_PAYMENT",
+          "193487"
+        ],
+        [
+          "3060",
+          "UPI-GROCER-GROCERIES@UPI-SANGAGARI",
+          "2025-06-15",
+          2,
+          "UPI",
+          "166901"
+        ],
+        [
+          "1525",
+          "BESCOM/TNEB ELECTRICITY BILL-Jun2025",
+          "2025-06-18",
+          2,
+          "BILLPAY",
+          "161275"
+        ],
+        [
+          "773",
+          "AIRTEL/JIO RECHARGE-DINESHKUMAR",
+          "2025-06-20",
+          2,
+          "UPI",
+          "129201"
+        ],
+        [
+          "2226",
+          "UPI-PETROL BUNK-FUEL@UPI-SANGAGARI",
+          "2025-06-22",
+          2,
+          "UPI",
+          "111466"
+        ],
+        [
+          "2070",
+          "SWIGGY/ZOMATO-FOOD ORDER-DINESHKUMAR",
+          "2025-06-25",
+          2,
+          "UPI",
+          "112132"
+        ],
+        [
+          "1050",
+          "QTRLY INTEREST CREDIT ON FD A/C XXXXXX9128",
+          "2025-06-15",
+          4,
+          "INTEREST",
+          "414354"
+        ],
+        [
+          "119998",
+          "SALARY CREDIT - DINESHKUMAR - Jul 2025",
+          "2025-07-01",
+          1,
+          "NEFT",
+          "367223"
+        ],
+        [
+          "26400",
+          "IMPS-LANDLORD-Jul RENT-SANGAGARI",
+          "2025-07-02",
+          2,
+          "FT",
+          "288091"
+        ],
+        [
+          "9600",
+          "ACH D-MUTUALFUND-SIP/20250705/MF43438",
+          "2025-07-05",
+          6,
+          "ACH",
+          "259679"
+        ],
+        [
+          "6000",
+          "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX2889",
+          "2025-07-05",
+          6,
+          "ACH",
+          "198400"
+        ],
+        [
+          "12000",
+          "CREDIT CARD BILL PAYMENT-XXXXXXXX9336",
+          "2025-07-10",
+          2,
+          "CARD_PAYMENT",
+          "153138"
+        ],
+        [
+          "3038",
+          "UPI-GROCER-GROCERIES@UPI-SANGAGARI",
+          "2025-07-15",
+          2,
+          "UPI",
+          "133175"
+        ],
+        [
+          "1473",
+          "BESCOM/TNEB ELECTRICITY BILL-Jul2025",
+          "2025-07-18",
+          2,
+          "BILLPAY",
+          "138123"
+        ],
+        [
+          "867",
+          "AIRTEL/JIO RECHARGE-DINESHKUMAR",
+          "2025-07-20",
+          2,
+          "UPI",
+          "119286"
+        ],
+        [
+          "2706",
+          "UPI-PETROL BUNK-FUEL@UPI-SANGAGARI",
+          "2025-07-22",
+          2,
+          "UPI",
+          "103273"
+        ],
+        [
+          "1863",
+          "SWIGGY/ZOMATO-FOOD ORDER-DINESHKUMAR",
+          "2025-07-25",
+          2,
+          "UPI",
+          "114934"
+        ],
+        [
+          "118677",
+          "SALARY CREDIT - DINESHKUMAR - Aug 2025",
+          "2025-08-01",
+          1,
+          "NEFT",
+          "332812"
+        ],
+        [
+          "26400",
+          "IMPS-LANDLORD-Aug RENT-SANGAGARI",
+          "2025-08-02",
+          2,
+          "FT",
+          "337426"
+        ],
+        [
+          "9600",
+          "ACH D-MUTUALFUND-SIP/20250805/MF51934",
+          "2025-08-05",
+          6,
+          "ACH",
+          "223530"
+        ],
+        [
+          "6000",
+          "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX2276",
+          "2025-08-05",
+          6,
+          "ACH",
+          "220635"
+        ],
+        [
+          "12000",
+          "CREDIT CARD BILL PAYMENT-XXXXXXXX2956",
+          "2025-08-10",
+          2,
+          "CARD_PAYMENT",
+          "180110"
+        ],
+        [
+          "3102",
+          "UPI-GROCER-GROCERIES@UPI-SANGAGARI",
+          "2025-08-15",
+          2,
+          "UPI",
+          "140993"
+        ],
+        [
+          "2019",
+          "BESCOM/TNEB ELECTRICITY BILL-Aug2025",
+          "2025-08-18",
+          2,
+          "BILLPAY",
+          "164797"
+        ],
+        [
+          "872",
+          "AIRTEL/JIO RECHARGE-DINESHKUMAR",
+          "2025-08-20",
+          2,
+          "UPI",
+          "114929"
+        ],
+        [
+          "2161",
+          "UPI-PETROL BUNK-FUEL@UPI-SANGAGARI",
+          "2025-08-22",
+          2,
+          "UPI",
+          "112163"
+        ],
+        [
+          "1913",
+          "SWIGGY/ZOMATO-FOOD ORDER-DINESHKUMAR",
+          "2025-08-25",
+          2,
+          "UPI",
+          "102404"
+        ],
+        [
+          "117638",
+          "SALARY CREDIT - DINESHKUMAR - Sep 2025",
+          "2025-09-01",
+          1,
+          "NEFT",
+          "327672"
+        ],
+        [
+          "26400",
+          "IMPS-LANDLORD-Sep RENT-SANGAGARI",
+          "2025-09-02",
+          2,
+          "FT",
+          "305742"
+        ],
+        [
+          "9600",
+          "ACH D-MUTUALFUND-SIP/20250905/MF49834",
+          "2025-09-05",
+          6,
+          "ACH",
+          "257249"
+        ],
+        [
+          "6000",
+          "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX4974",
+          "2025-09-05",
+          6,
+          "ACH",
+          "213662"
+        ],
+        [
+          "12000",
+          "CREDIT CARD BILL PAYMENT-XXXXXXXX9083",
+          "2025-09-10",
+          2,
+          "CARD_PAYMENT",
+          "206880"
+        ],
+        [
+          "2913",
+          "UPI-GROCER-GROCERIES@UPI-SANGAGARI",
+          "2025-09-15",
+          2,
+          "UPI",
+          "166879"
+        ],
+        [
+          "1833",
+          "BESCOM/TNEB ELECTRICITY BILL-Sep2025",
+          "2025-09-18",
+          2,
+          "BILLPAY",
+          "156786"
+        ],
+        [
+          "744",
+          "AIRTEL/JIO RECHARGE-DINESHKUMAR",
+          "2025-09-20",
+          2,
+          "UPI",
+          "149122"
+        ],
+        [
+          "1676",
+          "UPI-PETROL BUNK-FUEL@UPI-SANGAGARI",
+          "2025-09-22",
+          2,
+          "UPI",
+          "121495"
+        ],
+        [
+          "1663",
+          "SWIGGY/ZOMATO-FOOD ORDER-DINESHKUMAR",
+          "2025-09-25",
+          2,
+          "UPI",
+          "114268"
+        ],
+        [
+          "1050",
+          "QTRLY INTEREST CREDIT ON FD A/C XXXXXX1157",
+          "2025-09-15",
+          4,
+          "INTEREST",
+          "476824"
+        ],
+        [
+          "19698",
+          "UPI-ONLINE SHOPPING-DINESHKUMAR",
+          "2025-09-28",
+          2,
+          "UPI",
+          "84593"
+        ],
+        [
+          "120143",
+          "SALARY CREDIT - DINESHKUMAR - Oct 2025",
+          "2025-10-01",
+          1,
+          "NEFT",
+          "331722"
+        ],
+        [
+          "26400",
+          "IMPS-LANDLORD-Oct RENT-SANGAGARI",
+          "2025-10-02",
+          2,
+          "FT",
+          "299282"
+        ],
+        [
+          "9600",
+          "ACH D-MUTUALFUND-SIP/20251005/MF17850",
+          "2025-10-05",
+          6,
+          "ACH",
+          "274024"
+        ],
+        [
+          "6000",
+          "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX3332",
+          "2025-10-05",
+          6,
+          "ACH",
+          "229715"
+        ],
+        [
+          "12000",
+          "CREDIT CARD BILL PAYMENT-XXXXXXXX2524",
+          "2025-10-10",
+          2,
+          "CARD_PAYMENT",
+          "155370"
+        ],
+        [
+          "2097",
+          "UPI-GROCER-GROCERIES@UPI-SANGAGARI",
+          "2025-10-15",
+          2,
+          "UPI",
+          "172169"
+        ],
+        [
+          "1737",
+          "BESCOM/TNEB ELECTRICITY BILL-Oct2025",
+          "2025-10-18",
+          2,
+          "BILLPAY",
+          "161088"
+        ],
+        [
+          "793",
+          "AIRTEL/JIO RECHARGE-DINESHKUMAR",
+          "2025-10-20",
+          2,
+          "UPI",
+          "141816"
+        ],
+        [
+          "2288",
+          "UPI-PETROL BUNK-FUEL@UPI-SANGAGARI",
+          "2025-10-22",
+          2,
+          "UPI",
+          "120195"
+        ],
+        [
+          "1664",
+          "SWIGGY/ZOMATO-FOOD ORDER-DINESHKUMAR",
+          "2025-10-25",
+          2,
+          "UPI",
+          "104576"
+        ],
+        [
+          "117898",
+          "SALARY CREDIT - DINESHKUMAR - Nov 2025",
+          "2025-11-01",
+          1,
+          "NEFT",
+          "377543"
+        ],
+        [
+          "26400",
+          "IMPS-LANDLORD-Nov RENT-SANGAGARI",
+          "2025-11-02",
+          2,
+          "FT",
+          "266763"
+        ],
+        [
+          "9600",
+          "ACH D-MUTUALFUND-SIP/20251105/MF48230",
+          "2025-11-05",
+          6,
+          "ACH",
+          "222791"
+        ],
+        [
+          "6000",
+          "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX6161",
+          "2025-11-05",
+          6,
+          "ACH",
+          "243607"
+        ],
+        [
+          "12000",
+          "CREDIT CARD BILL PAYMENT-XXXXXXXX7438",
+          "2025-11-10",
+          2,
+          "CARD_PAYMENT",
+          "190839"
+        ],
+        [
+          "2853",
+          "UPI-GROCER-GROCERIES@UPI-SANGAGARI",
+          "2025-11-15",
+          2,
+          "UPI",
+          "147485"
+        ],
+        [
+          "1635",
+          "BESCOM/TNEB ELECTRICITY BILL-Nov2025",
+          "2025-11-18",
+          2,
+          "BILLPAY",
+          "125626"
+        ],
+        [
+          "752",
+          "AIRTEL/JIO RECHARGE-DINESHKUMAR",
+          "2025-11-20",
+          2,
+          "UPI",
+          "143085"
+        ],
+        [
+          "2293",
+          "UPI-PETROL BUNK-FUEL@UPI-SANGAGARI",
+          "2025-11-22",
+          2,
+          "UPI",
+          "107594"
+        ],
+        [
+          "1097",
+          "SWIGGY/ZOMATO-FOOD ORDER-DINESHKUMAR",
+          "2025-11-25",
+          2,
+          "UPI",
+          "106900"
+        ],
+        [
+          "120172",
+          "SALARY CREDIT - DINESHKUMAR - Dec 2025",
+          "2025-12-01",
+          1,
+          "NEFT",
+          "410180"
+        ],
+        [
+          "26400",
+          "IMPS-LANDLORD-Dec RENT-SANGAGARI",
+          "2025-12-02",
+          2,
+          "FT",
+          "273687"
+        ],
+        [
+          "9600",
+          "ACH D-MUTUALFUND-SIP/20251205/MF50410",
+          "2025-12-05",
+          6,
+          "ACH",
+          "237360"
+        ],
+        [
+          "6000",
+          "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX2964",
+          "2025-12-05",
+          6,
+          "ACH",
+          "189459"
+        ],
+        [
+          "12000",
+          "CREDIT CARD BILL PAYMENT-XXXXXXXX5984",
+          "2025-12-10",
+          2,
+          "CARD_PAYMENT",
+          "197624"
+        ],
+        [
+          "2795",
+          "UPI-GROCER-GROCERIES@UPI-SANGAGARI",
+          "2025-12-15",
+          2,
+          "UPI",
+          "134487"
+        ],
+        [
+          "2041",
+          "BESCOM/TNEB ELECTRICITY BILL-Dec2025",
+          "2025-12-18",
+          2,
+          "BILLPAY",
+          "136560"
+        ],
+        [
+          "734",
+          "AIRTEL/JIO RECHARGE-DINESHKUMAR",
+          "2025-12-20",
+          2,
+          "UPI",
+          "122029"
+        ],
+        [
+          "2041",
+          "UPI-PETROL BUNK-FUEL@UPI-SANGAGARI",
+          "2025-12-22",
+          2,
+          "UPI",
+          "120484"
+        ],
+        [
+          "1712",
+          "SWIGGY/ZOMATO-FOOD ORDER-DINESHKUMAR",
+          "2025-12-25",
+          2,
+          "UPI",
+          "100229"
+        ],
+        [
+          "1050",
+          "QTRLY INTEREST CREDIT ON FD A/C XXXXXX3848",
+          "2025-12-15",
+          4,
+          "INTEREST",
+          "360916"
+        ],
+        [
+          "119770",
+          "SALARY CREDIT - DINESHKUMAR - Jan 2026",
+          "2026-01-01",
+          1,
+          "NEFT",
+          "386792"
+        ],
+        [
+          "26400",
+          "IMPS-LANDLORD-Jan RENT-SANGAGARI",
+          "2026-01-02",
+          2,
+          "FT",
+          "277486"
+        ],
+        [
+          "9600",
+          "ACH D-MUTUALFUND-SIP/20260105/MF70560",
+          "2026-01-05",
+          6,
+          "ACH",
+          "211337"
+        ],
+        [
+          "6000",
+          "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX3290",
+          "2026-01-05",
+          6,
+          "ACH",
+          "191470"
+        ],
+        [
+          "12000",
+          "CREDIT CARD BILL PAYMENT-XXXXXXXX2010",
+          "2026-01-10",
+          2,
+          "CARD_PAYMENT",
+          "197840"
+        ],
+        [
+          "3223",
+          "UPI-GROCER-GROCERIES@UPI-SANGAGARI",
+          "2026-01-15",
+          2,
+          "UPI",
+          "138717"
+        ],
+        [
+          "2033",
+          "BESCOM/TNEB ELECTRICITY BILL-Jan2026",
+          "2026-01-18",
+          2,
+          "BILLPAY",
+          "138480"
+        ],
+        [
+          "820",
+          "AIRTEL/JIO RECHARGE-DINESHKUMAR",
+          "2026-01-20",
+          2,
+          "UPI",
+          "137729"
+        ],
+        [
+          "2290",
+          "UPI-PETROL BUNK-FUEL@UPI-SANGAGARI",
+          "2026-01-22",
+          2,
+          "UPI",
+          "111317"
+        ],
+        [
+          "1875",
+          "SWIGGY/ZOMATO-FOOD ORDER-DINESHKUMAR",
+          "2026-01-25",
+          2,
+          "UPI",
+          "92506"
+        ],
+        [
+          "22346",
+          "UPI-HOME MAINTENANCE-DINESHKUMAR",
+          "2026-01-28",
+          2,
+          "UPI",
+          "104907"
+        ],
+        [
+          "118041",
+          "SALARY CREDIT - DINESHKUMAR - Feb 2026",
+          "2026-02-01",
+          1,
+          "NEFT",
+          "397505"
+        ],
+        [
+          "26400",
+          "IMPS-LANDLORD-Feb RENT-SANGAGARI",
+          "2026-02-02",
+          2,
+          "FT",
+          "327799"
+        ],
+        [
+          "9600",
+          "ACH D-MUTUALFUND-SIP/20260205/MF26059",
+          "2026-02-05",
+          6,
+          "ACH",
+          "207074"
+        ],
+        [
+          "6000",
+          "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX8552",
+          "2026-02-05",
+          6,
+          "ACH",
+          "186881"
+        ],
+        [
+          "12000",
+          "CREDIT CARD BILL PAYMENT-XXXXXXXX8096",
+          "2026-02-10",
+          2,
+          "CARD_PAYMENT",
+          "197371"
+        ],
+        [
+          "2342",
+          "UPI-GROCER-GROCERIES@UPI-SANGAGARI",
+          "2026-02-15",
+          2,
+          "UPI",
+          "133979"
+        ],
+        [
+          "1931",
+          "BESCOM/TNEB ELECTRICITY BILL-Feb2026",
+          "2026-02-18",
+          2,
+          "BILLPAY",
+          "129865"
+        ],
+        [
+          "754",
+          "AIRTEL/JIO RECHARGE-DINESHKUMAR",
+          "2026-02-20",
+          2,
+          "UPI",
+          "119611"
+        ],
+        [
+          "1957",
+          "UPI-PETROL BUNK-FUEL@UPI-SANGAGARI",
+          "2026-02-22",
+          2,
+          "UPI",
+          "133803"
+        ],
+        [
+          "941",
+          "SWIGGY/ZOMATO-FOOD ORDER-DINESHKUMAR",
+          "2026-02-25",
+          2,
+          "UPI",
+          "111861"
+        ],
+        [
+          "15787",
+          "UPI-HOME MAINTENANCE-DINESHKUMAR",
+          "2026-02-28",
+          2,
+          "UPI",
+          "107024"
+        ],
+        [
+          "119899",
+          "SALARY CREDIT - DINESHKUMAR - Mar 2026",
+          "2026-03-01",
+          1,
+          "NEFT",
+          "315473"
+        ],
+        [
+          "26400",
+          "IMPS-LANDLORD-Mar RENT-SANGAGARI",
+          "2026-03-02",
+          2,
+          "FT",
+          "289471"
+        ],
+        [
+          "9600",
+          "ACH D-MUTUALFUND-SIP/20260305/MF64949",
+          "2026-03-05",
+          6,
+          "ACH",
+          "218360"
+        ],
+        [
+          "6000",
+          "AUTO DEBIT - RD INSTALLMENT A/C XXXXXX9614",
+          "2026-03-05",
+          6,
+          "ACH",
+          "199744"
+        ],
+        [
+          "12000",
+          "CREDIT CARD BILL PAYMENT-XXXXXXXX9907",
+          "2026-03-10",
+          2,
+          "CARD_PAYMENT",
+          "195921"
+        ],
+        [
+          "3234",
+          "UPI-GROCER-GROCERIES@UPI-SANGAGARI",
+          "2026-03-15",
+          2,
+          "UPI",
+          "169193"
+        ],
+        [
+          "1698",
+          "BESCOM/TNEB ELECTRICITY BILL-Mar2026",
+          "2026-03-18",
+          2,
+          "BILLPAY",
+          "145923"
+        ],
+        [
+          "797",
+          "AIRTEL/JIO RECHARGE-DINESHKUMAR",
+          "2026-03-20",
+          2,
+          "UPI",
+          "148342"
+        ],
+        [
+          "2202",
+          "UPI-PETROL BUNK-FUEL@UPI-SANGAGARI",
+          "2026-03-22",
+          2,
+          "UPI",
+          "115981"
+        ],
+        [
+          "1115",
+          "SWIGGY/ZOMATO-FOOD ORDER-DINESHKUMAR",
+          "2026-03-25",
+          2,
+          "UPI",
+          "102131"
+        ],
+        [
+          "1050",
+          "QTRLY INTEREST CREDIT ON FD A/C XXXXXX4588",
+          "2026-03-15",
+          4,
+          "INTEREST",
+          "360692"
+        ]
+      ]
+    }
+  ]
+}

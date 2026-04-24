@@ -1,0 +1,17 @@
+{
+  "user_id": "2121212121",
+  "name": "Mani",
+  "occupation": "Government Employee",
+  "age": 38,
+  "monthly_income": 60000,
+  "city": "Edapadi",
+  "risk_profile": "Low",
+  "financial_goals": [
+    "Emergency Fund",
+    "Retirement Planning",
+    "Investment Growth"
+  ],
+  "dependents": 3,
+  "marital_status": "Married",
+  "investment_preference": "Debt and FD"
+}
