@@ -83,6 +83,12 @@ yarn-error.log*
 backend/logs/
 frontend/logs/
 
+# ── Security Reports ────────────────────────
+*-report.json
+bandit-report.json
+security-report.*
+audit-report.*
+
 # ── Node.js / Frontend ──────────────────────
 node_modules/
 npm-debug.log*

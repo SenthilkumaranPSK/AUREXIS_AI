@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     RELOAD: bool = True
     
     # ── Security ───────────────────────────────────────────────────────────
-    SECRET_KEY: str = "your-secret-key-change-in-production-use-openssl-rand-hex-32"
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "dev-secret-key-CHANGE-IN-PRODUCTION")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440  # 24 hours
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
@@ -122,6 +122,13 @@ if settings.ENVIRONMENT == "production":
     settings.RELOAD = False
     settings.DATABASE_ECHO = False
     settings.LOG_LEVEL = "WARNING"
+    
+    # Validate critical security settings in production
+    if settings.SECRET_KEY == "dev-secret-key-CHANGE-IN-PRODUCTION":
+        raise ValueError(
+            "SECRET_KEY must be set via environment variable in production. "
+            "Generate one with: openssl rand -hex 32"
+        )
 elif settings.ENVIRONMENT == "testing":
     settings.DATABASE_URL = "sqlite:///./test_aurexis.db"
     settings.CACHE_ENABLED = False
