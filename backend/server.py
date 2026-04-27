@@ -147,21 +147,18 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+# IMPORTANT: CORS middleware MUST be added FIRST to handle preflight requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
-    allow_credentials=True,
-    allow_methods=settings.ALLOWED_METHODS,
-    allow_headers=settings.ALLOWED_HEADERS,
+    allow_origins=["*"],  # Allow all origins for development
+    allow_credentials=False,  # Must be False when using allow_origins=["*"]
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Add logging middleware
+# Add other middlewares AFTER CORS
 app.add_middleware(LoggingMiddleware)
-
-# Add validation middleware
 app.add_middleware(ValidationMiddleware)
-
-# Add caching middleware
 app.add_middleware(CachingMiddleware)
 
 
@@ -1050,46 +1047,27 @@ async def call_ollama(
             if preferences.get("financial_goals"):
                 preferences_info += f"Financial Goals: {', '.join(preferences['financial_goals'][:3])}\n"
 
-    system_prompt = f"""You are AUREXIS AI, an expert personal financial advisor for {name}.
+    system_prompt = f"""You are AUREXIS AI, a personal financial advisor for {name}.
 
-=== USER FINANCIAL PROFILE ===
-Name: {name} | Age: {age} | Occupation: {occ} | Location: {city}
-Credit Score: {credit_score} | Risk Profile: {risk_level}
-
-=== MONTHLY FINANCIALS (avg over {num_months} months) ===
-Monthly Income:   ₹{monthly_income:,.0f}
+USER PROFILE:
+Name: {name}, Age: {age}, Occupation: {occ}, Location: {city}
+Monthly Income: ₹{monthly_income:,.0f}
 Monthly Expenses: ₹{monthly_expense:,.0f}
-Monthly Savings:  ₹{monthly_savings:,.0f}
-Savings Rate:     {savings_rate}%
-Expense Ratio:    {dti}%
-
-=== WEALTH SNAPSHOT ===
-Net Worth:        ₹{net_worth:,.0f}
-EPF Balance:      ₹{epf_balance:,.0f}
-MF Invested:      ₹{mf_value:,.0f}
-Emergency Fund:   {emergency_months} months covered
-Health Score:     {health_score}/100
-
-=== AI AGENT TEAM ===
-I have a team of specialized AI agents working for you:
-{agent_info}
-
-These agents can:
-- Analyst: Analyze spending, income, trends, and detect anomalies
-- Advisor: Generate recommendations, assess risks, identify opportunities
-- Planner: Create goal plans, budgets, and timeline projections
-
-When you ask about agents, workflows, or need complex analysis, I can coordinate these agents to help you!
+Monthly Savings: ₹{monthly_savings:,.0f}
+Savings Rate: {savings_rate}%
+Net Worth: ₹{net_worth:,.0f}
+Credit Score: {credit_score}
+EPF Balance: ₹{epf_balance:,.0f}
+MF Invested: ₹{mf_value:,.0f}
+Emergency Fund: {emergency_months} months covered
 {preferences_info}
-=== YOUR ROLE ===
-- Give specific, personalized advice using the EXACT numbers above
-- Be direct and actionable (3-5 sentences)
-- Always reference actual rupee amounts from the profile
-- Highlight risks if any exist
-- Use ₹ for all currency values
-- When asked about agents, explain what each agent does
-- If user asks for complex analysis, mention you can run multi-agent workflows
-- Remember context from previous conversations when available
+INSTRUCTIONS:
+- Write responses in simple, plain text without markdown formatting
+- No bold text, no bullet points, no emojis, no special formatting
+- Keep answers short and conversational (2-4 sentences)
+- Use actual numbers from the profile above
+- Write naturally like you're talking to a friend
+- Use ₹ for currency values
 - Never say you don't have data — use the profile above"""
 
     # Get conversation context from memory if enabled
@@ -1121,12 +1099,7 @@ When you ask about agents, workflows, or need complex analysis, I can coordinate
     return {
         "summary": "AUREXIS AI",
         "content": reply,
-        "insights": [
-            f"Savings rate: {savings_rate}%",
-            f"Net worth: ₹{net_worth:,.0f}",
-            f"Credit score: {credit_score}",
-            f"Health score: {health_score}/100",
-        ],
+        "insights": [],  # Removed metrics footer for cleaner output
         "recommendations": [],
         "confidence": 0.85,
     }
@@ -1213,4 +1186,4 @@ def build_user_profile(user: Dict[str, Any]) -> Dict[str, Any]:
 
 
 if __name__ == "__main__":
-    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("server:app", host="127.0.0.1", port=8000, reload=True)

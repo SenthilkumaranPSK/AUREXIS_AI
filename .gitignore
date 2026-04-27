@@ -238,7 +238,62 @@ site/
 *.p12
 *.pfx
 
+# ── AI & ML Models ─────────────────────────
+*.h5
+*.pkl
+*.pickle
+*.joblib
+*.model
+*.weights
+models/
+checkpoints/
+
+# ── Documentation (Generated) ───────────────
+# Keep essential docs, ignore generated ones
+ALL_BUGS_FIXED.md
+API_DOCUMENTATION.md
+BACKEND_BUGS_FIXED.md
+CHAT_OUTPUT_SIMPLIFIED.md
+CORS_FINAL_FIX.md
+CORS_FIX.md
+DASHBOARD_ARCHITECTURE.md
+DOCUMENTATION.md
+FINAL_CHECKLIST.md
+FINAL_SOLUTION.md
+FIXES_APPLIED.md
+HOST_FIX.md
+IMPLEMENTATION_CHECKLIST.md
+MIGRATION.md
+README_REFACTORING.md
+README_UPDATED.md
+REAL_FIX_COMPLETE.md
+REFACTOR_SUMMARY.md
+
+# ── Large Files & Media ─────────────────────
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.mp3
+*.wav
+*.flac
+*.psd
+*.ai
+*.sketch
+
+# ── Package Manager Locks (Optional) ────────
+# Uncomment if you want to ignore lock files
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
 # ── Keep These Files ────────────────────────
 !.gitkeep
 !.gitignore
 !README.md
+!QUICK_START.md
+!LOGIN_CREDENTIALS.md
+!DASHBOARD_REFACTOR.md
+!DASHBOARD_MODULE_GUIDE.md
+!QUICK_REFERENCE.md

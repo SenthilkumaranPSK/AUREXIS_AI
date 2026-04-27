@@ -10,6 +10,7 @@ import { useStore } from "@/store/useStore";
 import { formatCurrency } from "@/lib/formatters";
 import MetricCard from "@/components/dashboard/MetricCard";
 import HealthScoreGauge from "@/components/dashboard/HealthScoreGauge";
+import HealthRadarChart from "@/components/dashboard/HealthRadarChart";
 import ForecastChart from "@/components/dashboard/ForecastChart";
 import ExpenseBreakdown from "@/components/dashboard/ExpenseBreakdown";
 import InvestmentPanel from "@/components/dashboard/InvestmentPanel";
@@ -23,6 +24,10 @@ import AppHeader from "@/components/layout/AppHeader";
 import StocksPanel from "@/components/dashboard/StocksPanel";
 import MutualFundsPanel from "@/components/dashboard/MutualFundsPanel";
 import MLForecastChart from "@/components/dashboard/MLForecastChart";
+import SavingsTrendChart from "@/components/dashboard/SavingsTrendChart";
+import DebtPayoffTimeline from "@/components/dashboard/DebtPayoffTimeline";
+import RiskIndicators from "@/components/dashboard/RiskIndicators";
+import ReportsExport from "@/components/dashboard/ReportsExport";
 
 // Quick summary card — shows a snapshot with a "View Details" link
 function SummaryCard({
@@ -63,18 +68,12 @@ function OverviewSection({ u }: { u: UserProfile }) {
 
   return (
     <>
-      {/* Key metrics */}
+      {/* Key metrics - Summary only */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard title="Net Worth"      value={formatCurrency(u.netWorth)}      icon={Wallet}      variant="primary" trend={{ value: "4.2%", positive: true }} />
         <MetricCard title="Monthly Income" value={formatCurrency(u.monthlyIncome)} icon={TrendingUp}  variant="success" />
         <MetricCard title="Monthly Expense"value={formatCurrency(u.monthlyExpense)}icon={TrendingDown} variant="danger" />
         <MetricCard title="Savings Rate"   value={`${u.savingsRate}%`}             icon={PiggyBank}   variant={u.savingsRate > 30 ? "success" : "warning"} trend={{ value: "2.1%", positive: u.savingsRate > 30 }} />
-      </div>
-
-      {/* Health + Forecast */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <HealthScoreGauge />
-        <div className="lg:col-span-2"><ForecastChart /></div>
       </div>
 
       {/* Quick summary cards — click to navigate */}
@@ -141,9 +140,9 @@ function HealthSection({ u }: { u: UserProfile }) {
         <MetricCard title="Emergency Fund" value={`${u.emergencyFundMonths} months`} icon={Shield}  variant={u.emergencyFundMonths >= 6 ? "success" : "warning"} />
         <MetricCard title="Credit Score"   value={`${u.creditScore}`}              icon={CreditCard} variant={u.creditScore >= 750 ? "success" : u.creditScore >= 650 ? "warning" : "danger"} />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <HealthScoreGauge />
-        <div className="lg:col-span-2"><ForecastChart /></div>
+        <HealthRadarChart />
       </div>
       <RecommendationFeed />
     </>
@@ -160,7 +159,7 @@ function RiskSection({ u }: { u: UserProfile }) {
         <MetricCard title="Total Debt"     value={formatCurrency(u.totalDebt)}                        icon={CreditCard}    variant="danger" />
         <MetricCard title="Credit Score"   value={`${u.creditScore}`}                                 icon={Shield}        variant={u.creditScore >= 750 ? "success" : "warning"} />
       </div>
-      <HealthScoreGauge />
+      <RiskIndicators />
       <RecommendationFeed />
     </>
   );
@@ -176,7 +175,7 @@ function SavingsSection({ u }: { u: UserProfile }) {
         <MetricCard title="Emergency Fund"  value={`${u.emergencyFundMonths} months`}  icon={Shield}    variant={u.emergencyFundMonths >= 6 ? "success" : "warning"} />
         <MetricCard title="Net Worth"       value={formatCurrency(u.netWorth)}         icon={Wallet}    variant="primary" />
       </div>
-      <ForecastChart />
+      <SavingsTrendChart />
       <GoalsPanel />
     </>
   );
@@ -192,7 +191,7 @@ function DebtSection({ u }: { u: UserProfile }) {
         <MetricCard title="Monthly Income"  value={formatCurrency(u.monthlyIncome)}              icon={TrendingUp} variant="success" />
         <MetricCard title="Credit Score"    value={`${u.creditScore}`}                           icon={Shield}     variant={u.creditScore >= 750 ? "success" : "warning"} />
       </div>
-      <ScenarioSimulation />
+      <DebtPayoffTimeline />
       <RecommendationFeed />
     </>
   );
@@ -208,7 +207,7 @@ const sectionMap: Record<string, (u: any) => JSX.Element | null> = {
   "/dashboard/forecasting": ()  => <><ForecastChart /><MLForecastChart /></>,
   "/dashboard/simulation":  ()  => <ScenarioSimulation />,
   "/dashboard/alerts":      ()  => <RecommendationFeed />,
-  "/dashboard/reports":     ()  => <><ForecastChart /><ExpenseBreakdown /></>,
+  "/dashboard/reports":     ()  => <><ReportsExport /><ExpenseBreakdown /></>,
   "/dashboard/settings":    ()  => (
     <div className="glass-card rounded-2xl p-6 text-muted-foreground text-sm border border-border">
       Settings panel coming soon.
