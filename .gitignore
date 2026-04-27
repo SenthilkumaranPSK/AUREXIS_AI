@@ -134,6 +134,7 @@ test_*.sqlite
 .vscode/
 .idea/
 .claude/
+.kiro/
 *.swp
 *.swo
 *~
@@ -247,6 +248,11 @@ site/
 *.weights
 models/
 checkpoints/
+
+# AI Tool Outputs
+_bmad/
+bmad-output.gemini.github/
+.kiro/
 
 # ── Documentation (Generated) ───────────────
 # Keep essential docs, ignore generated ones
