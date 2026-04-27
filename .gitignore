@@ -1,14 +1,21 @@
 # ============================================
-# AUREXIS AI - .gitignore
+# AUREXIS AI - CLEAN .gitignore
 # ============================================
+# AI Tool folders
+.gemini/
+.kiro/
+.claude/
+_bmad/
+
+# Reports
+*-report.json
+
+# Excel / temp data (optional)
+*.xlsx
 
 # ── Python ──────────────────────────────────
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
-*.pyw
-.Python
 *.so
 *.dylib
 *.dll
@@ -16,290 +23,79 @@ __pycache__/
 # Virtual Environments
 venv/
 env/
-ENV/
 .venv/
-virtualenv/
 
-# Python Package Files
-*.egg
-*.egg-info/
-dist/
+# Python Packaging
 build/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-
-# PyInstaller
-*.manifest
-*.spec
+dist/
+*.egg-info/
 
 # ── Environment & Secrets ───────────────────
 .env
-.env.local
-.env.*.local
-*.env
-.env.production
-.env.development
-.env.test
-
-# API Keys & Secrets
+.env.*
 secrets.json
 credentials.json
 *.pem
 *.key
-*.crt
 
 # ── Database ────────────────────────────────
 *.sqlite
 *.sqlite3
 *.db
-*.db-journal
-*.db-shm
-*.db-wal
-aurexis.db
-test_aurexis.db
-
-# PostgreSQL
-*.pgdata
-pgdata/
-
-# Redis
-dump.rdb
-appendonly.aof
 
 # ── Logs ────────────────────────────────────
-logs/
 *.log
-*.log.*
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-backend/logs/
-frontend/logs/
-
-# ── Security Reports ────────────────────────
-*-report.json
-bandit-report.json
-security-report.*
-audit-report.*
+logs/
 
 # ── Node.js / Frontend ──────────────────────
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-.pnpm-debug.log*
-
-# Build outputs
 dist/
 build/
-out/
 .next/
-.nuxt/
-.cache/
-.parcel-cache/
-.vite/
-.vite-temp/
-
-# Frontend dependencies
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+out/
 
 # ── Testing ─────────────────────────────────
 .pytest_cache/
-.coverage
-.coverage.*
+.coverage*
 htmlcov/
-coverage/
-.nyc_output/
-*.cover
-*.py,cover
-.hypothesis/
-.tox/
-.nox/
-
-# Test databases
-test_*.db
-test_*.sqlite
 
 # ── IDE & Editors ───────────────────────────
 .vscode/
 .idea/
-.claude/
-.kiro/
 *.swp
-*.swo
 *~
-.project
-.classpath
-.settings/
-*.sublime-project
-*.sublime-workspace
 
-# VS Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-# JetBrains
-.idea/
-*.iml
-*.iws
-*.ipr
-
-# ── Operating System ────────────────────────
-# macOS
+# ── OS Files ────────────────────────────────
 .DS_Store
-.AppleDouble
-.LSOverride
-._*
-
-# Windows
 Thumbs.db
-Thumbs.db:encryptable
-ehthumbs.db
-ehthumbs_vista.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# Linux
-*~
-.directory
-.Trash-*
 
 # ── Temporary Files ─────────────────────────
 *.tmp
-*.temp
 *.bak
-*.backup
-*.swp
-*.swo
-*~
 
-# ── Cache & Compiled ────────────────────────
-*.pyc
-*.pyo
-*.pyd
-.Python
-*.so
-*.class
-*.o
-*.obj
+# ── Cache ───────────────────────────────────
+.cache/
+.parcel-cache/
+.vite/
 
-# Jupyter Notebook
-.ipynb_checkpoints/
-*.ipynb
+# ── AI / ML Models (if large) ───────────────
+*.pkl
+*.joblib
+models/
+checkpoints/
 
-# ── Monitoring & Metrics ────────────────────
-prometheus_data/
-grafana_data/
-
-# ── Backup Files ────────────────────────────
-*.sql.backup
-*.db.backup
-backup_*/
-backups/
-
-# ── User Data (Optional - Uncomment if needed) ──
-# backend/user_data/
-# !backend/user_data/README.md
-
-# ── Misc ────────────────────────────────────
-*.bat
-*.xlsx
-*.xls
-*.csv
+# ── Large Files (optional) ──────────────────
 *.zip
 *.tar.gz
 *.rar
 
-# Local configuration
-local_settings.py
-config.local.json
-
-# Documentation builds
-docs/_build/
-site/
-
-# Certificates
-*.pem
-*.key
-*.crt
-*.cer
-*.p12
-*.pfx
-
-# ── AI & ML Models ─────────────────────────
-*.h5
-*.pkl
-*.pickle
-*.joblib
-*.model
-*.weights
-models/
-checkpoints/
-
-# AI Tool Outputs
-_bmad/
-bmad-output.gemini.github/
-.kiro/
-
-# ── Documentation (Generated) ───────────────
-# Keep essential docs, ignore generated ones
-ALL_BUGS_FIXED.md
-API_DOCUMENTATION.md
-BACKEND_BUGS_FIXED.md
-CHAT_OUTPUT_SIMPLIFIED.md
-CORS_FINAL_FIX.md
-CORS_FIX.md
-DASHBOARD_ARCHITECTURE.md
-DOCUMENTATION.md
-FINAL_CHECKLIST.md
-FINAL_SOLUTION.md
-FIXES_APPLIED.md
-HOST_FIX.md
-IMPLEMENTATION_CHECKLIST.md
-MIGRATION.md
-README_REFACTORING.md
-README_UPDATED.md
-REAL_FIX_COMPLETE.md
-REFACTOR_SUMMARY.md
-
-# ── Large Files & Media ─────────────────────
-*.mp4
-*.avi
-*.mov
-*.wmv
-*.flv
-*.mp3
-*.wav
-*.flac
-*.psd
-*.ai
-*.sketch
-
-# ── Package Manager Locks (Optional) ────────
-# Uncomment if you want to ignore lock files
-# package-lock.json
-# yarn.lock
-# pnpm-lock.yaml
-
-# ── Keep These Files ────────────────────────
-!.gitkeep
-!.gitignore
+# ── KEEP IMPORTANT FILES ────────────────────
 !README.md
-!QUICK_START.md
-!LOGIN_CREDENTIALS.md
-!DASHBOARD_REFACTOR.md
-!DASHBOARD_MODULE_GUIDE.md
-!QUICK_REFERENCE.md
+!requirements.txt
+!package.json
+!package-lock.json
+!yarn.lock
+
+# Keep sample data only
+data/*
+!data/sample.*
