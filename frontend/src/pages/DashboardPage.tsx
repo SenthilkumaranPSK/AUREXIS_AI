@@ -28,6 +28,7 @@ import SavingsTrendChart from "@/components/dashboard/SavingsTrendChart";
 import DebtPayoffTimeline from "@/components/dashboard/DebtPayoffTimeline";
 import RiskIndicators from "@/components/dashboard/RiskIndicators";
 import ReportsExport from "@/components/dashboard/ReportsExport";
+import SettingsPanel from "@/components/dashboard/SettingsPanel";
 
 // Quick summary card — shows a snapshot with a "View Details" link
 function SummaryCard({
@@ -208,11 +209,7 @@ const sectionMap: Record<string, (u: any) => JSX.Element | null> = {
   "/dashboard/simulation":  ()  => <ScenarioSimulation />,
   "/dashboard/alerts":      ()  => <RecommendationFeed />,
   "/dashboard/reports":     ()  => <><ReportsExport /><ExpenseBreakdown /></>,
-  "/dashboard/settings":    ()  => (
-    <div className="glass-card rounded-2xl p-6 text-muted-foreground text-sm border border-border">
-      Settings panel coming soon.
-    </div>
-  ),
+  "/dashboard/settings":    ()  => <SettingsPanel />,
 };
 
 const sectionTitles: Record<string, string> = {
