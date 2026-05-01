@@ -21,7 +21,7 @@ from slowapi.util import get_remote_address
 # Rate limiter for auth endpoints (stricter limits)
 limiter = Limiter(key_func=get_remote_address)
 
-router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+router = APIRouter(tags=["Authentication"])
 
 
 @router.post("/signup", response_model=LoginResponse, status_code=status.HTTP_201_CREATED)
@@ -61,7 +61,14 @@ async def signup(request: Request, signup_request: SignupRequest):
 async def login(request: Request, login_request: LoginRequest):
     """Authenticate user and return tokens (Rate limited: 5 requests/minute)"""
     try:
-        result = AuthService.login(login_request.email, login_request.password)
+        identifier = login_request.email or login_request.username
+        if not identifier:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Either 'email' or 'username' must be provided",
+            )
+
+        result = AuthService.login(identifier, login_request.password)
 
         return LoginResponse(
             success=True,

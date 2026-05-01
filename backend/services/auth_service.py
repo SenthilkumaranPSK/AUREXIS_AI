@@ -12,7 +12,7 @@ from auth.jwt_handler import (
     verify_token,
     verify_password
 )
-from database.connection import get_db
+from database.connection_enhanced import get_db
 
 
 class AuthService:

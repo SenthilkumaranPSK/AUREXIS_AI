@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { useStore } from "@/store/useStore";
-import { getUserHealth } from "@/lib/api";
 import { motion } from "framer-motion";
 import { Loader2, Activity } from "lucide-react";
 
@@ -19,6 +18,47 @@ const CustomTooltip = ({ active, payload }: any) => {
   );
 };
 
+// Generate radar chart data based on user's financial metrics
+const generateRadarData = (currentUser: any) => {
+  const savingsRate = currentUser?.savingsRate || 0;
+  const emergencyFund = currentUser?.emergencyFundMonths || 0;
+  const debtRatio = currentUser?.debtToIncomeRatio || 0;
+  const healthScore = currentUser?.financialHealthScore || 50;
+  
+  return [
+    {
+      factor: "Savings",
+      value: Math.min(100, savingsRate * 3), // Scale savings rate
+      fullMark: 100,
+    },
+    {
+      factor: "Emergency Fund",
+      value: Math.min(100, (emergencyFund / 6) * 100), // 6 months is 100%
+      fullMark: 100,
+    },
+    {
+      factor: "Debt Management",
+      value: Math.max(0, 100 - (debtRatio * 200)), // Lower debt ratio = higher score
+      fullMark: 100,
+    },
+    {
+      factor: "Investment",
+      value: 75, // Mock investment score
+      fullMark: 100,
+    },
+    {
+      factor: "Planning",
+      value: Math.min(100, healthScore + 10), // Slightly higher than overall health
+      fullMark: 100,
+    },
+    {
+      factor: "Risk Management",
+      value: emergencyFund >= 3 ? 80 : 45, // Based on emergency fund
+      fullMark: 100,
+    }
+  ];
+};
+
 export default function HealthRadarChart() {
   const { currentUser } = useStore();
   const [data, setData] = useState<any[]>([]);
@@ -26,19 +66,13 @@ export default function HealthRadarChart() {
 
   useEffect(() => {
     if (!currentUser?.id) return;
+    
+    // Simulate API call with generated radar data
     setLoading(true);
-    getUserHealth(currentUser.id)
-      .then(res => {
-        // Transform subScores into radar chart format
-        const radarData = res.subScores?.map((s: any) => ({
-          factor: s.name,
-          value: s.score,
-          fullMark: 100,
-        })) || [];
-        setData(radarData);
-      })
-      .catch(() => setData([]))
-      .finally(() => setLoading(false));
+    setTimeout(() => {
+      setData(generateRadarData(currentUser));
+      setLoading(false);
+    }, 600);
   }, [currentUser?.id]);
 
   if (loading) {

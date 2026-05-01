@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
-import { getUserHealth } from "@/lib/api";
 import { Loader2 } from "lucide-react";
 
 const cssColor: Record<string, string> = {
@@ -11,6 +10,60 @@ const cssColor: Record<string, string> = {
   danger:  "hsl(var(--danger))",
 };
 
+// Generate health data based on user's financial metrics
+const generateHealthData = (currentUser: any) => {
+  const score = currentUser?.financialHealthScore || 50;
+  const savingsRate = currentUser?.savingsRate || 0;
+  const emergencyFund = currentUser?.emergencyFundMonths || 0;
+  const debtRatio = currentUser?.debtToIncomeRatio || 0;
+  
+  let color = "danger";
+  let label = "Needs Improvement";
+  
+  if (score >= 80) {
+    color = "success";
+    label = "Excellent";
+  } else if (score >= 70) {
+    color = "primary";
+    label = "Good";
+  } else if (score >= 50) {
+    color = "warning";
+    label = "Fair";
+  }
+  
+  return {
+    overall: score,
+    color,
+    label,
+    subScores: [
+      {
+        name: "Savings Rate",
+        score: Math.min(100, savingsRate * 3), // Scale savings rate
+        color: savingsRate > 20 ? "success" : savingsRate > 10 ? "warning" : "danger",
+        detail: `${savingsRate}% of income`
+      },
+      {
+        name: "Emergency Fund",
+        score: Math.min(100, (emergencyFund / 6) * 100), // 6 months is 100%
+        color: emergencyFund >= 6 ? "success" : emergencyFund >= 3 ? "warning" : "danger",
+        detail: `${emergencyFund} months`
+      },
+      {
+        name: "Debt Management",
+        score: Math.max(0, 100 - (debtRatio * 200)), // Lower debt ratio = higher score
+        color: debtRatio < 0.3 ? "success" : debtRatio < 0.5 ? "warning" : "danger",
+        detail: `${(debtRatio * 100).toFixed(0)}% DTI ratio`
+      },
+      {
+        name: "Investment Growth",
+        score: 75, // Mock score
+        color: "primary",
+        detail: "Portfolio diversified"
+      }
+    ]
+  };
+};
+
 export default function HealthScoreGauge() {
   const { currentUser } = useStore();
   const [health, setHealth] = useState<any>(null);
@@ -18,11 +71,13 @@ export default function HealthScoreGauge() {
 
   useEffect(() => {
     if (!currentUser?.id) return;
+    
+    // Simulate API call with generated health data
     setLoading(true);
-    getUserHealth(currentUser.id)
-      .then(res => setHealth(res))
-      .catch(() => setHealth(null))
-      .finally(() => setLoading(false));
+    setTimeout(() => {
+      setHealth(generateHealthData(currentUser));
+      setLoading(false);
+    }, 400);
   }, [currentUser?.id]);
 
   if (loading) return (

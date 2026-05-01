@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useStore } from "@/store/useStore";
 import { motion } from "framer-motion";
 import { 
   User, Bell, Shield, Palette, Globe, Database, 
@@ -37,13 +38,28 @@ export default function SettingsPanel() {
     reports: false,
   });
 
+  const { currentUser } = useStore();
+
   const [profile, setProfile] = useState({
-    name: "Imayavarman",
-    email: "imayavarman@example.com",
-    phone: "+91 1111111111",
-    occupation: "Software Engineer",
-    location: "Chennai, India",
+    name: currentUser?.name || "",
+    email: currentUser?.email || "",
+    phone: currentUser?.phone || "",
+    occupation: currentUser?.occupation || "",
+    location: currentUser?.location || "",
   });
+
+  // Update profile when currentUser changes
+  useEffect(() => {
+    if (currentUser) {
+      setProfile({
+        name: currentUser.name || "",
+        email: currentUser.email || "",
+        phone: currentUser.phone || "",
+        occupation: currentUser.occupation || "",
+        location: currentUser.location || "",
+      });
+    }
+  }, [currentUser]);
 
   const handleSave = () => {
     // Save settings logic here

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { formatCurrency } from "@/lib/formatters";
-import { getUserMutualFunds } from "@/lib/api";
 import { TrendingUp, TrendingDown, Loader2, PieChart as PieIcon } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
@@ -16,18 +15,88 @@ const riskColor: Record<string, string> = {
   "Low":               "bg-success/10 text-success border-success/20",
 };
 
+// Mock data for mutual funds
+const generateMockMutualFundData = (userId: string) => {
+  return {
+    schemesCount: 4,
+    totalValue: 320000,
+    totalInvested: 280000,
+    totalPnL: 40000,
+    totalPnLPct: 14.3,
+    avgXIRR: 12.8,
+    holdings: [
+      { 
+        isin: "INF090I01239", 
+        schemeName: "SBI Bluechip Fund - Direct Growth", 
+        folioId: "12345678", 
+        sipMonths: 24, 
+        riskLevel: "High",
+        investedValue: 120000,
+        currentValue: 140000,
+        pnl: 20000,
+        pnlPct: 16.7,
+        xirr: 14.2
+      },
+      { 
+        isin: "INF204K01424", 
+        schemeName: "HDFC Mid-Cap Opportunities Fund - Direct Growth", 
+        folioId: "87654321", 
+        sipMonths: 18, 
+        riskLevel: "High",
+        investedValue: 90000,
+        currentValue: 98000,
+        pnl: 8000,
+        pnlPct: 8.9,
+        xirr: 9.5
+      },
+      { 
+        isin: "INF846K01238", 
+        schemeName: "ICICI Prudential Balanced Advantage Fund - Direct Growth", 
+        folioId: "11223344", 
+        sipMonths: 12, 
+        riskLevel: "Moderate",
+        investedValue: 50000,
+        currentValue: 58000,
+        pnl: 8000,
+        pnlPct: 16.0,
+        xirr: 15.2
+      },
+      { 
+        isin: "INF109K01424", 
+        schemeName: "Axis Long Term Equity Fund - Direct Growth", 
+        folioId: "55667788", 
+        sipMonths: 6, 
+        riskLevel: "High",
+        investedValue: 20000,
+        currentValue: 24000,
+        pnl: 4000,
+        pnlPct: 20.0,
+        xirr: 18.5
+      }
+    ],
+    assetBreakdown: [
+      { assetClass: "Large Cap", value: 140000, pct: 43.8 },
+      { assetClass: "Mid Cap", value: 98000, pct: 30.6 },
+      { assetClass: "Balanced", value: 58000, pct: 18.1 },
+      { assetClass: "ELSS", value: 24000, pct: 7.5 }
+    ]
+  };
+};
+
 export default function MutualFundsPanel() {
   const { currentUser } = useStore();
-  const [data, setData]     = useState<any>(null);
+  const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!currentUser?.id) return;
+    
+    // Simulate API call with mock data
     setLoading(true);
-    getUserMutualFunds(currentUser.id)
-      .then(res => setData(res))
-      .catch(() => setData(null))
-      .finally(() => setLoading(false));
+    setTimeout(() => {
+      setData(generateMockMutualFundData(currentUser.id));
+      setLoading(false);
+    }, 700);
   }, [currentUser?.id]);
 
   if (loading) return (

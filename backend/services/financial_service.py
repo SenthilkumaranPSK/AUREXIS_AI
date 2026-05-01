@@ -6,9 +6,9 @@ Business logic for financial operations
 from typing import List, Optional, Dict
 from datetime import datetime, date
 from models.financial import FinancialModel
-from analytics_legacy import compute_metrics, compute_expenses
+from analytics import compute_metrics, compute_expenses
 from health import compute_health
-from user_manager import get_all_user_data
+from user_manager_secure import UserManager
 
 
 class FinancialService:
@@ -50,6 +50,11 @@ class FinancialService:
             end_date=end_date.isoformat() if end_date else None,
             category=category
         )
+
+    @staticmethod
+    def get_expense_by_id(expense_id: int) -> Optional[Dict]:
+        """Get an expense by id (used for authz checks in routes)."""
+        return FinancialModel.get_expense_by_id(expense_id)
     
     @staticmethod
     def update_expense(expense_id: int, **kwargs) -> Dict:
@@ -74,7 +79,7 @@ class FinancialService:
     @staticmethod
     def get_expense_analytics(user_id: str) -> Dict:
         """Get expense analytics"""
-        data = get_all_user_data(user_id)
+        data = UserManager.get_all_user_data(user_id)
         return compute_expenses(data)
     
     # ==================== INCOME ====================
@@ -132,6 +137,11 @@ class FinancialService:
         for goal in goals:
             goal['progress'] = (goal['current_amount'] / goal['target_amount'] * 100) if goal['target_amount'] > 0 else 0
         return goals
+
+    @staticmethod
+    def get_goal_by_id(goal_id: int) -> Optional[Dict]:
+        """Get a goal by id (used for authz checks in routes)."""
+        return FinancialModel.get_goal_by_id(goal_id)
     
     @staticmethod
     def update_goal(goal_id: int, **kwargs) -> Dict:
@@ -185,11 +195,11 @@ class FinancialService:
     @staticmethod
     def get_financial_metrics(user_id: str) -> Dict:
         """Get key financial metrics"""
-        data = get_all_user_data(user_id)
+        data = UserManager.get_all_user_data(user_id)
         return compute_metrics(data)
     
     @staticmethod
     def get_financial_health(user_id: str) -> Dict:
         """Get financial health score"""
-        data = get_all_user_data(user_id)
+        data = UserManager.get_all_user_data(user_id)
         return compute_health(data)

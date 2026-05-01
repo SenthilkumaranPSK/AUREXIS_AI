@@ -17,7 +17,10 @@ class SignupRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    # Tests and clients sometimes send `username` instead of `email`.
+    # We accept both and let the route map to the identifier.
+    email: Optional[EmailStr] = None
+    username: Optional[str] = None
     password: str
 
 

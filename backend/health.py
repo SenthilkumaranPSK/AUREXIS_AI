@@ -1,88 +1,231 @@
 """
-AUREXIS AI — Health Score Engine
-Computes detailed financial health breakdown with sub-scores.
+Financial Health Module
+Calculate and analyze financial health scores
 """
 
-from typing import Dict, Any
-from analytics_legacy import extract_transactions, extract_net_worth, extract_credit_score
+from typing import Dict
+import logging
+from database.db_utils import get_db
+
+logger = logging.getLogger(__name__)
 
 
-def compute_health(financial_data: Dict[str, Any]) -> Dict[str, Any]:
-    """Compute detailed financial health score with sub-scores and color metadata."""
-    income, expense, _ = extract_transactions(financial_data)
-    net_worth = extract_net_worth(financial_data)
-    credit_score = extract_credit_score(financial_data)
+def compute_health(user_id: str) -> Dict:
+    """
+    Compute comprehensive financial health score
+    
+    Args:
+        user_id: User identifier
+        
+    Returns:
+        Dictionary with health score and sub-scores
+    """
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            
+            # Get income
+            cursor.execute("""
+                SELECT amount
+                FROM monthly_income
+                WHERE user_id = ?
+                ORDER BY month DESC
+                LIMIT 1
+            """, (user_id,))
+            income_row = cursor.fetchone()
+            monthly_income = income_row['amount'] if income_row else 0
+            
+            # Get expenses (last 30 days)
+            cursor.execute("""
+                SELECT SUM(amount) as total
+                FROM expenses
+                WHERE user_id = ? AND date >= date('now', '-30 days')
+            """, (user_id,))
+            expense_row = cursor.fetchone()
+            monthly_expenses = expense_row['total'] if expense_row else 0
+            
+            # Calculate sub-scores
+            savings_score = calculate_savings_score(monthly_income, monthly_expenses)
+            debt_score = calculate_debt_score(user_id, monthly_income, cursor)
+            emergency_fund_score = calculate_emergency_fund_score(user_id, monthly_expenses, cursor)
+            goal_progress_score = calculate_goal_progress_score(user_id, cursor)
+            spending_discipline_score = calculate_spending_discipline_score(user_id, cursor)
+            
+            # Calculate overall health score (weighted average)
+            overall_score = (
+                savings_score * 0.25 +
+                debt_score * 0.20 +
+                emergency_fund_score * 0.20 +
+                goal_progress_score * 0.20 +
+                spending_discipline_score * 0.15
+            )
+            
+            # Determine health status
+            if overall_score >= 80:
+                status = "excellent"
+                status_message = "Your financial health is excellent!"
+            elif overall_score >= 60:
+                status = "good"
+                status_message = "Your financial health is good, with room for improvement."
+            elif overall_score >= 40:
+                status = "fair"
+                status_message = "Your financial health needs attention."
+            else:
+                status = "poor"
+                status_message = "Your financial health requires immediate action."
+            
+            return {
+                "overall_score": round(overall_score, 1),
+                "status": status,
+                "status_message": status_message,
+                "sub_scores": {
+                    "savings": round(savings_score, 1),
+                    "debt": round(debt_score, 1),
+                    "emergency_fund": round(emergency_fund_score, 1),
+                    "goal_progress": round(goal_progress_score, 1),
+                    "spending_discipline": round(spending_discipline_score, 1)
+                },
+                "metrics": {
+                    "monthly_income": monthly_income,
+                    "monthly_expenses": monthly_expenses,
+                    "savings_rate": ((monthly_income - monthly_expenses) / monthly_income * 100) if monthly_income > 0 else 0
+                }
+            }
+    except Exception as e:
+        logger.error(f"Error computing health score: {e}")
+        return {
+            "overall_score": 0,
+            "status": "unknown",
+            "status_message": "Unable to calculate health score",
+            "sub_scores": {},
+            "metrics": {}
+        }
 
-    savings = income - expense
-    savings_rate = round(savings / income * 100, 1) if income > 0 else 0
-    dti = round(expense / income * 100, 1) if income > 0 else 0
-    emergency_months = round(net_worth * 0.2 / expense, 1) if expense > 0 else 0
 
-    # Sub-scores (0-100 each)
-    savings_score   = min(100, max(0, int(savings_rate * 2.5)))          # 40% savings = 100
-    credit_sub      = min(100, max(0, int((credit_score - 300) / 5.5)))  # 850 = 100
-    emergency_sub   = min(100, max(0, int(emergency_months / 6 * 100)))  # 6 months = 100
-    expense_sub     = min(100, max(0, int((1 - dti / 100) * 100)))       # 0% DTI = 100
+def calculate_savings_score(income: float, expenses: float) -> float:
+    """Calculate savings score based on savings rate"""
+    if income <= 0:
+        return 0
+    
+    savings_rate = ((income - expenses) / income) * 100
+    
+    if savings_rate >= 30:
+        return 100
+    elif savings_rate >= 20:
+        return 80
+    elif savings_rate >= 10:
+        return 60
+    elif savings_rate >= 0:
+        return 40
+    else:
+        return 0  # Negative savings
 
-    # Weighted overall score
-    overall = int(
-        savings_sub   := savings_score * 0.35 +
-        credit_sub    * 0.25 +
-        emergency_sub * 0.25 +
-        expense_sub   * 0.15
-    )
-    overall = min(100, max(0, overall))
 
-    def score_label(s: int):
-        if s >= 80: return "Excellent"
-        if s >= 60: return "Good"
-        if s >= 40: return "Fair"
-        return "Poor"
+def calculate_debt_score(user_id: str, income: float, cursor) -> float:
+    """Calculate debt score based on debt-to-income ratio"""
+    # For now, assume no debt tracking - return high score
+    # TODO: Implement debt tracking
+    return 85
 
-    def score_color(s: int):
-        if s >= 80: return "success"
-        if s >= 60: return "primary"
-        if s >= 40: return "warning"
-        return "danger"
 
-    return {
-        "overall": overall,
-        "label": score_label(overall),
-        "color": score_color(overall),
-        "subScores": [
-            {
-                "name": "Savings",
-                "score": savings_score,
-                "label": score_label(savings_score),
-                "color": score_color(savings_score),
-                "detail": f"{savings_rate}% savings rate",
-            },
-            {
-                "name": "Credit",
-                "score": credit_sub,
-                "label": score_label(credit_sub),
-                "color": score_color(credit_sub),
-                "detail": f"Score {credit_score}",
-            },
-            {
-                "name": "Emergency",
-                "score": emergency_sub,
-                "label": score_label(emergency_sub),
-                "color": score_color(emergency_sub),
-                "detail": f"{emergency_months} months covered",
-            },
-            {
-                "name": "Expenses",
-                "score": expense_sub,
-                "label": score_label(expense_sub),
-                "color": score_color(expense_sub),
-                "detail": f"{dti:.0f}% of income",
-            },
-        ],
-        "stats": {
-            "savingsRate": savings_rate,
-            "creditScore": credit_score,
-            "dti": round(dti / 100, 2),
-            "emergencyMonths": emergency_months,
-        },
-    }
+def calculate_emergency_fund_score(user_id: str, monthly_expenses: float, cursor) -> float:
+    """Calculate emergency fund score"""
+    try:
+        # Check for emergency fund goal
+        cursor.execute("""
+            SELECT current_amount, target_amount
+            FROM goals
+            WHERE user_id = ? AND name LIKE '%emergency%' AND status = 'active'
+            LIMIT 1
+        """, (user_id,))
+        
+        goal = cursor.fetchone()
+        if not goal:
+            return 30  # No emergency fund
+        
+        current = goal['current_amount']
+        target = goal['target_amount']
+        
+        # Calculate months of expenses covered
+        months_covered = current / monthly_expenses if monthly_expenses > 0 else 0
+        
+        if months_covered >= 6:
+            return 100
+        elif months_covered >= 3:
+            return 75
+        elif months_covered >= 1:
+            return 50
+        else:
+            return 25
+    except Exception as e:
+        logger.error(f"Error calculating emergency fund score: {e}")
+        return 30
+
+
+def calculate_goal_progress_score(user_id: str, cursor) -> float:
+    """Calculate score based on goal progress"""
+    try:
+        cursor.execute("""
+            SELECT 
+                COUNT(*) as total_goals,
+                AVG(CAST(current_amount AS FLOAT) / NULLIF(target_amount, 0) * 100) as avg_progress
+            FROM goals
+            WHERE user_id = ? AND status = 'active'
+        """, (user_id,))
+        
+        result = cursor.fetchone()
+        if not result or result['total_goals'] == 0:
+            return 50  # Neutral score if no goals
+        
+        avg_progress = result['avg_progress'] or 0
+        
+        # Score based on average progress
+        if avg_progress >= 75:
+            return 100
+        elif avg_progress >= 50:
+            return 80
+        elif avg_progress >= 25:
+            return 60
+        else:
+            return 40
+    except Exception as e:
+        logger.error(f"Error calculating goal progress score: {e}")
+        return 50
+
+
+def calculate_spending_discipline_score(user_id: str, cursor) -> float:
+    """Calculate score based on spending consistency"""
+    try:
+        # Compare current month vs average of last 3 months
+        cursor.execute("""
+            SELECT 
+                SUM(CASE WHEN date >= date('now', 'start of month') THEN amount ELSE 0 END) as current_month,
+                AVG(CASE WHEN date < date('now', 'start of month') 
+                         AND date >= date('now', 'start of month', '-3 months') 
+                         THEN amount ELSE NULL END) as avg_last_3_months
+            FROM expenses
+            WHERE user_id = ?
+            AND date >= date('now', 'start of month', '-3 months')
+        """, (user_id,))
+        
+        result = cursor.fetchone()
+        current = result['current_month'] or 0
+        avg_past = result['avg_last_3_months'] or 0
+        
+        if avg_past == 0:
+            return 70  # Not enough data
+        
+        # Calculate variance
+        variance = abs(current - avg_past) / avg_past * 100
+        
+        if variance <= 10:
+            return 100  # Very consistent
+        elif variance <= 20:
+            return 80
+        elif variance <= 30:
+            return 60
+        else:
+            return 40  # High variance
+    except Exception as e:
+        logger.error(f"Error calculating spending discipline score: {e}")
+        return 70

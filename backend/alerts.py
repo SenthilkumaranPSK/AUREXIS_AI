@@ -5,7 +5,7 @@ Generates real-time financial alerts from actual user data patterns.
 
 from typing import Dict, Any, List
 from datetime import datetime
-from analytics_legacy import extract_transactions, extract_net_worth, extract_credit_score
+from analytics import extract_transactions, extract_net_worth, extract_credit_score
 
 
 def generate_alerts(financial_data: Dict[str, Any]) -> List[Dict[str, Any]]:

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
-import { getUserRecommendations } from "@/lib/api";
 import { Lightbulb, ArrowRight, Loader2 } from "lucide-react";
 
 const typeColors: Record<string, string> = {
@@ -11,6 +10,8 @@ const typeColors: Record<string, string> = {
   invest:   "bg-primary/10 text-primary",
   credit:   "bg-warning/10 text-warning",
   planning: "bg-muted text-muted-foreground",
+  info:     "bg-primary/10 text-primary",
+  warning:  "bg-warning/10 text-warning",
 };
 
 const typeDot: Record<string, string> = {
@@ -20,6 +21,58 @@ const typeDot: Record<string, string> = {
   invest:   "bg-primary",
   credit:   "bg-warning",
   planning: "bg-muted-foreground",
+  info:     "bg-primary",
+  warning:  "bg-warning",
+};
+
+// Generate mock recommendations based on user data
+const generateRecommendations = (currentUser: any) => {
+  const recommendations = [];
+  
+  // Use alerts from user profile if available
+  if (currentUser?.alerts) {
+    currentUser.alerts.forEach((alert: any) => {
+      recommendations.push({
+        text: alert.message,
+        type: alert.type,
+        impact: alert.type === 'info' ? 'Good' : 'Review'
+      });
+    });
+  }
+  
+  // Add some AI-generated recommendations based on user's financial situation
+  const savingsRate = currentUser?.savingsRate || 0;
+  const healthScore = currentUser?.financialHealthScore || 50;
+  
+  if (savingsRate < 20) {
+    recommendations.push({
+      text: "Consider increasing your savings rate to 20% for better financial security",
+      type: "savings",
+      impact: "High"
+    });
+  }
+  
+  if (healthScore < 70) {
+    recommendations.push({
+      text: "Review your expense categories to identify potential cost savings",
+      type: "planning",
+      impact: "Medium"
+    });
+  }
+  
+  recommendations.push({
+    text: "Consider diversifying your investment portfolio with index funds",
+    type: "invest",
+    impact: "Medium"
+  });
+  
+  recommendations.push({
+    text: "Set up automatic SIP investments to benefit from rupee cost averaging",
+    type: "invest",
+    impact: "High"
+  });
+  
+  return recommendations.slice(0, 6); // Limit to 6 recommendations
 };
 
 export default function RecommendationFeed() {
@@ -29,11 +82,13 @@ export default function RecommendationFeed() {
 
   useEffect(() => {
     if (!currentUser?.id) return;
+    
+    // Simulate API call with mock data
     setLoading(true);
-    getUserRecommendations(currentUser.id)
-      .then(res => setRecs(res.recommendations))
-      .catch(() => setRecs([]))
-      .finally(() => setLoading(false));
+    setTimeout(() => {
+      setRecs(generateRecommendations(currentUser));
+      setLoading(false);
+    }, 600);
   }, [currentUser?.id]);
 
   return (
@@ -50,7 +105,7 @@ export default function RecommendationFeed() {
         <div className="h-24 flex items-center justify-center">
           <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
         </div>
-      ) : (
+      ) : recs.length > 0 ? (
         <div className="space-y-2">
           {recs.map((rec, i) => (
             <motion.div key={i}
@@ -66,6 +121,10 @@ export default function RecommendationFeed() {
               <ArrowRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
             </motion.div>
           ))}
+        </div>
+      ) : (
+        <div className="h-24 flex items-center justify-center text-muted-foreground text-sm">
+          No recommendations available
         </div>
       )}
     </motion.div>

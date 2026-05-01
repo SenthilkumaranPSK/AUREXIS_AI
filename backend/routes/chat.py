@@ -8,17 +8,17 @@ from datetime import datetime
 from schemas.chat import ChatRequest, ChatResponse
 from auth.dependencies import get_current_user
 from chat_memory import chat_memory_manager
-from user_manager import get_all_user_data, get_user_by_id
+from user_manager_secure import UserManager
 import httpx
 import os
 
-router = APIRouter(prefix="/api/chat", tags=["Chat"])
+chat_router = APIRouter(prefix="/api/chat", tags=["Chat"])
 
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "deepseek-v3.1:671b-cloud")
 
 
-@router.post("/message", response_model=ChatResponse)
+@chat_router.post("/message", response_model=ChatResponse)
 async def send_message(
     request: ChatRequest,
     current_user: Dict = Depends(get_current_user)
@@ -28,8 +28,8 @@ async def send_message(
         user_id = current_user.get("sub")
         
         # Get user data
-        user = get_user_by_id(user_id) or {"name": "User"}
-        financial_data = get_all_user_data(user_id)
+        user = UserManager.get_user_by_id(user_id) or {"name": "User"}
+        financial_data = UserManager.get_all_user_data(user_id)
         
         # Generate session ID if not provided
         session_id = request.session_id or f"session_{user_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
@@ -82,7 +82,7 @@ async def send_message(
         )
 
 
-@router.get("/history")
+@chat_router.get("/history")
 async def get_chat_history(
     limit: int = Query(50, ge=1, le=200),
     session_id: Optional[str] = None,
@@ -112,7 +112,7 @@ async def get_chat_history(
         )
 
 
-@router.get("/sessions")
+@chat_router.get("/sessions")
 async def get_chat_sessions(
     limit: int = Query(20, ge=1, le=100),
     current_user: Dict = Depends(get_current_user)
@@ -137,7 +137,7 @@ async def get_chat_sessions(
         )
 
 
-@router.get("/stats")
+@chat_router.get("/stats")
 async def get_chat_stats(current_user: Dict = Depends(get_current_user)):
     """Get conversation statistics"""
     try:
@@ -155,7 +155,7 @@ async def get_chat_stats(current_user: Dict = Depends(get_current_user)):
         )
 
 
-@router.get("/preferences")
+@chat_router.get("/preferences")
 async def get_chat_preferences(current_user: Dict = Depends(get_current_user)):
     """Get user preferences from conversation history"""
     try:
@@ -173,7 +173,7 @@ async def get_chat_preferences(current_user: Dict = Depends(get_current_user)):
         )
 
 
-@router.post("/search")
+@chat_router.post("/search")
 async def search_chat_history(
     search_term: str = Body(..., embed=True),
     limit: int = Query(20, ge=1, le=100),
@@ -201,7 +201,7 @@ async def search_chat_history(
         )
 
 
-@router.delete("/clear")
+@chat_router.delete("/clear")
 async def clear_chat_history(
     session_id: Optional[str] = None,
     days: Optional[int] = None,

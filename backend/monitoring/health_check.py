@@ -15,24 +15,23 @@ from pathlib import Path
 backend_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(backend_dir))
 
-from database.connection import SessionLocal, engine
-from config import settings
+from database.connection_enhanced import get_db
+from config_enhanced import settings
 
 
 class HealthChecker:
     """Health check manager"""
-    
+
     def __init__(self):
         self.start_time = time.time()
-    
+
     def check_database(self) -> Dict[str, Any]:
         """Check database connectivity"""
         try:
-            db = SessionLocal()
-            # Try a simple query
-            db.execute("SELECT 1")
-            db.close()
-            
+            with get_db() as conn:
+                # Try a simple query
+                conn.execute("SELECT 1")
+
             return {
                 "status": "healthy",
                 "message": "Database connection successful",
@@ -44,13 +43,13 @@ class HealthChecker:
                 "message": f"Database connection failed: {str(e)}",
                 "error": str(e)
             }
-    
+
     def check_redis(self) -> Dict[str, Any]:
         """Check Redis connectivity"""
         try:
             # Import here to avoid circular dependency
             from cache import cache
-            
+
             if cache.redis_client:
                 cache.redis_client.ping()
                 return {
@@ -65,17 +64,17 @@ class HealthChecker:
         except Exception as e:
             return {
                 "status": "degraded",
-                "message": f"Redis unavailable: {str(e)}, using in-memory cache"
+                "message": f"Redis unavailable: {str(e)}, using in-memory cache"        
             }
-    
+
     def check_ollama(self) -> Dict[str, Any]:
         """Check Ollama service"""
         try:
             import requests
-            
+
             ollama_url = settings.OLLAMA_BASE_URL
             response = requests.get(f"{ollama_url}/api/tags", timeout=5)
-            
+
             if response.status_code == 200:
                 return {
                     "status": "healthy",
@@ -85,21 +84,21 @@ class HealthChecker:
             else:
                 return {
                     "status": "unhealthy",
-                    "message": f"Ollama service returned status {response.status_code}"
+                    "message": f"Ollama service returned status {response.status_code}" 
                 }
         except Exception as e:
             return {
                 "status": "unhealthy",
                 "message": f"Ollama service unavailable: {str(e)}"
             }
-    
+
     def get_system_metrics(self) -> Dict[str, Any]:
         """Get system resource metrics"""
         try:
             cpu_percent = psutil.cpu_percent(interval=1)
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage('/')
-            
+
             return {
                 "cpu": {
                     "usage_percent": cpu_percent,
@@ -126,18 +125,18 @@ class HealthChecker:
     def get_uptime(self) -> Dict[str, Any]:
         """Get application uptime"""
         uptime_seconds = time.time() - self.start_time
-        
+
         days = int(uptime_seconds // 86400)
         hours = int((uptime_seconds % 86400) // 3600)
         minutes = int((uptime_seconds % 3600) // 60)
         seconds = int(uptime_seconds % 60)
-        
+
         return {
             "uptime_seconds": int(uptime_seconds),
             "uptime_formatted": f"{days}d {hours}h {minutes}m {seconds}s",
             "started_at": datetime.fromtimestamp(self.start_time).isoformat()
         }
-    
+
     def get_comprehensive_health(self) -> Dict[str, Any]:
         """Get comprehensive health status"""
         database_health = self.check_database()
@@ -145,25 +144,25 @@ class HealthChecker:
         ollama_health = self.check_ollama()
         system_metrics = self.get_system_metrics()
         uptime = self.get_uptime()
-        
+
         # Determine overall status
         statuses = [
             database_health["status"],
             redis_health["status"],
             ollama_health["status"]
         ]
-        
+
         if all(s == "healthy" for s in statuses):
             overall_status = "healthy"
         elif any(s == "unhealthy" for s in statuses):
             overall_status = "unhealthy"
         else:
             overall_status = "degraded"
-        
+
         return {
             "status": overall_status,
             "timestamp": datetime.now().isoformat(),
-            "version": settings.APP_VERSION,
+            "version": "3.0.0",
             "environment": settings.ENVIRONMENT,
             "uptime": uptime,
             "components": {
@@ -173,13 +172,13 @@ class HealthChecker:
             },
             "system": system_metrics
         }
-    
+
     def get_readiness(self) -> Dict[str, Any]:
         """Check if application is ready to serve requests"""
         database_health = self.check_database()
-        
+
         is_ready = database_health["status"] == "healthy"
-        
+
         return {
             "ready": is_ready,
             "timestamp": datetime.now().isoformat(),
@@ -187,7 +186,7 @@ class HealthChecker:
                 "database": database_health
             }
         }
-    
+
     def get_liveness(self) -> Dict[str, Any]:
         """Check if application is alive"""
         return {

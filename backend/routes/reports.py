@@ -8,14 +8,14 @@ from datetime import datetime
 import uuid
 from schemas.report import ReportRequest, ReportResponse
 from auth.dependencies import get_current_user
-from user_manager import get_all_user_data, get_user_by_id
+from user_manager_secure import UserManager
 from report import generate_report
-from database.connection import get_db
+from database.connection_enhanced import get_db
 
-router = APIRouter(prefix="/api/reports", tags=["Reports"])
+reports_router = APIRouter(prefix="/api/reports", tags=["Reports"])
 
 
-@router.post("/generate", response_model=ReportResponse, status_code=status.HTTP_201_CREATED)
+@reports_router.post("/generate", response_model=ReportResponse, status_code=status.HTTP_201_CREATED)
 async def generate_new_report(
     request: ReportRequest,
     current_user: Dict = Depends(get_current_user)
@@ -23,15 +23,15 @@ async def generate_new_report(
     """Generate a new financial report"""
     try:
         user_id = current_user.get("sub")
-        user = get_user_by_id(user_id) or {"name": "User", "number": user_id}
-        data = get_all_user_data(user_id)
-        
+        user = UserManager.get_user_by_id(user_id) or {"name": "User", "number": user_id}      
+        data = UserManager.get_all_user_data(user_id)
+
         # Generate report
         report_data = generate_report(user, data)
-        
+
         # Create report ID
         report_id = str(uuid.uuid4())
-        
+
         # Store report metadata in database
         with get_db() as conn:
             cursor = conn.cursor()
@@ -45,20 +45,20 @@ async def generate_new_report(
                 request.report_type,
                 request.format
             ))
-        
+
         # Get the created report
         with get_db() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM reports WHERE id = ?", (report_id,))
+            cursor.execute("SELECT * FROM reports WHERE id = ?", (report_id,))     
             row = cursor.fetchone()
             report = dict(row) if row else None
-        
+
         if not report:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Failed to create report"
             )
-        
+
         return ReportResponse(**report)
     except Exception as e:
         raise HTTPException(
@@ -67,22 +67,22 @@ async def generate_new_report(
         )
 
 
-@router.get("/list")
+@reports_router.get("/list")
 async def list_reports(current_user: Dict = Depends(get_current_user)):
     """Get list of user reports"""
     try:
         user_id = current_user.get("sub")
-        
+
         with get_db() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                SELECT * FROM reports 
-                WHERE user_id = ? 
+                SELECT * FROM reports
+                WHERE user_id = ?
                 ORDER BY created_at DESC
             """, (user_id,))
-            
+
             reports = [dict(row) for row in cursor.fetchall()]
-        
+
         return {
             "user_id": user_id,
             "reports": reports,
@@ -95,7 +95,7 @@ async def list_reports(current_user: Dict = Depends(get_current_user)):
         )
 
 
-@router.get("/{report_id}", response_model=ReportResponse)
+@reports_router.get("/{report_id}", response_model=ReportResponse)
 async def get_report(
     report_id: str,
     current_user: Dict = Depends(get_current_user)
@@ -103,23 +103,23 @@ async def get_report(
     """Get a specific report"""
     try:
         user_id = current_user.get("sub")
-        
+
         with get_db() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                SELECT * FROM reports 
+                SELECT * FROM reports
                 WHERE id = ? AND user_id = ?
             """, (report_id, user_id))
-            
+
             row = cursor.fetchone()
             if not row:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Report not found"
                 )
-            
+
             report = dict(row)
-        
+
         return ReportResponse(**report)
     except HTTPException:
         raise
@@ -130,7 +130,7 @@ async def get_report(
         )
 
 
-@router.delete("/{report_id}")
+@reports_router.delete("/{report_id}")
 async def delete_report(
     report_id: str,
     current_user: Dict = Depends(get_current_user)
@@ -138,20 +138,20 @@ async def delete_report(
     """Delete a report"""
     try:
         user_id = current_user.get("sub")
-        
+
         with get_db() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                DELETE FROM reports 
+                DELETE FROM reports
                 WHERE id = ? AND user_id = ?
             """, (report_id, user_id))
-            
+
             if cursor.rowcount == 0:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Report not found"
                 )
-        
+
         return {"success": True, "message": "Report deleted"}
     except HTTPException:
         raise
@@ -162,7 +162,7 @@ async def delete_report(
         )
 
 
-@router.get("/download/{report_id}")
+@reports_router.get("/download/{report_id}")
 async def download_report(
     report_id: str,
     current_user: Dict = Depends(get_current_user)
@@ -170,30 +170,30 @@ async def download_report(
     """Download a report file"""
     try:
         user_id = current_user.get("sub")
-        
+
         # Get report metadata
         with get_db() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                SELECT * FROM reports 
+                SELECT * FROM reports
                 WHERE id = ? AND user_id = ?
             """, (report_id, user_id))
-            
+
             row = cursor.fetchone()
             if not row:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Report not found"
                 )
-            
+
             report = dict(row)
-        
+
         # For now, return report data as JSON
         # In production, this would return the actual file
-        user = get_user_by_id(user_id) or {"name": "User", "number": user_id}
-        data = get_all_user_data(user_id)
+        user = UserManager.get_user_by_id(user_id) or {"name": "User", "number": user_id}      
+        data = UserManager.get_all_user_data(user_id)
         report_data = generate_report(user, data)
-        
+
         return {
             "report_id": report_id,
             "name": report["name"],

@@ -5,7 +5,7 @@ No external ML libraries needed — pure Python math.
 """
 
 from typing import Dict, Any, List
-from analytics_legacy import extract_transactions, extract_net_worth, extract_credit_score
+from analytics import extract_transactions, extract_net_worth, extract_credit_score
 import math
 
 

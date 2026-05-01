@@ -5,7 +5,7 @@ Create indexes on frequently queried columns
 
 import sqlite3
 import logging
-from database.connection import get_db_connection
+from database.connection_enhanced import get_db
 
 logger = logging.getLogger(__name__)
 

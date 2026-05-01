@@ -3,7 +3,7 @@ Initialize AUREXIS AI Database
 Run this once to create all tables
 """
 
-from database.connection import init_database
+from database.connection_enhanced import init_database
 
 if __name__ == "__main__":
     print("🔧 Initializing AUREXIS AI database...")

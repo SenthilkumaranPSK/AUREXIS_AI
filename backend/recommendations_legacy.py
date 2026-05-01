@@ -4,7 +4,7 @@ Generates personalized financial recommendations from real user data.
 """
 
 from typing import Dict, Any, List
-from analytics_legacy import extract_transactions, extract_net_worth, extract_credit_score
+from analytics import extract_transactions, extract_net_worth, extract_credit_score
 
 
 def generate_recommendations(financial_data: Dict[str, Any]) -> List[Dict[str, Any]]:

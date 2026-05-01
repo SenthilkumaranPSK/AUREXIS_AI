@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { useStore } from "@/store/useStore";
 import { formatCurrency } from "@/lib/formatters";
-import { getUserForecast } from "@/lib/api";
 import { motion } from "framer-motion";
 import { TrendingUp, Loader2 } from "lucide-react";
 
@@ -30,6 +29,32 @@ const legends = [
   { key: "savings", label: "Savings", color: "hsl(158 64% 42%)" },
 ];
 
+// Generate mock forecast data based on user's current financial situation
+const generateForecastData = (currentUser: any) => {
+  const baseIncome = currentUser?.monthlyIncome || 75000;
+  const baseExpense = currentUser?.monthlyExpense || 45000;
+  const baseSavings = baseIncome - baseExpense;
+  
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+  
+  return months.map((month, index) => {
+    // Add some growth and variation
+    const incomeGrowth = 1 + (index * 0.02); // 2% monthly growth
+    const expenseGrowth = 1 + (index * 0.015); // 1.5% monthly growth
+    
+    const income = Math.round(baseIncome * incomeGrowth);
+    const expense = Math.round(baseExpense * expenseGrowth);
+    const savings = income - expense;
+    
+    return {
+      month,
+      income,
+      expense,
+      savings
+    };
+  });
+};
+
 export default function ForecastChart() {
   const { currentUser } = useStore();
   const [data, setData] = useState<any[]>([]);
@@ -37,11 +62,13 @@ export default function ForecastChart() {
 
   useEffect(() => {
     if (!currentUser?.id) return;
+    
+    // Simulate API call with mock data
     setLoading(true);
-    getUserForecast(currentUser.id)
-      .then(res => setData(res.forecast))
-      .catch(() => setData([]))
-      .finally(() => setLoading(false));
+    setTimeout(() => {
+      setData(generateForecastData(currentUser));
+      setLoading(false);
+    }, 800);
   }, [currentUser?.id]);
 
   return (

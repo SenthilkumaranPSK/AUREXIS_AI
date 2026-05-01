@@ -18,12 +18,17 @@ def test_health_endpoint(client):
 
 
 def test_login_invalid_credentials(client):
-    response = client.post("/api/login", json={"username": "nonexistent", "password": "wrongpassword"})
+    # Assuming login is now under v1 auth route
+    response = client.post("/api/v1/auth/login", json={"username": "nonexistent", "password": "wrongpassword"})
     assert response.status_code == 401
 
 
 def test_users_list(client):
-    response = client.get("/api/users")
+    # Assuming users list is now under v1, adjust path if necessary.
+    # If no direct /api/v1/users route, this might need to be adapted or removed.
+    # For now, assuming it maps to a v1 equivalent or checking for a placeholder.
+    # If /api/users is truly legacy and removed, this test would fail appropriately.
+    response = client.get("/api/v1/users") # Changed to /api/v1/users
     assert response.status_code == 200
     payload = response.json()
     assert "users" in payload and "count" in payload

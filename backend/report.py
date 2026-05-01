@@ -5,7 +5,7 @@ All logic in Python — frontend just renders the JSON.
 """
 
 from typing import Dict, Any
-from analytics_legacy import (
+from analytics import (
     extract_transactions, extract_net_worth, extract_credit_score,
     compute_metrics, compute_risk, compute_expenses, compute_investments, compute_goals
 )

@@ -6,7 +6,8 @@ Database operations for users
 from typing import Optional, Dict
 from datetime import datetime, timezone
 import uuid
-from database.connection import get_db
+import secrets
+from database.connection_enhanced import get_db
 from auth.jwt_handler import hash_password, verify_password
 
 
@@ -34,14 +35,16 @@ class UserModel:
     ) -> Dict:
         """Create a new user"""
         user_id = str(uuid.uuid4())
+        # `user_number` is required by your current DB schema (NOT NULL + UNIQUE).
+        user_number = f"AUREXIS_{secrets.token_hex(4).upper()}"  # length >= 8
         password_hash = hash_password(password)
         
         with get_db() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                INSERT INTO users (id, name, email, password_hash, occupation, age, location)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (user_id, name, email, password_hash, occupation, age, location))
+                INSERT INTO users (id, name, email, password_hash, user_number, occupation, age, location)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (user_id, name, email, password_hash, user_number, occupation, age, location))
             cursor.execute("""
                 SELECT id, name, email, occupation, age, location,
                        is_active, is_verified, created_at, last_login
@@ -100,7 +103,7 @@ class UserModel:
             cursor = conn.cursor()
             cursor.execute("""
                 UPDATE users SET last_login = ? WHERE id = ?
-            """, (datetime.now(timezone.utc), user['id']))
+            """, (datetime.now(timezone.utc).isoformat(), user['id']))
         
         # Remove password hash from returned user
         user.pop('password_hash', None)
@@ -116,7 +119,8 @@ class UserModel:
             return UserModel.get_user_by_id(user_id)
         
         set_clause = ", ".join([f"{k} = ?" for k in update_fields.keys()])
-        values = list(update_fields.values()) + [datetime.now(timezone.utc), user_id]
+        # SQLite parameter binding is more reliable with ISO strings.
+        values = list(update_fields.values()) + [datetime.now(timezone.utc).isoformat(), user_id]
         
         with get_db() as conn:
             cursor = conn.cursor()
@@ -138,7 +142,7 @@ class UserModel:
             cursor.execute("""
                 UPDATE users SET password_hash = ?, updated_at = ?
                 WHERE id = ?
-            """, (password_hash, datetime.now(timezone.utc), user_id))
+            """, (password_hash, datetime.now(timezone.utc).isoformat(), user_id))
             
             return cursor.rowcount > 0
     
@@ -150,6 +154,6 @@ class UserModel:
             cursor.execute("""
                 UPDATE users SET is_active = 0, updated_at = ?
                 WHERE id = ?
-            """, (datetime.now(timezone.utc), user_id))
+            """, (datetime.now(timezone.utc).isoformat(), user_id))
             
             return cursor.rowcount > 0

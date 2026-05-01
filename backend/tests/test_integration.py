@@ -179,7 +179,7 @@ class TestDatabaseIntegration:
 
     def test_database_connection(self):
         """Test database connection"""
-        from database.connection import get_db_connection
+        from database.connection_enhanced import get_db
 
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -193,7 +193,7 @@ class TestDatabaseIntegration:
 
     def test_database_indexes_exist(self):
         """Test that performance indexes are created"""
-        from database.connection import get_db_connection
+        from database.connection_enhanced import get_db
 
         conn = get_db_connection()
         cursor = conn.cursor()

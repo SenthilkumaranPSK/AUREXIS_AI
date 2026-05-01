@@ -2,24 +2,48 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { formatCurrency } from "@/lib/formatters";
-import { getUserStocks } from "@/lib/api";
 import { TrendingUp, TrendingDown, Loader2, BarChart2 } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 const COLORS = ["#3B82F6","#8B5CF6","#F59E0B","#10B981","#EC4899","#EF4444","#06B6D4"];
 
+// Mock data for stocks
+const generateMockStockData = (userId: string) => {
+  return {
+    holdingsCount: 5,
+    totalValue: 450000,
+    totalInvested: 380000,
+    totalPnL: 70000,
+    totalPnLPct: 18.4,
+    holdings: [
+      { symbol: "RELIANCE", companyName: "Reliance Industries Ltd", quantity: 50, currentValue: 150000, pnl: 25000, pnlPct: 20.0 },
+      { symbol: "TCS", companyName: "Tata Consultancy Services", quantity: 30, currentValue: 120000, pnl: 18000, pnlPct: 17.6 },
+      { symbol: "INFY", companyName: "Infosys Limited", quantity: 40, currentValue: 80000, pnl: 12000, pnlPct: 17.6 },
+      { symbol: "HDFC", companyName: "HDFC Bank Limited", quantity: 25, currentValue: 60000, pnl: 8000, pnlPct: 15.4 },
+      { symbol: "ICICI", companyName: "ICICI Bank Limited", quantity: 20, currentValue: 40000, pnl: 7000, pnlPct: 21.2 }
+    ],
+    sectorBreakdown: [
+      { sector: "IT", value: 200000, pct: 44.4 },
+      { sector: "Energy", value: 150000, pct: 33.3 },
+      { sector: "Banking", value: 100000, pct: 22.2 }
+    ]
+  };
+};
+
 export default function StocksPanel() {
   const { currentUser } = useStore();
-  const [data, setData]     = useState<any>(null);
+  const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!currentUser?.id) return;
+    
+    // Simulate API call with mock data
     setLoading(true);
-    getUserStocks(currentUser.id)
-      .then(res => setData(res))
-      .catch(() => setData(null))
-      .finally(() => setLoading(false));
+    setTimeout(() => {
+      setData(generateMockStockData(currentUser.id));
+      setLoading(false);
+    }, 500);
   }, [currentUser?.id]);
 
   if (loading) return (

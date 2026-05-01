@@ -2,10 +2,11 @@ import { UserProfile } from "@/types/finance";
 
 /**
  * API Client for AUREXIS AI Backend
- * Handles communication between frontend and Python backend
+ * Handles communication between frontend and modern Python backend (v1)
  */
 
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+const API_V1_URL = `${API_BASE_URL}/api`;
 
 /**
  * Generic API request handler
@@ -14,10 +15,12 @@ async function apiRequest<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const url = endpoint.startsWith('http') ? endpoint : `${API_V1_URL}${endpoint}`;
 
+  const token = localStorage.getItem('access_token');
   const defaultHeaders: HeadersInit = {
     "Content-Type": "application/json",
+    ...(token ? { "Authorization": `Bearer ${token}` } : {}),
   };
 
   const config: RequestInit = {
@@ -31,10 +34,14 @@ async function apiRequest<T>(
   try {
     const response = await fetch(url, config);
 
+    if (response.status === 401) {
+      console.warn("Unauthorized request - token may be expired");
+    }
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
-        errorData.detail || `API Error: ${response.status} ${response.statusText}`
+        errorData.message || errorData.detail || `API Error: ${response.status} ${response.statusText}`
       );
     }
 
@@ -45,185 +52,164 @@ async function apiRequest<T>(
   }
 }
 
-// --- Types ---
+// --- Auth API ---
 
 export interface LoginCredentials {
-  username: string;
+  username: string;  // Changed from email to username to match backend
   password: string;
 }
 
 export interface LoginResponse {
   success: boolean;
-  session_id: string;
+  access_token: string;
+  refresh_token: string;
   user: UserProfile;
-}
-
-export interface ChatRequest {
-  user_id: string;
-  message: string;
-  conversation_history?: Array<{ role: string; content: string }>;
-}
-
-export interface ChatResponse {
-  success: boolean;
-  response: {
-    summary: string;
-    content: string;
-    insights?: string[];
-    recommendations?: string[];
-    confidence?: number;
-    risks?: string[];
+  data?: {
+    session_id: string;
+    user: any;
+    expires_in: number;
   };
-  user_id: string;
+  message?: string;
 }
 
-// --- API Functions ---
-
-/**
- * Health check - verify backend is running
- */
-export async function checkHealth(): Promise<{ status: string }> {
-  return apiRequest("/");
-}
-
-/**
- * Authenticate user
- */
-export async function login(
-  credentials: LoginCredentials
-): Promise<LoginResponse> {
-  return apiRequest<LoginResponse>("/api/login", {
+export async function login(credentials: LoginCredentials): Promise<LoginResponse> {
+  const response = await apiRequest<LoginResponse>("/login", {  // Changed from /auth/login to /login
     method: "POST",
     body: JSON.stringify(credentials),
   });
+  
+  // Backend returns tokens under `data.*` (legacy compatibility wrapper).
+  // Store actual JWT access token so protected endpoints work.
+  if (response.success && response.data?.access_token) {
+    localStorage.setItem('access_token', response.data.access_token);
+  }
+  if (response.success && response.data?.refresh_token) {
+    localStorage.setItem('refresh_token', response.data.refresh_token);
+  }
+  if (response.success && response.data?.user) {
+    localStorage.setItem('user_data', JSON.stringify(response.data.user));
+  }
+  
+  return response;
 }
 
-/**
- * Logout user
- */
-export async function logout(sessionId: string): Promise<{ success: boolean }> {
-  return apiRequest("/api/logout", {
+export async function logout(): Promise<{ success: boolean }> {
+  const refreshToken = localStorage.getItem('refresh_token');
+  try {
+    await apiRequest("/auth/logout", {
+      method: "POST",
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    });
+  } finally {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+  }
+  return { success: true };
+}
+
+// --- Financial API ---
+
+export async function getUserMetrics(): Promise<any> {
+  return apiRequest(`/financial/metrics`);
+}
+
+export async function getUserGoals(): Promise<any> {
+  return apiRequest(`/financial/goals`);
+}
+
+export async function getUserIncome(): Promise<any> {
+  return apiRequest(`/financial/income`);
+}
+
+export async function getUserExpenses(): Promise<any> {
+  return apiRequest(`/financial/expenses`);
+}
+
+export async function getUserInvestments(): Promise<any> {
+  return apiRequest(`/financial/investments`);
+}
+
+export async function getUserRisk(): Promise<any> {
+  return apiRequest(`/financial/risk`);
+}
+
+export async function getUserHealth(): Promise<any> {
+  return apiRequest(`/financial/health`);
+}
+
+export async function getUserAlerts(): Promise<any> {
+  return apiRequest(`/financial/alerts`);
+}
+
+export async function getUserStocks(): Promise<any> {
+  return apiRequest(`/financial/stocks`);
+}
+
+export async function getUserMutualFunds(): Promise<any> {
+  return apiRequest(`/financial/mutual-funds`);
+}
+
+export async function addTransaction(transaction: any): Promise<any> {
+  return apiRequest(`/financial/transactions`, {
     method: "POST",
-    body: JSON.stringify({ session_id: sessionId }),
+    body: JSON.stringify(transaction),
   });
 }
 
-/**
- * Get all users (for demo/debugging)
- */
-export async function getAllUsers(): Promise<{ users: any[]; count: number }> {
-  return apiRequest("/api/users");
+export async function updateGoal(goalId: string | number, updates: any): Promise<any> {
+  return apiRequest(`/financial/goals/${goalId}`, {
+    method: "PATCH",
+    body: JSON.stringify(updates),
+  });
 }
 
-/**
- * Get specific financial data for a user
- */
-export async function getUserData(
-  userId: string,
-  dataType: string
-): Promise<any> {
-  return apiRequest(`/api/user/${userId}/data/${dataType}`);
+// --- Forecast API ---
+
+export async function getMonthlyForecast(): Promise<any> {
+  return apiRequest(`/forecast/monthly`);
 }
 
-/**
- * Get all financial data for a user
- */
-export async function getAllUserData(userId: string): Promise<any> {
-  return apiRequest(`/api/user/${userId}/data`);
+export async function getNetworthForecast(years = 5): Promise<any> {
+  return apiRequest(`/forecast/networth?years=${years}`);
 }
 
-/**
- * Send message to Ollama AI advisor
- */
-export async function sendChatMessage(
-  request: ChatRequest
-): Promise<ChatResponse> {
-  return apiRequest<ChatResponse>("/api/chat", {
+export async function getGoalForecast(): Promise<any> {
+  return apiRequest(`/forecast/goals`);
+}
+
+// --- Chat API ---
+
+export interface ChatRequest {
+  user_id?: string;
+  message: string;
+  session_id?: string;
+  use_memory?: boolean;
+}
+
+export async function sendChatMessage(request: ChatRequest): Promise<any> {
+  return apiRequest("/chat", {
     method: "POST",
     body: JSON.stringify(request),
   });
 }
 
-// --- Analytics API ---
-
-export async function getUserMetrics(userId: string): Promise<any> {
-  return apiRequest(`/api/user/${userId}/metrics`);
+export async function getChatHistory(sessionId?: string): Promise<any> {
+  const endpoint = sessionId ? `/chat/history?session_id=${sessionId}` : '/chat/history';
+  return apiRequest(endpoint);
 }
 
-export async function getUserForecast(userId: string): Promise<{ forecast: any[] }> {
-  return apiRequest(`/api/user/${userId}/forecast/monthly`);
+// --- Advanced API ---
+
+export async function getMLForecast(steps = 6): Promise<any> {
+  return apiRequest(`/ml/forecast?steps=${steps}`);
 }
 
-export async function getNetworthForecast(userId: string, years = 5): Promise<{ forecast: any[] }> {
-  return apiRequest(`/api/user/${userId}/forecast/networth?years=${years}`);
+export async function getRecommendations(): Promise<any> {
+  return apiRequest(`/financial/recommendations`);
 }
 
-export async function getGoalForecast(userId: string): Promise<{ goals: any[] }> {
-  return apiRequest(`/api/user/${userId}/forecast/goals`);
-}
-
-export async function getExpenseForecast(userId: string): Promise<{ categories: any[] }> {
-  return apiRequest(`/api/user/${userId}/forecast/expenses`);
-}
-
-export async function getSavingsProjection(userId: string): Promise<any> {
-  return apiRequest(`/api/user/${userId}/forecast/savings`);
-}
-
-export async function getFullReport(userId: string): Promise<any> {
-  return apiRequest(`/api/user/${userId}/report`);
-}
-
-export async function getUserStocks(userId: string): Promise<any> {
-  return apiRequest(`/api/user/${userId}/stocks`);
-}
-
-export async function getUserMutualFunds(userId: string): Promise<any> {
-  return apiRequest(`/api/user/${userId}/mutual-funds`);
-}
-
-export async function getMLForecast(userId: string, steps = 6): Promise<any> {
-  return apiRequest(`/api/user/${userId}/forecast/ml?steps=${steps}`);
-}
-
-export async function getUserExpenses(userId: string): Promise<{ expenses: any[] }> {
-  return apiRequest(`/api/user/${userId}/expenses`);
-}
-
-export async function getUserInvestments(userId: string): Promise<any> {
-  return apiRequest(`/api/user/${userId}/investments`);
-}
-
-export async function getUserGoals(userId: string): Promise<{ goals: any[] }> {
-  return apiRequest(`/api/user/${userId}/goals`);
-}
-
-export async function getUserRisk(userId: string): Promise<any> {
-  return apiRequest(`/api/user/${userId}/risk`);
-}
-
-export async function getUserHealth(userId: string): Promise<any> {
-  return apiRequest(`/api/user/${userId}/health`);
-}
-
-export async function getUserRecommendations(userId: string): Promise<{ recommendations: any[] }> {
-  return apiRequest(`/api/user/${userId}/recommendations`);
-}
-
-export async function getUserAlerts(userId: string): Promise<{ alerts: any[]; emis: any[] }> {
-  return apiRequest(`/api/user/${userId}/alerts`);
-}
-
-export async function runSimulation(userId: string, params: {
-  new_loan?: number;
-  salary_increase?: number;
-  job_loss?: boolean;
-  vacation_expense?: number;
-  house_purchase?: boolean;
-  car_purchase?: boolean;
-  investment_increase?: number;
-}): Promise<any> {
-  return apiRequest(`/api/user/${userId}/simulation`, {
+export async function runSimulation(_userId: string, params: any): Promise<any> {
+  return apiRequest(`/financial/simulation`, {
     method: "POST",
     body: JSON.stringify(params),
   });

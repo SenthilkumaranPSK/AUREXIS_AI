@@ -7,10 +7,10 @@ from typing import Dict
 from services.forecast_service import ForecastService
 from auth.dependencies import get_current_user
 
-router = APIRouter(prefix="/api/forecast", tags=["Forecasting"])
+forecast_router = APIRouter(prefix="/api/forecast", tags=["Forecasting"])
 
 
-@router.get("/monthly")
+@forecast_router.get("/monthly")
 async def get_monthly_forecast(
     months: int = Query(6, ge=1, le=24),
     current_user: Dict = Depends(get_current_user)
@@ -26,7 +26,7 @@ async def get_monthly_forecast(
         )
 
 
-@router.get("/networth")
+@forecast_router.get("/networth")
 async def get_networth_forecast(
     years: int = Query(5, ge=1, le=20),
     current_user: Dict = Depends(get_current_user)
@@ -42,7 +42,7 @@ async def get_networth_forecast(
         )
 
 
-@router.get("/goals")
+@forecast_router.get("/goals")
 async def get_goal_forecast(current_user: Dict = Depends(get_current_user)):
     """Get goal completion timeline forecast"""
     try:
@@ -55,7 +55,7 @@ async def get_goal_forecast(current_user: Dict = Depends(get_current_user)):
         )
 
 
-@router.get("/expenses")
+@forecast_router.get("/expenses")
 async def get_expense_forecast(
     months: int = Query(6, ge=1, le=24),
     current_user: Dict = Depends(get_current_user)
@@ -71,7 +71,7 @@ async def get_expense_forecast(
         )
 
 
-@router.get("/savings")
+@forecast_router.get("/savings")
 async def get_savings_projection(current_user: Dict = Depends(get_current_user)):
     """Get savings projection at different rates"""
     try:
@@ -84,7 +84,7 @@ async def get_savings_projection(current_user: Dict = Depends(get_current_user))
         )
 
 
-@router.get("/ml")
+@forecast_router.get("/ml")
 async def get_ml_forecast(
     steps: int = Query(6, ge=1, le=24),
     current_user: Dict = Depends(get_current_user)
@@ -100,7 +100,7 @@ async def get_ml_forecast(
         )
 
 
-@router.post("/scenario")
+@forecast_router.post("/scenario")
 async def run_scenario_simulation(
     new_loan: float = 0,
     salary_increase: float = 0,

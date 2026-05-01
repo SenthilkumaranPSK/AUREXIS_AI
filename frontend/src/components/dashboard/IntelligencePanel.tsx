@@ -42,8 +42,26 @@ export default function IntelligencePanel() {
 
   useEffect(() => {
     if (!currentUser?.id) return;
-    getUserAlerts(currentUser.id).then(r => { setAlerts(r.alerts); setEmis(r.emis); }).catch(() => {});
-    getUserGoals(currentUser.id).then(r => setGoals(r.goals)).catch(() => {});
+    getUserAlerts(currentUser.id).then(r => { 
+      // Handle both {alerts: [], emis: []} and [] formats
+      if (Array.isArray(r)) {
+        setAlerts(r);
+        setEmis([]);
+      } else if (r && typeof r === 'object') {
+        setAlerts(r.alerts || []); 
+        setEmis(r.emis || []); 
+      }
+    }).catch(() => {});
+    
+    getUserGoals(currentUser.id).then(r => {
+      // Handle both {goals: []} and [] formats
+      if (Array.isArray(r)) {
+        setGoals(r);
+      } else if (r && typeof r === 'object') {
+        setGoals(r.goals || []);
+      }
+    }).catch(() => {});
+    
     getUserHealth(currentUser.id).then(r => setHealth(r)).catch(() => {});
   }, [currentUser?.id]);
 
@@ -122,7 +140,7 @@ export default function IntelligencePanel() {
         </div>
 
         {/* EMIs from backend */}
-        {emis.length > 0 && (
+        {emis && emis.length > 0 && (
           <div className="glass-card rounded-2xl p-4 border border-border">
             <div className="flex items-center gap-2 mb-3">
               <Calendar className="w-3.5 h-3.5 text-warning" />
@@ -143,7 +161,7 @@ export default function IntelligencePanel() {
         )}
 
         {/* Alerts from backend */}
-        {alerts.length > 0 && (
+        {alerts && alerts.length > 0 && (
           <div className="glass-card rounded-2xl p-4 border border-border">
             <div className="flex items-center gap-2 mb-3">
               <Bell className="w-3.5 h-3.5 text-danger" />
@@ -165,7 +183,8 @@ export default function IntelligencePanel() {
         )}
 
         {/* Goals from backend */}
-        {goals.length > 0 && (
+        {goals && goals.length > 0 && (
+
           <div className="glass-card rounded-2xl p-4 border border-border">
             <div className="flex items-center gap-2 mb-3">
               <Target className="w-3.5 h-3.5 text-success" />

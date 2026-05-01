@@ -8,9 +8,21 @@ from typing import Optional, Dict
 import jwt
 from passlib.context import CryptContext
 import os
+import logging
+from uuid import uuid4
 
-# JWT Configuration
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
+logger = logging.getLogger(__name__)
+
+# JWT Configuration - REQUIRE environment variable
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+if not SECRET_KEY:
+    # Check if we're in development
+    if os.getenv("ENVIRONMENT", "development") == "production":
+        raise ValueError("JWT_SECRET_KEY environment variable must be set in production")
+    else:
+        logger.warning("⚠️  JWT_SECRET_KEY not set - using default for development only!")
+        SECRET_KEY = "dev-jwt-secret-CHANGE-IN-PRODUCTION"
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
 REFRESH_TOKEN_EXPIRE_DAYS = 30
@@ -50,7 +62,9 @@ def create_refresh_token(data: Dict) -> str:
     to_encode = data.copy()
     now = datetime.now(timezone.utc)
     expire = now + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
-    to_encode.update({"exp": expire, "type": "refresh"})
+    # Add a unique identifier so refresh tokens are never duplicated.
+    # This avoids DB constraint violations on `refresh_tokens.token` (UNIQUE).
+    to_encode.update({"exp": expire, "type": "refresh", "jti": uuid4().hex})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
@@ -62,7 +76,9 @@ def decode_token(token: str) -> Optional[Dict]:
         return payload
     except jwt.ExpiredSignatureError:
         return None
-    except jwt.JWTError:
+    except jwt.InvalidTokenError:
+        return None
+    except Exception:
         return None
 
 

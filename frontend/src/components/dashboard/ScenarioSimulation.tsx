@@ -5,12 +5,19 @@ import { formatCurrency } from "@/lib/formatters";
 import { runSimulation } from "@/lib/api";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { FlaskConical, AlertTriangle, CheckCircle, Loader2 } from "lucide-react";
+import { FlaskConical, AlertTriangle, CheckCircle, Loader2, Bot, Send } from "lucide-react";
 
 export default function ScenarioSimulation() {
   const { currentUser, simulationParams, setSimulationParams } = useStore();
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+
+  // AI Chat State
+  const [chatInput, setChatInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [messages, setMessages] = useState([
+    { role: "ai", text: "Hi! I'm your AI Scenario Advisor. You can use the manual controls on the left, or just ask me to simulate a scenario for you!" }
+  ]);
 
   const { newLoanAmount, salaryIncrease, jobLoss, vacationExpense, housePurchase, carPurchase, investmentIncrease } = simulationParams;
 
@@ -31,6 +38,45 @@ export default function ScenarioSimulation() {
       .finally(() => setLoading(false));
   }, [currentUser?.id, newLoanAmount, salaryIncrease, jobLoss, vacationExpense, housePurchase, carPurchase, investmentIncrease]);
 
+  const handleChatSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+
+    const currentInput = chatInput.toLowerCase();
+    setMessages(prev => [...prev, { role: "user", text: chatInput }]);
+    setChatInput("");
+    setIsTyping(true);
+
+    setTimeout(() => {
+      let aiResponse = "Based on this scenario, I recommend keeping a close eye on your debt-to-income ratio. Feel free to tweak the sliders manually!";
+      let updatedParams = { ...simulationParams };
+
+      if (currentInput.includes("house") || currentInput.includes("home")) {
+        updatedParams.housePurchase = true;
+        aiResponse = "I've simulated a House Purchase scenario! Notice how the ₹25K EMI impacts your monthly savings and debt ratio.";
+      } else if (currentInput.includes("car")) {
+        updatedParams.carPurchase = true;
+        aiResponse = "I've enabled the Car Purchase scenario. A ₹15K EMI has been added to your expenses.";
+      } else if (currentInput.includes("job") || currentInput.includes("fired") || currentInput.includes("lose")) {
+        updatedParams.jobLoss = true;
+        aiResponse = "I've activated the Job Loss scenario. This is highly risky. You will need a strong emergency fund to survive this.";
+      } else if (currentInput.includes("loan") || currentInput.includes("borrow")) {
+        updatedParams.newLoanAmount = 500000;
+        aiResponse = "I've added a new ₹500,000 loan to your simulation. Watch your debt ratio closely!";
+      } else if (currentInput.includes("vacation") || currentInput.includes("trip")) {
+        updatedParams.vacationExpense = 150000;
+        aiResponse = "I've factored in a ₹150,000 vacation expense. Make sure you have enough extra savings to cover this!";
+      } else if (currentInput.includes("salary") || currentInput.includes("raise") || currentInput.includes("promotion")) {
+        updatedParams.salaryIncrease = 20;
+        aiResponse = "Congratulations on the hypothetical promotion! I've increased your salary by 20%. Look at your new savings rate!";
+      }
+
+      setSimulationParams(updatedParams);
+      setMessages(prev => [...prev, { role: "ai", text: aiResponse }]);
+      setIsTyping(false);
+    }, 1500);
+  };
+
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
       className="glass-card rounded-2xl p-6 border border-border"
@@ -40,7 +86,7 @@ export default function ScenarioSimulation() {
         <h3 className="text-sm font-semibold text-foreground">Scenario Simulator</h3>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Controls */}
         <div className="space-y-5">
           {[
@@ -114,6 +160,55 @@ export default function ScenarioSimulation() {
             </>
           )}
         </div>
+
+        {/* AI Advisor Chat */}
+        <div className="flex flex-col border border-border rounded-xl bg-background/50 h-[400px]">
+          <div className="p-3 border-b border-border flex items-center gap-2 bg-muted/20 rounded-t-xl">
+            <Bot className="w-4 h-4 text-primary" />
+            <span className="text-xs font-semibold">AI Simulator Advisor</span>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`text-[11px] p-2.5 rounded-xl max-w-[85%] ${
+                  msg.role === "user" 
+                    ? "bg-primary text-primary-foreground rounded-tr-sm" 
+                    : "bg-muted text-foreground rounded-tl-sm border border-border"
+                }`}>
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-muted text-muted-foreground p-2.5 rounded-xl rounded-tl-sm border border-border flex items-center gap-1">
+                  <span className="w-1 h-1 bg-current rounded-full animate-bounce" />
+                  <span className="w-1 h-1 bg-current rounded-full animate-bounce delay-75" />
+                  <span className="w-1 h-1 bg-current rounded-full animate-bounce delay-150" />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <form onSubmit={handleChatSubmit} className="p-3 border-t border-border flex gap-2">
+            <input 
+              type="text" 
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder="e.g. Simulate buying a car"
+              className="flex-1 bg-muted/50 border border-border rounded-lg px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-primary transition-colors"
+            />
+            <button 
+              type="submit" 
+              disabled={!chatInput.trim() || isTyping}
+              className="p-1.5 bg-primary text-primary-foreground rounded-lg disabled:opacity-50 hover:bg-primary/90 transition-colors"
+            >
+              <Send className="w-3.5 h-3.5" />
+            </button>
+          </form>
+        </div>
+
       </div>
     </motion.div>
   );

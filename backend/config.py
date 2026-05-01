@@ -8,6 +8,9 @@ from pydantic_settings import BaseSettings
 from typing import List, Optional
 from functools import lru_cache
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Settings(BaseSettings):
@@ -20,17 +23,29 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"  # development, staging, production
     
     # ── Server ─────────────────────────────────────────────────────────────
-    HOST: str = "127.0.0.1"  # Changed from 0.0.0.0 for Windows compatibility
+    HOST: str = "0.0.0.0"  # Listen on all interfaces for better connectivity
     PORT: int = 8000
     WORKERS: int = 4
     RELOAD: bool = True
     
     # ── Security ───────────────────────────────────────────────────────────
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "dev-secret-key-CHANGE-IN-PRODUCTION")
+    SECRET_KEY: str = os.getenv("SECRET_KEY")  # REQUIRED - no default
+    JWT_SECRET_KEY: Optional[str] = None
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440  # 24 hours
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
     PASSWORD_MIN_LENGTH: int = 8
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Validate that SECRET_KEY is set
+        if not self.SECRET_KEY or self.SECRET_KEY == "dev-secret-key-CHANGE-IN-PRODUCTION":
+            if self.ENVIRONMENT == "production":
+                raise ValueError("SECRET_KEY must be set in production environment")
+            else:
+                # Only allow default in development
+                logger.warning("⚠️  Using default SECRET_KEY - DO NOT USE IN PRODUCTION!")
+                self.SECRET_KEY = "dev-secret-key-CHANGE-IN-PRODUCTION"
     
     # ── CORS ───────────────────────────────────────────────────────────────
     ALLOWED_ORIGINS: List[str] = [
@@ -41,8 +56,11 @@ class Settings(BaseSettings):
         "http://127.0.0.1:5173",
         "http://127.0.0.1:8080",
         "http://127.0.0.1:8081",
+        "http://10.92.95.140:8081",
+        "http://172.31.0.1:8081",
+        "http://172.26.224.1:8081",
     ]
-    ALLOWED_METHODS: List[str] = ["GET", "POST", "PUT", "DELETE", "PATCH"]
+    ALLOWED_METHODS: List[str] = ["*"]
     ALLOWED_HEADERS: List[str] = ["*"]
     ALLOW_CREDENTIALS: bool = True
     
@@ -107,6 +125,7 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=True,
+        extra="ignore",
     )
 
 

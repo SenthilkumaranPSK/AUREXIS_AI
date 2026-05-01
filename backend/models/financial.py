@@ -5,7 +5,7 @@ Database operations for financial data
 
 from typing import List, Optional, Dict
 from datetime import datetime, timezone
-from database.connection import get_db
+from database.connection_enhanced import get_db
 
 
 class FinancialModel:
@@ -98,6 +98,17 @@ class FinancialModel:
             """, values)
         
         return FinancialModel.get_expense_by_id(expense_id)
+
+    @staticmethod
+    def get_goal_by_id(goal_id: int) -> Optional[Dict]:
+        """Get goal by id."""
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT * FROM goals WHERE id = ?
+            """, (goal_id,))
+            row = cursor.fetchone()
+            return dict(row) if row else None
     
     @staticmethod
     def delete_expense(expense_id: int) -> bool:

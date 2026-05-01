@@ -10,6 +10,10 @@ from pathlib import Path
 # Add backend directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Ensure relative `.env` loading (used by `backend/config.py`) works
+# no matter where the command is launched from.
+os.chdir(str(Path(__file__).parent))
+
 def main():
     print("\n" + "=" * 60)
     print("🚀 AUREXIS AI Backend - Starting Up")
@@ -18,7 +22,7 @@ def main():
     # Step 1: Initialize Database
     print("📊 Step 1: Initializing Database...")
     try:
-        from database.connection import init_database
+        from database.connection_enhanced import init_database
         init_database()
         print("✅ Database initialized successfully\n")
     except Exception as e:

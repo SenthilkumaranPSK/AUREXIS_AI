@@ -71,8 +71,109 @@ export default function ReportsExport() {
     // For now, we'll just simulate a download
     const report = reports.find(r => r.id === reportId);
     if (report) {
-      // Create a mock download
-      const blob = new Blob([`Mock ${report.title} data`], { type: "text/plain" });
+      if (report.format === "PDF") {
+        // Use dynamic import for jsPDF and autoTable to avoid bundle bloat
+        const { default: jsPDF } = await import("jspdf");
+        const { default: autoTable } = await import("jspdf-autotable");
+        
+        const doc = new jsPDF();
+        
+        // Header
+        doc.setFontSize(22);
+        doc.setTextColor(0, 184, 217); // Primary color
+        doc.text("AUREXIS AI", 14, 22);
+        
+        doc.setFontSize(16);
+        doc.setTextColor(40, 40, 40);
+        doc.text(report.title, 14, 32);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 42);
+        doc.text(`User: ${currentUser.name || "User"}`, 14, 48);
+        
+        // Core Metrics Table
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text("Financial Snapshot", 14, 62);
+        
+        autoTable(doc, {
+          startY: 68,
+          head: [['Metric', 'Value']],
+          body: [
+            ['Net Worth', formatCurrency(currentUser.netWorth || 0)],
+            ['Monthly Income', formatCurrency(currentUser.monthlyIncome || 0)],
+            ['Monthly Expenses', formatCurrency(currentUser.monthlyExpense || 0)],
+            ['Savings Rate', `${currentUser.savingsRate || 0}%`],
+            ['Credit Score', `${currentUser.creditScore || "N/A"}`],
+          ],
+          theme: 'striped',
+          headStyles: { fillColor: [0, 184, 217] },
+        });
+
+        // Specific Report Tables
+        if (reportId === "expense-analysis" && currentUser.expenses) {
+          const finalY = (doc as any).lastAutoTable.finalY || 120;
+          doc.text("Expense Breakdown", 14, finalY + 15);
+          autoTable(doc, {
+            startY: finalY + 20,
+            head: [['Category', 'Amount', 'Percentage']],
+            body: currentUser.expenses.map((e: any) => [
+              e.category, 
+              formatCurrency(e.amount), 
+              `${e.percentage}%`
+            ]),
+            theme: 'striped',
+            headStyles: { fillColor: [255, 86, 48] }
+          });
+        }
+        
+        if (reportId === "investment-portfolio" && currentUser.investments) {
+          const finalY = (doc as any).lastAutoTable.finalY || 120;
+          doc.text("Investment Portfolio", 14, finalY + 15);
+          autoTable(doc, {
+            startY: finalY + 20,
+            head: [['Name', 'Type', 'Value', 'Allocation']],
+            body: currentUser.investments.map((inv: any) => [
+              inv.name, 
+              inv.type, 
+              formatCurrency(inv.value), 
+              `${inv.allocation}%`
+            ]),
+            theme: 'striped',
+            headStyles: { fillColor: [54, 179, 126] }
+          });
+        }
+        
+        // Footer
+        const pageCount = (doc as any).internal.getNumberOfPages();
+        for(let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            doc.setFontSize(8);
+            doc.setTextColor(150);
+            doc.text(`AUREXIS AI Confidential Financial Report - Page ${i} of ${pageCount}`, 14, doc.internal.pageSize.height - 10);
+        }
+
+        doc.save(`${reportId}-${new Date().toISOString().split("T")[0]}.pdf`);
+        setGenerating(null);
+        setGenerated(prev => [...prev, reportId]);
+        setTimeout(() => setGenerated(prev => prev.filter(id => id !== reportId)), 3000);
+        return;
+      }
+      
+      let blob;
+      if (report.format === "CSV") {
+        let csvContent = "Date,Category,Amount\n";
+        if (currentUser.expenses) {
+          currentUser.expenses.forEach((e:any) => {
+            csvContent += `${new Date().toISOString().split("T")[0]},${e.category},${e.amount}\n`;
+          });
+        }
+        blob = new Blob([csvContent], { type: "text/csv" });
+      } else {
+        blob = new Blob([JSON.stringify({ title: report.title, data: currentUser }, null, 2)], { type: "application/json" });
+      }
+      
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
