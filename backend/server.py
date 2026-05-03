@@ -539,6 +539,45 @@ def extract_financials_summary(financial_data: dict) -> dict:
             "credit_score": 750
         }
 
+# --- ML ENGINE INTEGRATION ---
+from ml_engine import ml_engine, RiskInput, ForecastInput
+
+@app.post("/api/train")
+def train_model():
+    """Train all backend ML models (RandomForest, LinearRegression, KMeans)"""
+    try:
+        return ml_engine.train_models()
+    except Exception as e:
+        logger.error(f"Error training models: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/predict-risk")
+def predict_risk(data: RiskInput):
+    """Predict financial risk using RandomForestClassifier"""
+    try:
+        return ml_engine.predict_risk(data)
+    except Exception as e:
+        logger.error(f"Error predicting risk: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/forecast")
+def forecast(data: ForecastInput):
+    """Forecast future expenses using LinearRegression"""
+    try:
+        return ml_engine.forecast_expenses(data)
+    except Exception as e:
+        logger.error(f"Error forecasting: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/recommendation")
+def recommendation(expense_ratio: float, savings_ratio: float):
+    """Get smart recommendations using KMeans clustering"""
+    try:
+        rec = ml_engine.get_recommendation(expense_ratio, savings_ratio)
+        return {"recommendation": rec}
+    except Exception as e:
+        logger.error(f"Error getting recommendation: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     uvicorn.run("server:app", host="127.0.0.1", port=8000, reload=True)
