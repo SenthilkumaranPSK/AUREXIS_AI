@@ -14,6 +14,7 @@ interface MouseReactiveReturn {
   y: MotionValue<number>;
   rotateX: MotionValue<number>;
   rotateY: MotionValue<number>;
+  z: number;
   handleMouseMove: (e: MouseEvent<HTMLDivElement>) => void;
   handleMouseLeave: () => void;
 }
@@ -73,6 +74,7 @@ export function useMouseReactive(config: MouseReactiveConfig = {}): MouseReactiv
     y,
     rotateX,
     rotateY,
+    z: 0, // Force translateZ(0) for hardware acceleration to prevent blur
     handleMouseMove,
     handleMouseLeave
   };
