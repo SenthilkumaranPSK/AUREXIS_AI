@@ -105,6 +105,17 @@ export default function ScenarioSimulation() {
     }
   };
 
+  // Add expand state
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const quickMessages = [
+    "Simulate buying a car",
+    "Simulate a 20% salary raise",
+    "What if I lose my job?",
+    "Factor in a vacation",
+    "Add a new loan"
+  ];
+
   return (
     <motion.div 
       ref={ref}
@@ -113,16 +124,18 @@ export default function ScenarioSimulation() {
       onMouseLeave={handleMouseLeave}
       initial={{ opacity: 0, y: 12 }} 
       animate={{ opacity: 1, y: 0 }}
-      className="glass-card rounded-2xl p-6 border border-border"
+      className={`glass-card rounded-2xl p-6 border border-border transition-all duration-300 ${isExpanded ? "fixed inset-4 z-50 overflow-y-auto bg-background/95 backdrop-blur-xl" : ""}`}
     >
-      <div className="flex items-center gap-2 mb-5">
-        <FlaskConical className="w-4 h-4 text-primary" />
-        <h3 className="text-sm font-semibold text-foreground">Scenario Simulator</h3>
+      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center gap-2">
+          <FlaskConical className="w-4 h-4 text-primary" />
+          <h3 className="text-sm font-semibold text-foreground">Scenario Simulator</h3>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className={`grid ${isExpanded ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1 lg:grid-cols-3"} gap-6`}>
         {/* Controls */}
-        <div className="space-y-5">
+        <div className={`space-y-5 ${isExpanded ? "hidden lg:block" : ""}`}>
           {[
             { label: "New Loan Amount",    key: "newLoanAmount",      min: 0, max: 5000000, step: 100000, display: formatCurrency(newLoanAmount) },
             { label: "Salary Increase",    key: "salaryIncrease",     min: 0, max: 50,      step: 5,      display: `${salaryIncrease}%` },
@@ -158,7 +171,7 @@ export default function ScenarioSimulation() {
         </div>
 
         {/* Results */}
-        <div className="space-y-3">
+        <div className={`space-y-3 ${isExpanded ? "hidden lg:block" : ""}`}>
           <div className="text-xs font-medium text-muted-foreground mb-2">
             Simulated Impact {loading && <Loader2 className="inline w-3 h-3 animate-spin ml-1" />}
           </div>
@@ -196,10 +209,26 @@ export default function ScenarioSimulation() {
         </div>
 
         {/* AI Advisor Chat */}
-        <div className="flex flex-col border border-border rounded-xl bg-background/50 h-[400px]">
-          <div className="p-3 border-b border-border flex items-center gap-2 bg-muted/20 rounded-t-xl">
-            <Bot className="w-4 h-4 text-primary" />
-            <span className="text-xs font-semibold">AI Simulator Advisor</span>
+        <div className={`flex flex-col border border-border rounded-xl bg-background/50 ${isExpanded ? "h-full min-h-[600px] lg:col-span-2" : "h-[400px]"}`}>
+          <div className="p-3 border-b border-border flex items-center justify-between bg-muted/20 rounded-t-xl">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+                <Bot className="w-4 h-4 text-white" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-foreground">AUREXIS AI</h3>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+                  <span className="text-[10px] text-muted-foreground">Ollama · Local AI Active</span>
+                  <span className="px-1.5 py-0.5 rounded border border-success/30 bg-success/10 text-success text-[8px] font-bold uppercase tracking-wider ml-1">Privacy Secured</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setIsExpanded(!isExpanded)} className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              </button>
+            </div>
           </div>
           
           <div className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col">
@@ -235,13 +264,32 @@ export default function ScenarioSimulation() {
               </div>
             )}
           </div>
+          
+          {/* Quick Messages */}
+          <div className="px-3 pb-2 pt-1 flex flex-wrap gap-2 overflow-x-auto scrollbar-hide">
+             {quickMessages.map((msg) => (
+               <button
+                 key={msg}
+                 onClick={() => {
+                   setChatInput(msg);
+                   // Create synthetic event
+                   const e = new Event('submit') as unknown as React.FormEvent;
+                   // Wait for state to update, then submit
+                   setTimeout(() => document.getElementById('scenario-chat-form')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true })), 0);
+                 }}
+                 className="px-3 py-1.5 bg-secondary hover:bg-secondary/80 border border-border rounded-full text-[10px] text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
+               >
+                 {msg}
+               </button>
+             ))}
+          </div>
 
-          <form onSubmit={handleChatSubmit} className="p-3 border-t border-border flex gap-2">
+          <form id="scenario-chat-form" onSubmit={handleChatSubmit} className="p-3 border-t border-border flex gap-2">
             <input 
               type="text" 
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
-              placeholder="e.g. Simulate buying a car"
+              placeholder="Ask about this scenario..."
               className="flex-1 bg-muted/50 border border-border rounded-lg px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-primary transition-colors"
             />
             <button 
