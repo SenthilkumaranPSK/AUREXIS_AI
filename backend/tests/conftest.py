@@ -1,65 +1,147 @@
 """
-Pytest configuration and shared fixtures.
+Pytest Configuration and Fixtures
 """
-
 import pytest
-import sys
-from pathlib import Path
+import asyncio
+from typing import Generator, AsyncGenerator
 from fastapi.testclient import TestClient
-from typing import Generator, Dict  # Import Dict for type hinting
+import os
+import sys
 
 # Add backend to path
-backend_dir = Path(__file__).parent.parent
-sys.path.insert(0, str(backend_dir))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Import app from main
-from main import app
 
-@pytest.fixture(scope="module")
-def client() -> Generator[TestClient, None, None]:
-    """Create a test client for FastAPI app."""
-    # The client fixture needs to yield exactly once.
-    # This ensures that the TestClient is properly created and used.
-    with TestClient(app) as client:
-        yield client
+@pytest.fixture(scope="session")
+def event_loop():
+    """Create event loop for async tests"""
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
 
-# --- Helper Functions ---
 
-def get_auth_headers(client: TestClient, email: str, password: str) -> Dict[str, str]:
-    """Login and get authorization headers."""
-    response = client.post("/api/auth/login", json={"email": email, "password": password})
+@pytest.fixture(scope="session")
+def test_app():
+    """Create test FastAPI application"""
+    # Set test environment
+    os.environ["ENVIRONMENT"] = "test"
+    os.environ["JWT_SECRET_KEY"] = "test-secret-key"
+    os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
     
-    token = response.json().get("access_token") if response.status_code == 200 else ""
-    return {"Authorization": f"Bearer {token}"} if token else {}
-
+    from server import app
+    return app
 
 
 @pytest.fixture
-def sample_financial_data() -> Dict:
-    """Minimal financial data for analytics tests.
-    Expected values:
-    - income = 50000
-    - expense = 25000 (20000 + 5000)
-    - net worth = 500000
-    - credit score = 750
-    """
+def client(test_app) -> Generator:
+    """Create test client"""
+    with TestClient(test_app) as test_client:
+        yield test_client
+
+
+@pytest.fixture
+async def async_client(test_app) -> AsyncGenerator:
+    """Create async test client"""
+    from httpx import AsyncClient
+    
+    async with AsyncClient(app=test_app, base_url="http://test") as ac:
+        yield ac
+
+
+@pytest.fixture
+def test_user_data():
+    """Sample test user data"""
     return {
-        "fetch_bank_transactions": {
-            "bankTransactions": [
-                {
-                    "bank": "TestBank",
-                    "txns": [
-                        [50000, "Salary Credit", "2025-01-01", 1, "NEFT", "ref1"],
-                        [20000, "Rent Payment", "2025-01-02", 2, "FT", "ref2"],
-                        [5000, "Utility Bill", "2025-01-03", 2, "UPI", "ref3"]
-                    ]
-                }
-            ]
-        },
-        "fetch_net_worth": {
-            "netWorthResponse": {"totalNetWorthValue": {"units": 500000}}
-        },
-        "fetch_credit_report": {
-            "creditReports": [{"creditReportData": {"score": {"bureauScore": 750}}}]
-        }
+        "id": "test_user_123",
+        "name": "Test User",
+        "email": "test@example.com",
+        "password": "TestPassword123!",
+        "occupation": "Software Engineer",
+        "monthlyIncome": 100000,
+        "monthlyExpense": 60000
     }
+
+
+@pytest.fixture
+def auth_headers(client, test_user_data):
+    """Get authentication headers for test user"""
+    # Login and get token
+    response = client.post("/api/login", json={
+        "username": test_user_data["id"],
+        "password": test_user_data["password"]
+    })
+    
+    if response.status_code == 200:
+        token = response.json()["access_token"]
+        return {"Authorization": f"Bearer {token}"}
+    
+    return {}
+
+
+@pytest.fixture
+def mock_transactions():
+    """Sample transaction data"""
+    return [
+        {
+            "id": "txn_1",
+            "amount": 5000,
+            "type": "CREDIT",
+            "category": "Salary",
+            "date": "2026-05-01",
+            "description": "Monthly Salary"
+        },
+        {
+            "id": "txn_2",
+            "amount": 2000,
+            "type": "DEBIT",
+            "category": "Groceries",
+            "date": "2026-05-02",
+            "description": "Supermarket"
+        },
+        {
+            "id": "txn_3",
+            "amount": 1500,
+            "type": "DEBIT",
+            "category": "Utilities",
+            "date": "2026-05-03",
+            "description": "Electricity Bill"
+        }
+    ]
+
+
+@pytest.fixture
+def mock_budget():
+    """Sample budget data"""
+    return {
+        "name": "May 2026 Budget",
+        "month": "2026-05",
+        "total_budget": 50000,
+        "categories": [
+            {
+                "name": "Groceries",
+                "budget_amount": 10000,
+                "icon": "ShoppingCart",
+                "color": "#3b82f6"
+            },
+            {
+                "name": "Utilities",
+                "budget_amount": 5000,
+                "icon": "Zap",
+                "color": "#ef4444"
+            },
+            {
+                "name": "Entertainment",
+                "budget_amount": 5000,
+                "icon": "Film",
+                "color": "#8b5cf6"
+            }
+        ]
+    }
+
+
+@pytest.fixture(autouse=True)
+def cleanup_test_data():
+    """Cleanup test data after each test"""
+    yield
+    # Cleanup code here if needed
+    pass

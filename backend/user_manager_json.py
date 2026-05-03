@@ -9,7 +9,6 @@ import logging
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 from datetime import datetime
-import bcrypt
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +21,7 @@ class UserManagerJSON:
 
     # Mapping of account numbers to user IDs for quick lookup
     _account_to_user_map = {
-        "1010101010": {"user_id": "22243045", "name": "Senthilkumaran", "password": "Senthilkumaran@2000"},
+        "1010101010": {"user_id": "22243045", "name": "SK", "password": "SK@2000"},
         "1111111111": {"user_id": "22243017", "name": "Imayavarman", "password": "Imayavarman@2000"},
         "1212121212": {"user_id": "22243050", "name": "Srivarshan", "password": "Srivarshan@2000"},
         "1313131313": {"user_id": "22243040", "name": "Rahulprasath", "password": "Rahulprasath@2000"},

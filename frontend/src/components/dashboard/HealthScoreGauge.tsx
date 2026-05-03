@@ -1,3 +1,4 @@
+import { useMouseReactive } from "@/hooks/useMouseReactive";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
@@ -65,6 +66,7 @@ const buildFallbackHealth = (currentUser: any) => {
 };
 
 export default function HealthScoreGauge() {
+  const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 25, tiltIntensity: 2 });
   const { currentUser } = useStore();
   const [health, setHealth] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -96,7 +98,11 @@ export default function HealthScoreGauge() {
   const offset = arcLength - (score / 100) * arcLength;
 
   return (
-    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+    <motion.div
+      ref={ref}
+      style={{ x, y, rotateX, rotateY }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
       className="glass-card rounded-2xl p-6 flex flex-col items-center border border-border"
     >
       <div className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-5">

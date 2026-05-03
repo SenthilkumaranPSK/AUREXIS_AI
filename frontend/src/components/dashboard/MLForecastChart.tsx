@@ -5,6 +5,7 @@ import { formatCurrency } from "@/lib/formatters";
 import { getMLForecast } from "@/lib/api";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
 import { Loader2, Brain, ChevronDown } from "lucide-react";
+import { useMouseReactive } from "@/hooks/useMouseReactive";
 
 const MODEL_COLORS: Record<string, string> = {
   ARIMA:            "hsl(221 83% 58%)",
@@ -30,13 +31,17 @@ export default function MLForecastChart() {
   const [loading, setLoading]   = useState(true);
   const [metric, setMetric]     = useState<MetricKey>("savings");
   const [activeModels, setActiveModels] = useState<string[]>(["Ensemble", "ARIMA", "RandomForest"]);
+  const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 25, tiltIntensity: 2 });
 
   useEffect(() => {
     if (!currentUser?.id) return;
     setLoading(true);
-    getMLForecast(currentUser.id)
+    getMLForecast(6)
       .then(res => setData(res))
-      .catch(() => setData(null))
+      .catch(err => {
+        console.error("ML Forecast Error:", err);
+        setData(null);
+      })
       .finally(() => setLoading(false));
   }, [currentUser?.id]);
 
@@ -61,7 +66,13 @@ export default function MLForecastChart() {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+    <motion.div 
+      ref={ref}
+      style={{ x, y, rotateX, rotateY }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      initial={{ opacity: 0, y: 12 }} 
+      animate={{ opacity: 1, y: 0 }}
       className="glass-card rounded-2xl p-6 border border-border"
     >
       {/* Header */}
@@ -113,12 +124,12 @@ export default function MLForecastChart() {
         <div className="h-64 flex items-center justify-center">
           <div className="text-center">
             <Loader2 className="w-6 h-6 animate-spin text-muted-foreground mx-auto mb-2" />
-            <p className="text-xs text-muted-foreground">Running ML models...</p>
+            <p className="text-xs text-muted-foreground">Synthesizing predictive models...</p>
           </div>
         </div>
       ) : !data ? (
         <div className="h-64 flex items-center justify-center text-muted-foreground text-sm">
-          Insufficient data for ML forecasting
+          Insufficient historical telemetry for accurate forecasting.
         </div>
       ) : (
         <>
@@ -147,13 +158,13 @@ export default function MLForecastChart() {
               <div key={model} className="bg-muted/50 rounded-xl p-2.5 text-center border border-border">
                 <div className="text-[9px] text-muted-foreground mb-1">{MODEL_LABELS[model]}</div>
                 <div className="text-sm font-bold tabular-nums" style={{ color: MODEL_COLORS[model] }}>{acc}%</div>
-                <div className="text-[9px] text-muted-foreground">accuracy</div>
+                <div className="text-[9px] text-muted-foreground">Confidence</div>
               </div>
             ))}
           </div>
 
           <p className="text-[10px] text-muted-foreground mt-3 text-center">
-            Based on {data.dataPoints} months of transaction data · {data.note}
+            Predictive model synthesized using {data.dataPoints} months of transactional telemetry · {data.note}
           </p>
         </>
       )}

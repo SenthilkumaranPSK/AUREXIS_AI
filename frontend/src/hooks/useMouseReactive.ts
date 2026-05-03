@@ -1,5 +1,5 @@
 import { useRef, MouseEvent } from "react";
-import { useMotionValue, useSpring, useTransform, MotionValue } from "framer-motion";
+import { useMotionValue, useSpring, useTransform, MotionValue, useReducedMotion } from "framer-motion";
 
 interface MouseReactiveConfig {
   sensitivity?: number;
@@ -27,13 +27,14 @@ interface MouseReactiveReturn {
  */
 export function useMouseReactive(config: MouseReactiveConfig = {}): MouseReactiveReturn {
   const {
-    sensitivity = 25,
-    stiffness = 150,
-    damping = 15,
-    tiltIntensity = 2
+    sensitivity = 35,
+    stiffness = 75,
+    damping = 25,
+    tiltIntensity = 1.5
   } = config;
 
   const ref = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
   
   // Mouse tracking motion values
   const mouseX = useMotionValue(0);
@@ -49,7 +50,7 @@ export function useMouseReactive(config: MouseReactiveConfig = {}): MouseReactiv
   const rotateY = useTransform(x, [-20, 20], [-tiltIntensity, tiltIntensity]);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
+    if (!ref.current || shouldReduceMotion) return;
     
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;

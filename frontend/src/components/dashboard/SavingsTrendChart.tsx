@@ -1,3 +1,4 @@
+import { useMouseReactive } from "@/hooks/useMouseReactive";
 import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Area, AreaChart } from "recharts";
 import { useStore } from "@/store/useStore";
@@ -24,6 +25,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export default function SavingsTrendChart() {
+  const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 25, tiltIntensity: 2 });
   const { currentUser } = useStore();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +72,11 @@ export default function SavingsTrendChart() {
   const isOnTrack = savingsGap >= 0;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+    <motion.div
+      ref={ref}
+      style={{ x, y, rotateX, rotateY }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
       className="glass-card rounded-2xl p-6 border border-border"
     >
       <div className="flex items-start justify-between mb-6">

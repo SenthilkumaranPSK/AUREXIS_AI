@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useMouseReactive } from "@/hooks/useMouseReactive";
 import { Brain, TrendingUp, Zap, Lock, BarChart3, Users, ArrowRight, CheckCircle2, Shield } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +17,7 @@ const features = [
 const trustBadges = ["Local AI Processing", "Explainable Insights", "Real-time Analysis"];
 
 export default function LoginPage() {
+  const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 40, tiltIntensity: 3 });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError]       = useState("");
@@ -120,7 +122,16 @@ export default function LoginPage() {
           <span className="text-lg font-black text-foreground tracking-[0.15em]">AUREXIS</span>
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.4 }} className="w-full max-w-[420px]">
+        <motion.div 
+          ref={ref}
+          style={{ x, y, rotateX, rotateY }}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          initial={{ opacity: 0, y: 20, scale: 0.98 }} 
+          animate={{ opacity: 1, y: 0, scale: 1 }} 
+          transition={{ duration: 0.4 }} 
+          className="w-full max-w-[420px]"
+        >
           <div className="glass-card rounded-3xl p-10 border border-border shadow-2xl">
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-foreground mb-2">Welcome back</h2>

@@ -3,13 +3,14 @@ import { useStore } from "@/store/useStore";
 import { useNavigate } from "react-router-dom";
 import { logout } from "@/lib/api";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { formatCurrency } from "@/lib/formatters";
 
 export default function AppHeader() {
   const { currentUser, sessionId, isDark, setIsDark, setCurrentUser, setSessionId, notifications } = useStore();
   const navigate = useNavigate();
   const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
     if (sessionId) { try { await logout(sessionId); } catch {} }
@@ -23,6 +24,28 @@ export default function AppHeader() {
   };
 
   const unreadCount = 0; // notifications?.filter(n => !n.is_read).length || 0;
+
+  // Keyboard navigation
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape' && profileOpen) {
+      setProfileOpen(false);
+    }
+  }, [profileOpen]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
+  // Focus management
+  useEffect(() => {
+    if (profileOpen && profileRef.current) {
+      const firstFocusable = profileRef.current.querySelector<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      firstFocusable?.focus();
+    }
+  }, [profileOpen]);
 
   return (
     <>
@@ -48,6 +71,8 @@ export default function AppHeader() {
             onClick={() => setIsDark(!isDark)}
             className="p-2 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-all"
             title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            aria-pressed={isDark}
           >
             {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
@@ -57,10 +82,14 @@ export default function AppHeader() {
             onClick={handleNotificationClick}
             className="relative p-2 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-all"
             title="View notifications"
+            aria-label={`View notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
           >
             <Bell className="w-4 h-4" />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-danger rounded-full ring-1 ring-background" />
+              <>
+                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-danger rounded-full ring-1 ring-background" />
+                <span className="sr-only">{unreadCount} unread notifications</span>
+              </>
             )}
           </button>
 
@@ -72,10 +101,20 @@ export default function AppHeader() {
             <button
               onClick={() => setProfileOpen(true)}
               className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-secondary transition-all"
+              aria-label="Open user profile"
+              aria-expanded={profileOpen}
+              aria-haspopup="dialog"
             >
               <div className="relative shrink-0">
-                <img src={currentUser.avatar} alt="" className="w-8 h-8 rounded-lg ring-1 ring-border" />
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-success rounded-full ring-2 ring-background" />
+                <img 
+                  src={currentUser.avatar} 
+                  alt={`${currentUser.name}'s avatar`}
+                  className="w-8 h-8 rounded-lg ring-1 ring-border" 
+                />
+                <span 
+                  className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-success rounded-full ring-2 ring-background"
+                  aria-label="Online"
+                />
               </div>
               <div className="hidden sm:block text-left">
                 <div className="text-xs font-semibold text-foreground leading-none mb-0.5">{currentUser.name}</div>
@@ -105,11 +144,15 @@ export default function AppHeader() {
 
             {/* Sidebar */}
             <motion.div
+              ref={profileRef}
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               className="fixed right-0 top-0 h-full w-[380px] bg-card border-l border-border shadow-2xl z-[70] overflow-y-auto"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="profile-title"
             >
               {currentUser && (
                 <div className="p-6">

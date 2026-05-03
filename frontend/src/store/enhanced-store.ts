@@ -8,6 +8,8 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+
 // Types
 export interface UserProfile {
   id: string;
@@ -250,7 +252,7 @@ export const useEnhancedStore = create<AppStore>()(
           });
           
           try {
-            const response = await fetch('/api/v1/auth/login', {
+            const response = await fetch(API_BASE_URL + '/api/v1/auth/login', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(credentials),
@@ -292,7 +294,7 @@ export const useEnhancedStore = create<AppStore>()(
           
           if (sessionId) {
             try {
-              await fetch('/api/v1/auth/logout', {
+              await fetch(API_BASE_URL + '/api/v1/auth/logout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ session_id: sessionId }),
@@ -322,7 +324,7 @@ export const useEnhancedStore = create<AppStore>()(
           
           try {
             // Fetch updated user data
-            const response = await fetch(`/api/v1/users/${currentUser.id}`, {
+            const response = await fetch(`${API_BASE_URL}/api/v1/users/${currentUser.id}`, {
               headers: { 'X-Session-ID': get().sessionId || '' },
             });
             
@@ -342,7 +344,7 @@ export const useEnhancedStore = create<AppStore>()(
           if (!currentUser || !sessionId) return;
           
           try {
-            const response = await fetch(`/api/v1/analytics/metrics/${currentUser.id}`, {
+            const response = await fetch(`${API_BASE_URL}/api/v1/analytics/metrics/${currentUser.id}`, {
               headers: { 'X-Session-ID': sessionId },
             });
             
@@ -363,7 +365,7 @@ export const useEnhancedStore = create<AppStore>()(
           if (!currentUser || !sessionId) return;
           
           try {
-            const response = await fetch(`/api/v1/financial/transactions/${currentUser.id}?limit=${limit}`, {
+            const response = await fetch(`${API_BASE_URL}/api/v1/financial/transactions/${currentUser.id}?limit=${limit}`, {
               headers: { 'X-Session-ID': sessionId },
             });
             
@@ -384,7 +386,7 @@ export const useEnhancedStore = create<AppStore>()(
           if (!currentUser || !sessionId) return;
           
           try {
-            const response = await fetch(`/api/v1/financial/goals/${currentUser.id}`, {
+            const response = await fetch(`${API_BASE_URL}/api/v1/financial/goals/${currentUser.id}`, {
               headers: { 'X-Session-ID': sessionId },
             });
             
@@ -405,7 +407,7 @@ export const useEnhancedStore = create<AppStore>()(
           if (!currentUser || !sessionId) return;
           
           try {
-            const response = await fetch(`/api/v1/financial/income/${currentUser.id}`, {
+            const response = await fetch(`${API_BASE_URL}/api/v1/financial/income/${currentUser.id}`, {
               headers: { 'X-Session-ID': sessionId },
             });
             
@@ -426,7 +428,7 @@ export const useEnhancedStore = create<AppStore>()(
           if (!currentUser || !sessionId) return;
           
           try {
-            const response = await fetch(`/api/v1/financial/transactions/${currentUser.id}`, {
+            const response = await fetch(`${API_BASE_URL}/api/v1/financial/transactions/${currentUser.id}`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -455,7 +457,7 @@ export const useEnhancedStore = create<AppStore>()(
           if (!currentUser || !sessionId) return;
           
           try {
-            const response = await fetch(`/api/v1/financial/goals/${currentUser.id}/${goalId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/v1/financial/goals/${currentUser.id}/${goalId}`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',
@@ -504,7 +506,7 @@ export const useEnhancedStore = create<AppStore>()(
               state.chatMessages.push(userMessage);
             });
             
-            const response = await fetch('/api/v1/chat', {
+            const response = await fetch(API_BASE_URL + '/api/v1/chat', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -670,7 +672,7 @@ export const useEnhancedStore = create<AppStore>()(
           });
           
           try {
-            const response = await fetch(`/api/v1/analytics/simulation/${currentUser.id}`, {
+            const response = await fetch(`${API_BASE_URL}/api/v1/analytics/simulation/${currentUser.id}`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

@@ -1,3 +1,4 @@
+import { useMouseReactive } from "@/hooks/useMouseReactive";
 import { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { useStore } from "@/store/useStore";
@@ -8,6 +9,7 @@ import { Loader2 } from "lucide-react";
 const INVESTMENT_COLORS = ["#3B82F6", "#8B5CF6", "#F59E0B", "#10B981", "#EC4899", "#EF4444"];
 
 export default function InvestmentPanel() {
+  const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 25, tiltIntensity: 2 });
   const { currentUser } = useStore();
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +30,11 @@ export default function InvestmentPanel() {
     : 0;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+    <motion.div
+      ref={ref}
+      style={{ x, y, rotateX, rotateY }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
       className="glass-card rounded-2xl p-6 border border-border"
     >
       <h3 className="text-sm font-semibold text-foreground mb-1">Investment Portfolio</h3>

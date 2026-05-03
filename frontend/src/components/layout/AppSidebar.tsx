@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useMouseReactive } from "@/hooks/useMouseReactive";
 import {
   LayoutDashboard, Heart, ShieldAlert, PiggyBank, CreditCard,
   TrendingUp, Target, LineChart, FlaskConical, Bell, FileText,
@@ -29,16 +30,20 @@ const groups = [
 ];
 
 export default function AppSidebar() {
+  const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 50, tiltIntensity: 1 });
   const { sidebarOpen, setSidebarOpen } = useStore();
   const navigate = useNavigate();
   const location = useLocation();
 
   return (
     <motion.aside
+      ref={ref}
+      style={{ x, y, rotateX, rotateY, background: "hsl(var(--card) / 0.75)", backdropFilter: "blur(24px)" }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       animate={{ width: sidebarOpen ? 232 : 64 }}
       transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
       className="h-screen sticky top-0 border-r border-border/30 flex flex-col z-30 overflow-hidden shrink-0"
-      style={{ background: "hsl(var(--card) / 0.75)", backdropFilter: "blur(24px)" }}
     >
       {/* Logo */}
       <div className="h-16 flex items-center gap-3 px-4 border-b border-white/[0.05] shrink-0">

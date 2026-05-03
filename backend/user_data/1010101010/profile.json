@@ -1,6 +1,6 @@
 {
   "user_id": "1010101010",
-  "name": "Senthilkumaran",
+  "name": "SK",
   "occupation": "Software Engineer",
   "age": 24,
   "monthly_income": 78000,
@@ -13,5 +13,10 @@
   ],
   "dependents": 3,
   "marital_status": "Single",
-  "investment_preference": "Debt and FD"
+  "investment_preference": "Debt and FD",
+  "bank_name": "State Bank of India",
+  "account_type": "Premium Wealth Account",
+  "account_number": "319800010101010",
+  "bank_location": "Salem Branch",
+  "has_credit_card": true
 }

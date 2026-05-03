@@ -168,22 +168,22 @@ def _format_health_response(
         status = "excellent"
         label = "Excellent"
         color = "success"
-        status_message = "Your financial health is excellent!"
+        status_message = "Your portfolio is highly resilient. Asset growth and liability management are optimal."
     elif overall_score >= 65:
         status = "good"
         label = "Good"
         color = "primary"
-        status_message = "Your financial health is good, with room to improve."
+        status_message = "Solid financial baseline. Strategic adjustments could further accelerate your wealth compounding."
     elif overall_score >= 50:
         status = "fair"
         label = "Fair"
         color = "warning"
-        status_message = "Your financial health needs attention."
+        status_message = "Vulnerabilities detected in asset allocation. Rebalancing is recommended."
     else:
         status = "poor"
         label = "Needs Improvement"
         color = "danger"
-        status_message = "Your financial health requires immediate action."
+        status_message = "Critical risk exposure identified. Immediate financial restructuring is advised."
 
     sub_scores = {
         "savings": round(savings_score, 1),

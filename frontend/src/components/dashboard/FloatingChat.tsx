@@ -34,6 +34,11 @@ export default function FloatingChat() {
   const x = useSpring(mouseX, springConfig);
   const y = useSpring(mouseY, springConfig);
 
+  const transformX = useTransform(x, [-10, 10], [-2, 2]);
+  const transformY = useTransform(y, [-10, 10], [-2, 2]);
+  const transformRotateX = useTransform(y, [-10, 10], [1, -1]);
+  const transformRotateY = useTransform(x, [-10, 10], [-1, 1]);
+
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!chatRef.current) return;
     const rect = chatRef.current.getBoundingClientRect();
@@ -51,6 +56,15 @@ export default function FloatingChat() {
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, typing]);
+
+  // Auto-warmup Ollama on load so it's instantly fast during the presentation
+  useEffect(() => {
+    sendChatMessage({
+      user_id: "system-warmup",
+      message: "ping",
+      conversation_history: []
+    }).catch(() => {}); // Silently fail if not running
+  }, []);
 
   const send = async (text: string) => {
     if (!text.trim() || typing) return;
@@ -131,10 +145,10 @@ export default function FloatingChat() {
                 scale: 0.85
               }}
               style={{
-                x: isFullscreen ? 0 : useTransform(x, [-10, 10], [-2, 2]),
-                y: isFullscreen ? 0 : useTransform(y, [-10, 10], [-2, 2]),
-                rotateX: isFullscreen ? 0 : useTransform(y, [-10, 10], [1, -1]),
-                rotateY: isFullscreen ? 0 : useTransform(x, [-10, 10], [-1, 1])
+                x: isFullscreen ? 0 : transformX,
+                y: isFullscreen ? 0 : transformY,
+                rotateX: isFullscreen ? 0 : transformRotateX,
+                rotateY: isFullscreen ? 0 : transformRotateY
               }}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
@@ -162,13 +176,18 @@ export default function FloatingChat() {
                   </motion.div>
                   <div>
                     <div className="text-xs font-bold text-foreground tracking-wide">AUREXIS AI</div>
-                    <div className={`text-[10px] flex items-center gap-1 ${connected ? "text-success" : "text-warning"}`}>
+                    <div className={`text-[10px] flex items-center gap-1 mt-0.5 ${connected ? "text-success" : "text-warning"}`}>
                       <motion.span 
                         className={`w-1.5 h-1.5 rounded-full ${connected ? "bg-success" : "bg-warning"}`}
                         animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
                         transition={{ duration: 2, repeat: Infinity }}
                       />
-                      {connected ? "Ollama · deepseek-v3.1:671b" : "Offline"}
+                      {connected ? "Ollama · Local AI Active" : "Offline"}
+                      {connected && (
+                        <span className="ml-1.5 px-1.5 py-0.5 rounded bg-success/20 text-success text-[8px] font-bold tracking-wider uppercase border border-success/30">
+                          Privacy Secured
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -217,11 +236,19 @@ export default function FloatingChat() {
                   className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                 >
                   <motion.div 
-                    className={`w-6 h-6 rounded-lg shrink-0 flex items-center justify-center mt-0.5 ${msg.role === "user" ? "bg-primary/15" : "gradient-primary"}`}
+                    className={`w-6 h-6 rounded-lg shrink-0 flex items-center justify-center mt-0.5 ${msg.role === "user" && !currentUser?.avatar ? "bg-primary/15" : msg.role === "assistant" ? "gradient-primary" : ""}`}
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ type: "spring", stiffness: 400 }}
                   >
-                    {msg.role === "user" ? <User className="w-3 h-3 text-primary" /> : <Bot className="w-3 h-3 text-white" />}
+                    {msg.role === "user" ? (
+                      currentUser?.avatar ? (
+                        <img src={currentUser.avatar} alt="User" className="w-full h-full rounded-lg object-cover" />
+                      ) : (
+                        <User className="w-3 h-3 text-primary" />
+                      )
+                    ) : (
+                      <Bot className="w-3 h-3 text-white" />
+                    )}
                   </motion.div>
                   <motion.div 
                     className={`${isFullscreen ? "max-w-[85%]" : "max-w-[78%]"} px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${

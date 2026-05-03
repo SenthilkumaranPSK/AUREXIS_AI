@@ -5,18 +5,20 @@ import { formatCurrency } from "@/lib/formatters";
 import { runSimulation, sendChatMessage } from "@/lib/api";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { FlaskConical, AlertTriangle, CheckCircle, Loader2, Bot, Send } from "lucide-react";
+import { FlaskConical, AlertTriangle, CheckCircle, Loader2, Bot, Send, User } from "lucide-react";
+import { useMouseReactive } from "@/hooks/useMouseReactive";
 
 export default function ScenarioSimulation() {
   const { currentUser, simulationParams, setSimulationParams } = useStore();
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 25, tiltIntensity: 2 });
 
   // AI Chat State
   const [chatInput, setChatInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState([
-    { role: "ai", text: "Hi! I'm your AI Scenario Advisor. You can use the manual controls on the left, or just ask me to simulate a scenario for you!" }
+    { role: "ai", text: "Welcome to the Scenario Simulator. You can manipulate the fiscal parameters manually, or instruct me to model a specific financial event." }
   ]);
 
   const { newLoanAmount, salaryIncrease, jobLoss, vacationExpense, housePurchase, carPurchase, investmentIncrease } = simulationParams;
@@ -104,7 +106,13 @@ export default function ScenarioSimulation() {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+    <motion.div 
+      ref={ref}
+      style={{ x, y, rotateX, rotateY }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      initial={{ opacity: 0, y: 12 }} 
+      animate={{ opacity: 1, y: 0 }}
       className="glass-card rounded-2xl p-6 border border-border"
     >
       <div className="flex items-center gap-2 mb-5">
@@ -196,7 +204,18 @@ export default function ScenarioSimulation() {
           
           <div className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col">
             {messages.map((msg, idx) => (
-              <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+              <div key={idx} className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                <div className={`w-6 h-6 rounded-lg shrink-0 flex items-center justify-center mt-0.5 ${msg.role === "user" && !currentUser?.avatar ? "bg-primary/15" : msg.role === "ai" ? "gradient-primary" : ""}`}>
+                  {msg.role === "user" ? (
+                    currentUser?.avatar ? (
+                      <img src={currentUser.avatar} alt="User" className="w-full h-full rounded-lg object-cover" />
+                    ) : (
+                      <User className="w-3 h-3 text-primary" />
+                    )
+                  ) : (
+                    <Bot className="w-3 h-3 text-white" />
+                  )}
+                </div>
                 <div className={`text-[11px] p-2.5 rounded-xl max-w-[85%] ${
                   msg.role === "user" 
                     ? "bg-primary text-primary-foreground rounded-tr-sm" 

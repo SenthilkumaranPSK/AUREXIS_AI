@@ -3,11 +3,13 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { useStore } from "@/store/useStore";
 import { formatCurrency } from "@/lib/formatters";
 import { motion } from "framer-motion";
+import { useMouseReactive } from "@/hooks/useMouseReactive";
 
 const COLORS = ["#00B8D9", "#FF5630", "#FFAB00", "#36B37E", "#6554C0"];
 
 export default function ExpenseBreakdown() {
   const { currentUser } = useStore();
+  const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 25, tiltIntensity: 2 });
 
   const expenses = useMemo(() => {
     if (!currentUser?.expenses) return [];
@@ -21,7 +23,13 @@ export default function ExpenseBreakdown() {
   if (!currentUser) return null;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+    <motion.div 
+      ref={ref}
+      style={{ x, y, rotateX, rotateY }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      initial={{ opacity: 0, y: 12 }} 
+      animate={{ opacity: 1, y: 0 }}
       className="glass-card rounded-2xl p-6 border border-border"
     >
       <h3 className="text-sm font-semibold text-foreground mb-1">Spending Breakdown</h3>

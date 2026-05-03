@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { formatCurrency } from "@/lib/formatters";
-import { getUserAlerts, getUserGoals, getUserHealth } from "@/lib/api";
 import { ShieldCheck, Bell, Target, Calendar, Zap } from "lucide-react";
+import { useMouseReactive } from "@/hooks/useMouseReactive";
+import { getUserAlerts, getUserGoals, getUserHealth } from "@/lib/api";
 
 const riskColorMap: Record<string, string> = {
   Low:      "text-success  bg-success/10  border-success/20",
@@ -39,6 +40,7 @@ export default function IntelligencePanel() {
   const [emis, setEmis]       = useState<any[]>([]);
   const [goals, setGoals]     = useState<any[]>([]);
   const [health, setHealth]   = useState<any>(null);
+  const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 30, tiltIntensity: 1 });
 
   useEffect(() => {
     if (!currentUser?.id) return;
@@ -80,7 +82,13 @@ export default function IntelligencePanel() {
   const healthScore = health?.overall ?? currentUser.financialHealthScore;
 
   return (
-    <motion.aside initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+    <motion.aside 
+      ref={ref}
+      style={{ x, y, rotateX, rotateY }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      initial={{ opacity: 0, x: 20 }} 
+      animate={{ opacity: 1, x: 0 }}
       className="w-[268px] shrink-0 h-[calc(100vh-64px)] sticky top-16 overflow-y-auto border-l border-border hidden xl:block"
     >
       <div className="p-4 space-y-3">
@@ -228,11 +236,11 @@ export default function IntelligencePanel() {
             <span className="text-[11px] font-semibold text-warning uppercase tracking-wider">AI Tip</span>
           </div>
           <p className="text-[11px] text-muted-foreground leading-relaxed">
-            Your savings rate of{" "}
+            Your savings velocity of{" "}
             <span className="text-foreground font-semibold">{currentUser.savingsRate}%</span>{" "}
             {currentUser.savingsRate > 30
-              ? "is excellent. Consider increasing SIP by 10% this year."
-              : "is below target. Aim for 30% to build wealth faster."}
+              ? "indicates strong compounding potential. Consider elevating your systematic investments by 10% to accelerate wealth accumulation."
+              : "is below the optimal threshold. Reallocating discretionary spend to hit a 30% target will significantly accelerate wealth accumulation."}
           </p>
         </div>
 

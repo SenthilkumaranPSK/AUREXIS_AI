@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from urllib.parse import quote
 from fastapi import FastAPI, HTTPException, Body
 from fastapi import Response
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
@@ -110,7 +111,14 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # TODO: Restrict in production
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://localhost:8080",  # Added for Vite dev server
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8080",  # Added for Vite dev server
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -125,10 +133,6 @@ try:
     from routes.forecast import forecast_router
     from routes.reports import reports_router
     from routes.export import router as export_router
-    # Commented out - require database models (not available in JSON version)
-    # from routes.ml_forecasting import router as ml_router
-    # from routes.investment_optimization import router as investment_router
-    # from routes.advanced_analytics import router as analytics_router
     from routes.notifications import router as notification_router
     from routes.agent_monitoring import router as agent_router
     from routes.websocket_routes import router as websocket_router
@@ -136,16 +140,11 @@ try:
     # Canonical legacy API surface used by the frontend/startup docs.
     # NOTE: auth_router is commented out because it conflicts with server.py /api/login
     # The server.py login returns full user profile with financial data
-    # app.include_router(auth_router, prefix="/api", tags=["Authentication"])
     app.include_router(financial_router, prefix="/api/financial", tags=["Financial"])
     app.include_router(chat_router, prefix="/api/chat", tags=["Chat"])
     app.include_router(forecast_router, prefix="/api/forecast", tags=["Forecast"])
     app.include_router(reports_router, prefix="/api/reports", tags=["Reports"])
     app.include_router(export_router, prefix="/api/export", tags=["Export"])
-    # Commented out - require database models
-    # app.include_router(ml_router, prefix="/api", tags=["ML Forecasting"])
-    # app.include_router(investment_router, prefix="/api", tags=["Investments"])
-    # app.include_router(analytics_router, prefix="/api", tags=["Analytics"])
     app.include_router(notification_router, prefix="/api/notifications", tags=["Notifications"])
     app.include_router(agent_router, prefix="/api/agents", tags=["Agents"])
     app.include_router(websocket_router)
@@ -173,15 +172,18 @@ async def global_exception_handler(request, exc):
     """
     logger.error(f"Unhandled exception: {exc}", exc_info=True)
 
-    return {
-        "success": False,
-        "error": {
-            "code": 500,
-            "message": "Internal server error",
-            "detail": str(exc) if settings.DEBUG else "An unexpected error occurred"
-        },
-        "timestamp": datetime.now().isoformat()
-    }
+    return JSONResponse(
+        status_code=500,
+        content={
+            "success": False,
+            "error": {
+                "code": 500,
+                "message": "Internal server error",
+                "detail": str(exc) if settings.DEBUG else "An unexpected error occurred"
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+    )
 
 
 # Pydantic models
@@ -217,7 +219,7 @@ async def health_check(response: Response):
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
         "components": {
-            "database": "ready",
+            "json_store": "ready",
             "auth": "ready",
             "ml": "ready",
         },
@@ -227,40 +229,12 @@ async def health_check(response: Response):
     return payload
 
 
-# Users endpoint
-@app.get("/api/users", tags=["users"])
-async def get_users():
-    """
-    Retrieve all registered users in the system
+# User endpoints commented out for security (prevents public user listing)
+# @app.get("/api/users", tags=["users"])
+# async def get_users(): ...
 
-    Returns:
-        dict: List of users and total count
-    """
-    try:
-        # Check cache first
-        cached_users = cache.get("all_users")
-        if cached_users:
-            logger.info("Returning cached users data")
-            return cached_users
-
-        # Get fresh user data from JSON files
-        users = get_all_users()
-        result = {"users": users, "count": len(users)}
-
-        # Cache the result (5 minutes)
-        cache.set("all_users", result, ttl=300)
-        logger.info("Cached users data")
-
-        return result
-    except Exception as e:
-        logger.error(f"Error getting users: {e}")
-        raise HTTPException(status_code=500, detail="Failed to retrieve users")
-
-
-@app.get("/api/v1/users", tags=["users"])
-async def get_users_v1():
-    """Versioned alias for listing users."""
-    return await get_users()
+# @app.get("/api/v1/users", tags=["users"])
+# async def get_users_v1(): ...
 
 
 # Login endpoint
@@ -300,18 +274,8 @@ async def login(request: LoginRequest):
             "name": user.get("name", "")
         })
         refresh_token = create_refresh_token({"sub": user_id})
-        
-        # Store refresh token in database
-        try:
-            from database.db_utils import get_db
-            with get_db() as conn:
-                cursor = conn.cursor()
-                cursor.execute("""
-                    INSERT INTO refresh_tokens (user_id, token, expires_at)
-                    VALUES (?, ?, datetime('now', '+30 days'))
-                """, (user_id, refresh_token))
-        except Exception as e:
-            logger.warning(f"Could not store refresh token: {e}")
+        # JSON mode: we don't store refresh tokens in a database since there is no DB.
+        # They are simply stateless JWTs for now.
 
         # Keep session for backward compatibility
         session_id = f"session_{user_id}"
@@ -496,8 +460,8 @@ def build_profile_alerts(metrics: dict, health: dict) -> list[dict]:
             {
                 "id": "alert_savings",
                 "type": "warning",
-                "title": "Savings Rate Below Target",
-                "message": f"Current savings rate is {metrics['savingsRate']}%. Aim for 20% or more.",
+                "title": "Savings Deficit Detected",
+                "message": f"Your savings velocity is currently at {metrics['savingsRate']}%. Target a minimum of 20% to ensure sustainable wealth accumulation.",
                 "timestamp": timestamp,
             }
         )
@@ -507,8 +471,8 @@ def build_profile_alerts(metrics: dict, health: dict) -> list[dict]:
             {
                 "id": "alert_credit",
                 "type": "warning",
-                "title": "Credit Score Needs Attention",
-                "message": f"Credit score is {metrics['creditScore']}. Improving repayment discipline can help.",
+                "title": "Suboptimal Credit Profile",
+                "message": f"Credit score currently reads {metrics['creditScore']}. Consistent liability management can elevate this into the prime tier.",
                 "timestamp": timestamp,
             }
         )
@@ -518,8 +482,8 @@ def build_profile_alerts(metrics: dict, health: dict) -> list[dict]:
             {
                 "id": "alert_health",
                 "type": "info",
-                "title": "Financial Health Update",
-                "message": f"Your overall financial health is {health['label'].lower()} at {health['overall']}/100.",
+                "title": "System Health Overview",
+                "message": f"Your financial matrix shows a {health['label'].lower()} standing, scoring {health['overall']}/100. All primary indicators are within safe thresholds.",
                 "timestamp": timestamp,
             }
         )

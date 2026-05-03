@@ -1,3 +1,4 @@
+import { useMouseReactive } from "@/hooks/useMouseReactive";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
@@ -14,6 +15,7 @@ interface ReportType {
 }
 
 export default function ReportsExport() {
+  const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 25, tiltIntensity: 2 });
   const { currentUser } = useStore();
   const [generating, setGenerating] = useState<string | null>(null);
   const [generated, setGenerated] = useState<string[]>([]);
@@ -196,7 +198,11 @@ export default function ReportsExport() {
   if (!currentUser) return null;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+    <motion.div
+      ref={ref}
+      style={{ x, y, rotateX, rotateY }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
       className="glass-card rounded-2xl p-6 border border-border"
     >
       <div className="flex items-start justify-between mb-6">
