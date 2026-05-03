@@ -345,7 +345,7 @@ def compute_ml_forecast(financial_data: Dict[str, Any], steps: int = 6) -> Dict[
         volatility = np.mean(diffs) if diffs else 0
         return round(max(60, min(95, 90 - volatility * 100)), 1)
 
-    acc = _accuracy(inc_series)
+    acc = float(_accuracy(inc_series))
 
     return {
         "income":   income_fc,
