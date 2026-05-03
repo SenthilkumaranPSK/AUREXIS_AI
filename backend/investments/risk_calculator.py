@@ -51,6 +51,9 @@ class RiskCalculator:
         var_95 = self._calculate_var(allocation, confidence=0.95)
         var_99 = self._calculate_var(allocation, confidence=0.99)
         
+        # Conditional Value at Risk (CVaR) / Expected Shortfall
+        cvar_95 = self._calculate_cvar(allocation, confidence=0.95)
+        
         # Diversification ratio
         diversification = self._calculate_diversification_ratio(allocation)
         
@@ -64,6 +67,7 @@ class RiskCalculator:
             "portfolio_volatility": round(volatility, 2),
             "var_95": round(var_95, 2),
             "var_99": round(var_99, 2),
+            "cvar_95": round(cvar_95, 2),
             "diversification_ratio": round(diversification, 2),
             "concentration_risk": concentration,
             "estimated_max_drawdown": round(max_drawdown, 2),
@@ -128,6 +132,32 @@ class RiskCalculator:
         var = investment_amount * (volatility / 100) * z / np.sqrt(12)  # Monthly VaR
         
         return var
+    
+    def _calculate_cvar(
+        self,
+        allocation: Dict[str, float],
+        confidence: float = 0.95,
+        investment_amount: float = 100000
+    ) -> float:
+        """
+        Calculate Conditional Value at Risk (CVaR) / Expected Shortfall
+        Calculates the expected loss given that the loss is beyond the VaR threshold.
+        """
+        volatility = self._calculate_portfolio_volatility(allocation)
+        
+        # Z-score for confidence level
+        z_scores = {0.95: 1.645, 0.99: 2.326}
+        z = z_scores.get(confidence, 1.645)
+        
+        # CVaR calculation for normal distribution
+        # Formula: standard_deviation * (phi(z) / (1 - confidence))
+        # where phi is the standard normal PDF
+        import math
+        phi_z = math.exp(-0.5 * z**2) / math.sqrt(2 * math.pi)
+        
+        cvar = investment_amount * (volatility / 100) * (phi_z / (1 - confidence)) / np.sqrt(12)
+        
+        return cvar
     
     def _calculate_diversification_ratio(self, allocation: Dict[str, float]) -> float:
         """
