@@ -3,12 +3,150 @@ Analytics Module
 Financial analytics and insights generation
 """
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from datetime import datetime, timedelta
 import logging
-from database.db_utils import get_db
 
 logger = logging.getLogger(__name__)
+
+
+def extract_transactions(financial_data: Dict) -> Tuple[float, float, List[Dict]]:
+    """
+    Extract income, expense, and transaction list from financial data
+    
+    Args:
+        financial_data: User's complete financial data from JSON files
+        
+    Returns:
+        Tuple of (monthly_income, monthly_expense, transactions_list)
+        where transactions_list is a list of dicts with 'date', 'type', 'amount', 'narration'
+    """
+    monthly_income = 0
+    monthly_expense = 0
+    transactions_list = []
+    
+    if not financial_data:
+        return (0, 0, [])
+    
+    # Extract from bank transactions
+    bank_data = financial_data.get("fetch_bank_transactions", {})
+    bank_transactions = bank_data.get("bankTransactions", [])
+    
+    if bank_transactions:
+        # Process transactions from all banks
+        total_credits = 0
+        total_debits = 0
+        
+        for bank_entry in bank_transactions:
+            txns = bank_entry.get("txns", [])
+            
+            for txn in txns:
+                # Transaction format: [amount, narration, date, type, mode, balance]
+                # type: 1=CREDIT, 2=DEBIT, 4=INTEREST, 6=INSTALLMENT
+                if len(txn) >= 4:
+                    amount = float(txn[0])
+                    narration = txn[1] if len(txn) > 1 else ""
+                    date_str = txn[2] if len(txn) > 2 else ""
+                    txn_type = int(txn[3])
+                    
+                    # Convert type code to string
+                    type_str = "CREDIT" if txn_type == 1 else "DEBIT" if txn_type in [2, 6] else "INTEREST"
+                    
+                    # Add to transactions list
+                    transactions_list.append({
+                        "date": date_str,
+                        "type": type_str,
+                        "amount": amount,
+                        "narration": narration
+                    })
+                    
+                    if txn_type == 1:  # CREDIT (income)
+                        total_credits += amount
+                    elif txn_type in [2, 6]:  # DEBIT or INSTALLMENT (expense)
+                        total_debits += amount
+        
+        # Calculate monthly averages (assuming data covers multiple months)
+        # Count unique months in transactions
+        unique_months = set()
+        for bank_entry in bank_transactions:
+            for txn in bank_entry.get("txns", []):
+                if len(txn) >= 3:
+                    try:
+                        date_str = txn[2]
+                        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+                        unique_months.add(f"{date_obj.year}-{date_obj.month:02d}")
+                    except:
+                        pass
+        
+        num_months = max(len(unique_months), 1)
+        monthly_income = round(total_credits / num_months)
+        monthly_expense = round(total_debits / num_months)
+    
+    return (monthly_income, monthly_expense, transactions_list)
+
+
+def extract_net_worth(financial_data: Dict) -> float:
+    """
+    Extract total net worth from financial data
+    
+    Args:
+        financial_data: User's complete financial data from JSON files
+        
+    Returns:
+        Total net worth value
+    """
+    if not financial_data:
+        return 0
+    
+    net_worth_data = financial_data.get("fetch_net_worth", {})
+    net_worth_response = net_worth_data.get("netWorthResponse", {})
+    total_net_worth = net_worth_response.get("totalNetWorthValue", {})
+    
+    # Extract units (amount) from net worth
+    units_str = total_net_worth.get("units", "0")
+    try:
+        return float(units_str)
+    except (ValueError, TypeError):
+        return 0
+
+
+def extract_credit_score(financial_data: Dict) -> int:
+    """
+    Extract credit score from financial data
+    
+    Args:
+        financial_data: User's complete financial data from JSON files
+        
+    Returns:
+        Credit score (defaults to 700 if not found)
+    """
+    if not financial_data:
+        return 700
+    
+    credit_data = financial_data.get("fetch_credit_report", {})
+    
+    # Try to extract credit score from various possible locations
+    if isinstance(credit_data, dict):
+        # Check common credit score fields
+        score = credit_data.get("credit_score") or credit_data.get("score") or credit_data.get("creditScore")
+        if score:
+            try:
+                return int(score)
+            except (ValueError, TypeError):
+                pass
+        
+        # Check nested structures
+        report = credit_data.get("creditReport", {})
+        if isinstance(report, dict):
+            score = report.get("score") or report.get("credit_score")
+            if score:
+                try:
+                    return int(score)
+                except (ValueError, TypeError):
+                    pass
+    
+    # Default credit score
+    return 700
 
 
 def get_spending_trends(user_id: str, days: int = 30) -> Dict:
@@ -283,3 +421,44 @@ def get_goal_progress_analysis(user_id: str) -> List[Dict]:
     except Exception as e:
         logger.error(f"Error analyzing goal progress: {e}")
         return []
+
+def extract_financials_summary(financial_data: Dict) -> Dict:
+    """Extract and calculate core financial metrics from user data"""
+    monthly_income = 0
+    monthly_expense = 0
+    monthly_savings = 0
+    savings_rate = 0
+    net_worth = 0
+    credit_score = 700
+
+    if not financial_data:
+        return {
+            "monthly_income": monthly_income,
+            "monthly_expense": monthly_expense,
+            "monthly_savings": monthly_savings,
+            "savings_rate": savings_rate,
+            "net_worth": net_worth,
+            "credit_score": credit_score
+        }
+
+    net_worth_data = financial_data.get("fetch_net_worth", {}).get("data", {})
+    if isinstance(net_worth_data, dict):
+        net_worth = net_worth_data.get("total_net_worth", 0)
+
+    bank_data = financial_data.get("fetch_bank_transactions", {}).get("data", {})
+    if isinstance(bank_data, dict):
+        monthly_income = bank_data.get("monthly_income", 50000)
+        monthly_expense = bank_data.get("monthly_expense", 30000)
+
+    monthly_savings = max(0, monthly_income - monthly_expense)
+    if monthly_income > 0:
+        savings_rate = round((monthly_savings / monthly_income) * 100, 2)
+
+    return {
+        "monthly_income": monthly_income,
+        "monthly_expense": monthly_expense,
+        "monthly_savings": monthly_savings,
+        "savings_rate": savings_rate,
+        "net_worth": net_worth,
+        "credit_score": credit_score
+    }

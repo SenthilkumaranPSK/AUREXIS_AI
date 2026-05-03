@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
+import { getUserHealth } from "@/lib/api";
 import { Loader2 } from "lucide-react";
 
 const cssColor: Record<string, string> = {
@@ -10,8 +11,7 @@ const cssColor: Record<string, string> = {
   danger:  "hsl(var(--danger))",
 };
 
-// Generate health data based on user's financial metrics
-const generateHealthData = (currentUser: any) => {
+const buildFallbackHealth = (currentUser: any) => {
   const score = currentUser?.financialHealthScore || 50;
   const savingsRate = currentUser?.savingsRate || 0;
   const emergencyFund = currentUser?.emergencyFundMonths || 0;
@@ -72,12 +72,11 @@ export default function HealthScoreGauge() {
   useEffect(() => {
     if (!currentUser?.id) return;
     
-    // Simulate API call with generated health data
     setLoading(true);
-    setTimeout(() => {
-      setHealth(generateHealthData(currentUser));
-      setLoading(false);
-    }, 400);
+    getUserHealth(currentUser.id)
+      .then((response) => setHealth(response))
+      .catch(() => setHealth(buildFallbackHealth(currentUser)))
+      .finally(() => setLoading(false));
   }, [currentUser?.id]);
 
   if (loading) return (
@@ -90,7 +89,7 @@ export default function HealthScoreGauge() {
 
   const score = health.overall;
   const color = cssColor[health.color] || cssColor.primary;
-  const glow  = `${color.replace(")", " / 0.3)")}`;
+  const glow  = color.replace("hsl(", "hsla(").replace("))", "), 0.3)");
   const r = 52;
   const circumference = 2 * Math.PI * r;
   const arcLength = circumference * 0.75;

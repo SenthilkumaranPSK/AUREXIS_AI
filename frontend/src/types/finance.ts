@@ -8,6 +8,7 @@ export interface UserProfile {
   occupation: string;
   age: number;
   email: string;
+  phone?: string;
   bankName: string;
   accountNumber: string;
   accountType: string;

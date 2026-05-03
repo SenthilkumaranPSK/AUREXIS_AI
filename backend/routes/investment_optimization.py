@@ -15,7 +15,7 @@ from investments.portfolio_optimizer import portfolio_optimizer
 from investments.risk_calculator import risk_calculator
 from investments.rebalancing_engine import rebalancing_engine
 
-router = APIRouter(prefix="/api/investments", tags=["Investment Optimization"])
+router = APIRouter(prefix="/investments", tags=["Investment Optimization"])
 
 
 class OptimizePortfolioRequest(BaseModel):

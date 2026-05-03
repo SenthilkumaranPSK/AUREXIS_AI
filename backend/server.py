@@ -5,10 +5,10 @@ Simple FastAPI server with essential endpoints
 
 import builtins
 import logging
-import sqlite3
 import time
 from contextlib import asynccontextmanager
-from datetime import datetime
+from datetime import datetime, timedelta
+from urllib.parse import quote
 from fastapi import FastAPI, HTTPException, Body
 from fastapi import Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,14 +20,24 @@ from slowapi.util import get_remote_address
 # Import configuration
 from config import settings
 
-# Import database utilities
-from database.connection_enhanced import init_database
-
-# Import user management
-from user_manager_secure import authenticate_user, get_all_users
+# Import user management (JSON-based, no database)
+from user_manager_json import authenticate_user, get_all_users
 
 # Import cache manager
 from cache_manager import cache
+
+# Import analytics helpers used to shape the dashboard profile
+from analytics import (
+    compute_expenses,
+    compute_forecast,
+    compute_goals,
+    compute_investments,
+    compute_metrics,
+    compute_risk,
+)
+
+# Import financial health helper
+from health import compute_health
 
 # Import exceptions
 # from exceptions import AuthenticationError, DatabaseError
@@ -42,22 +52,8 @@ active_sessions = {}
 # SlowAPI limiter instance (expected by tests)
 limiter = Limiter(key_func=get_remote_address)
 
-
-def get_db_connection() -> sqlite3.Connection:
-    """
-    Test helper expected by `backend/tests/test_integration.py`.
-
-    Returns a raw sqlite connection so tests can run `cursor.execute(...)`.
-    """
-    db_path = settings.DATABASE_URL.replace("sqlite:///", "")
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-# The integration test calls `get_db_connection()` without importing it.
-# Put it in `builtins` so name resolution can find it.
-builtins.get_db_connection = get_db_connection
+# JSON-based server - no database connection needed
+# Legacy function removed - tests should use JSON-based approach
 
 
 # Lifespan event handler
@@ -66,22 +62,9 @@ async def lifespan(app: FastAPI):
     """Manage application lifespan events"""
     # Startup
     try:
-        # Force close any existing connections
-        from database.connection_enhanced import close_connection_pool
-        close_connection_pool()
-
-        # Check if database already has users
-        from user_manager_secure import UserManager
-        existing_users = UserManager.get_all_users()
-
-        if len(existing_users) == 0:
-            # Only initialize if no users exist
-            init_database()
-            logger.info("Database initialized successfully")
-        else:
-            logger.info(f"Database already initialized with {len(existing_users)} users")
+        logger.info("✅ JSON-based server - No database initialization needed")
     except Exception as e:
-        logger.error(f"Database initialization failed: {e}")
+        logger.error(f"Startup error: {e}")
 
     yield
 
@@ -135,26 +118,40 @@ app.add_middleware(
 
 # Import and include financial routes
 try:
+    from routes.api_v1 import api_v1_router
+    from routes.auth import router as auth_router
     from routes.financial import financial_router
     from routes.chat import chat_router
     from routes.forecast import forecast_router
     from routes.reports import reports_router
-    from routes.ml_forecasting import router as ml_router
-    from routes.investment_optimization import router as investment_router
+    from routes.export import router as export_router
+    # Commented out - require database models (not available in JSON version)
+    # from routes.ml_forecasting import router as ml_router
+    # from routes.investment_optimization import router as investment_router
+    # from routes.advanced_analytics import router as analytics_router
     from routes.notifications import router as notification_router
     from routes.agent_monitoring import router as agent_router
-    from routes.advanced_analytics import router as analytics_router
+    from routes.websocket_routes import router as websocket_router
     
-    # Include all routers
-    app.include_router(financial_router, tags=["Financial"])
-    app.include_router(chat_router, prefix="/api/v1/chat", tags=["Chat"])
-    app.include_router(forecast_router, prefix="/api/v1/forecast", tags=["Forecast"])
-    app.include_router(reports_router, prefix="/api/v1/reports", tags=["Reports"])
-    app.include_router(ml_router, prefix="/api/v1/ml", tags=["ML Forecasting"])
-    app.include_router(investment_router, prefix="/api/v1/investments", tags=["Investments"])
-    app.include_router(notification_router, prefix="/api/v1/notifications", tags=["Notifications"])
-    app.include_router(agent_router, prefix="/api/v1/agents", tags=["Agents"])
-    app.include_router(analytics_router, prefix="/api/v1/analytics", tags=["Analytics"])
+    # Canonical legacy API surface used by the frontend/startup docs.
+    # NOTE: auth_router is commented out because it conflicts with server.py /api/login
+    # The server.py login returns full user profile with financial data
+    # app.include_router(auth_router, prefix="/api", tags=["Authentication"])
+    app.include_router(financial_router, prefix="/api/financial", tags=["Financial"])
+    app.include_router(chat_router, prefix="/api/chat", tags=["Chat"])
+    app.include_router(forecast_router, prefix="/api/forecast", tags=["Forecast"])
+    app.include_router(reports_router, prefix="/api/reports", tags=["Reports"])
+    app.include_router(export_router, prefix="/api/export", tags=["Export"])
+    # Commented out - require database models
+    # app.include_router(ml_router, prefix="/api", tags=["ML Forecasting"])
+    # app.include_router(investment_router, prefix="/api", tags=["Investments"])
+    # app.include_router(analytics_router, prefix="/api", tags=["Analytics"])
+    app.include_router(notification_router, prefix="/api/notifications", tags=["Notifications"])
+    app.include_router(agent_router, prefix="/api/agents", tags=["Agents"])
+    app.include_router(websocket_router)
+
+    # Versioned surface used by the test suite and newer clients.
+    app.include_router(api_v1_router, prefix="/api/v1")
     
     logger.info("All API routes loaded successfully")
 except ImportError as e:
@@ -246,10 +243,7 @@ async def get_users():
             logger.info("Returning cached users data")
             return cached_users
 
-        # Force close connections and get fresh data
-        from database.connection_enhanced import close_connection_pool
-        close_connection_pool()
-
+        # Get fresh user data from JSON files
         users = get_all_users()
         result = {"users": users, "count": len(users)}
 
@@ -261,6 +255,12 @@ async def get_users():
     except Exception as e:
         logger.error(f"Error getting users: {e}")
         raise HTTPException(status_code=500, detail="Failed to retrieve users")
+
+
+@app.get("/api/v1/users", tags=["users"])
+async def get_users_v1():
+    """Versioned alias for listing users."""
+    return await get_users()
 
 
 # Login endpoint
@@ -359,99 +359,188 @@ async def logout(session_id: str = Body(..., embed=True)):
 def build_user_profile(user: dict) -> dict:
     """Build user profile for frontend"""
     user_id = user.get("id", "")
-    financial_data = user.get("financial_data", {})
+    financial_data = user.get("financial_data") or {}
+    if not financial_data and user_id:
+        from user_manager_json import UserManagerJSON
 
-    # Extract financial metrics
-    fm = extract_financials_summary(financial_data)
-    income = fm["monthly_income"]
-    expense = fm["monthly_expense"]
-    savings_rate = fm["savings_rate"]
-    net_worth = fm["net_worth"]
-    credit_score = fm["credit_score"]
+        financial_data = UserManagerJSON.get_all_user_data(user_id)
+
+    metrics = compute_metrics(financial_data)
+    expenses = compute_expenses(financial_data)
+    goals = compute_goals(financial_data)
+    investments = compute_investments(financial_data).get("portfolio", [])
+    risk = compute_risk(financial_data)
+    health = compute_health(financial_data)
+    monthly_data = compute_forecast(financial_data)
+
+    name = user.get("name", "Unknown")
+    occupation = user.get("occupation") or "Professional"
+    age = user.get("age") or 30
+    location = user.get("location") or ""
+    last_login = user.get("last_login")
+
+    if hasattr(last_login, "isoformat"):
+        last_active = last_login.isoformat()
+    else:
+        last_active = last_login or datetime.now().isoformat()
+
+    avatar = build_avatar_data_uri(name)
+    bank_name = user.get("bank_name", "") or ""
+    account_number = mask_account_number(user.get("account_number", "") or "")
+    account_type = user.get("account_type", "") or ""
+    bank_location = user.get("bank_location", "") or location
+    has_credit_card = bool(user.get("has_credit_card", False))
+
+    alerts = build_profile_alerts(metrics, health)
+    upcoming_emis = build_upcoming_emis(metrics)
 
     return {
         "id": user_id,
-        "name": user.get("name", "Unknown"),
+        "name": name,
+        "avatar": avatar,
         "email": user.get("email", ""),
-        "occupation": user.get("occupation", "Professional"),
-        "age": user.get("age", 30),
-        "location": user.get("location", ""),
-        "monthlyIncome": income,
-        "monthlyExpense": expense,
-        "savings": int(income - expense),
-        "netWorth": net_worth,
-        "savingsRate": savings_rate,
-        "creditScore": credit_score,
-        "riskLevel": "Low" if savings_rate > 30 else "Medium",
-        "financialHealthScore": min(100, max(0, int(50 + savings_rate))),
-        "debtToIncomeRatio": round(expense / income, 2) if income > 0 else 0,
-        "emergencyFundMonths": round(net_worth * 0.2 / expense, 1) if expense > 0 else 6,
-        "investmentValue": int(net_worth * 0.6),
-        "totalDebt": 225000,
+        "phone": user.get("phone", "") or "",
+        "occupation": occupation,
+        "age": age,
+        "bankName": bank_name,
+        "accountNumber": account_number,
+        "accountType": account_type,
+        "bankLocation": bank_location,
+        "hasCreditCard": has_credit_card,
+        "location": location,
+        "monthlyIncome": metrics["monthlyIncome"],
+        "monthlyExpense": metrics["monthlyExpense"],
+        "netWorth": metrics["netWorth"],
+        "savings": metrics["savings"],
+        "totalDebt": metrics["totalDebt"],
+        "riskLevel": risk["riskLevel"],
+        "personalityTag": derive_personality_tag(metrics, risk),
+        "lastActive": last_active,
+        "creditScore": metrics["creditScore"],
+        "emergencyFundMonths": metrics["emergencyFundMonths"],
+        "investmentValue": metrics["investmentValue"],
+        "savingsRate": metrics["savingsRate"],
+        "debtToIncomeRatio": metrics["debtToIncomeRatio"],
+        "financialHealthScore": health["overall"],
         "goals": [
             {
-                "id": "g1",
-                "name": "Emergency Fund",
-                "target": int(expense * 6),
-                "current": int(expense * 4.5),
-                "deadline": "2026-08"
-            },
-            {
-                "id": "g2",
-                "name": "New Car",
-                "target": 1200000,
-                "current": 350000,
-                "deadline": "2027-12"
-            },
+                "id": goal.get("id", f"goal_{index}"),
+                "name": goal.get("name", "Goal"),
+                "target": goal.get("target", 0),
+                "current": goal.get("current", 0),
+                "deadline": goal.get("deadline", ""),
+                "icon": goal.get("icon", "Target"),
+                "monthlySavingsNeeded": goal.get("monthlySavingsNeeded", 0),
+            }
+            for index, goal in enumerate(goals, start=1)
         ],
-        "expenses": [
-            {"category": "Housing", "amount": int(expense * 0.40), "percentage": 40},
-            {"category": "Food", "amount": int(expense * 0.20), "percentage": 20},
-            {"category": "Transport", "amount": int(expense * 0.15), "percentage": 15},
-            {"category": "Utilities", "amount": int(expense * 0.10), "percentage": 10},
-            {"category": "Other", "amount": int(expense * 0.15), "percentage": 15},
+        "monthlyData": [
+            {
+                "month": item.get("month", ""),
+                "income": item.get("income", 0),
+                "expense": item.get("expense", 0),
+                "savings": item.get("savings", 0),
+                "netWorth": item.get("netWorth", 0),
+                "debt": metrics["totalDebt"],
+            }
+            for item in monthly_data
         ],
-        "investments": [
-            {
-                "name": "Equity Funds",
-                "type": "MF",
-                "value": int(net_worth * 0.4),
-                "allocation": 40
-            },
-            {
-                "name": "Fixed Deposits",
-                "type": "FD",
-                "value": int(net_worth * 0.3),
-                "allocation": 30
-            },
-            {
-                "name": "EPF",
-                "type": "EPF",
-                "value": int(net_worth * 0.2),
-                "allocation": 20
-            },
-            {
-                "name": "Gold",
-                "type": "Gold",
-                "value": int(net_worth * 0.1),
-                "allocation": 10
-            },
-        ],
-        "alerts": [
-            {
-                "id": "a1",
-                "type": "info",
-                "title": "Savings Milestone",
-                "message": "You've saved 20% more than last month!"
-            },
-            {
-                "id": "a2",
-                "type": "warning",
-                "title": "Large Expense",
-                "message": "Unexpected transaction of ₹15,000 detected."
-            },
-        ],
+        "expenses": expenses,
+        "investments": investments,
+        "upcomingEMIs": upcoming_emis,
+        "alerts": alerts,
     }
+
+
+def build_avatar_data_uri(name: str) -> str:
+    """Generate a lightweight inline avatar for the frontend."""
+    initials = "".join(part[0].upper() for part in name.split()[:2] if part) or "A"
+    svg = (
+        "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'>"
+        "<rect width='96' height='96' rx='24' fill='#1d4ed8'/>"
+        "<text x='48' y='56' text-anchor='middle' font-family='Arial, sans-serif' "
+        "font-size='32' font-weight='700' fill='white'>"
+        f"{initials}</text></svg>"
+    )
+    return f"data:image/svg+xml;utf8,{quote(svg)}"
+
+
+def mask_account_number(account_number: str) -> str:
+    """Mask sensitive account numbers for the UI."""
+    digits = "".join(char for char in account_number if char.isdigit())
+    if len(digits) < 4:
+        return ""
+    return f"•••• {digits[-4:]}"
+
+
+def derive_personality_tag(metrics: dict, risk: dict) -> str:
+    """Infer a lightweight personality label for the dashboard."""
+    if metrics["savingsRate"] >= 30 and risk["riskLevel"] == "Low":
+        return "Conservative Saver"
+    if metrics["investmentValue"] >= max(metrics["netWorth"] * 0.45, 1):
+        return "Investor"
+    if metrics["debtToIncomeRatio"] >= 0.45:
+        return "Debt Heavy"
+    if metrics["savingsRate"] <= 10:
+        return "High Spender"
+    return "Balanced Planner"
+
+
+def build_profile_alerts(metrics: dict, health: dict) -> list[dict]:
+    """Create dashboard-friendly alert cards from current metrics."""
+    timestamp = datetime.now().isoformat()
+    alerts = []
+
+    if metrics["savingsRate"] < 20:
+        alerts.append(
+            {
+                "id": "alert_savings",
+                "type": "warning",
+                "title": "Savings Rate Below Target",
+                "message": f"Current savings rate is {metrics['savingsRate']}%. Aim for 20% or more.",
+                "timestamp": timestamp,
+            }
+        )
+
+    if metrics["creditScore"] < 700:
+        alerts.append(
+            {
+                "id": "alert_credit",
+                "type": "warning",
+                "title": "Credit Score Needs Attention",
+                "message": f"Credit score is {metrics['creditScore']}. Improving repayment discipline can help.",
+                "timestamp": timestamp,
+            }
+        )
+
+    if not alerts:
+        alerts.append(
+            {
+                "id": "alert_health",
+                "type": "info",
+                "title": "Financial Health Update",
+                "message": f"Your overall financial health is {health['label'].lower()} at {health['overall']}/100.",
+                "timestamp": timestamp,
+            }
+        )
+
+    return alerts
+
+
+def build_upcoming_emis(metrics: dict) -> list[dict]:
+    """Provide a simple EMI reminder set for the sidebar."""
+    if metrics["totalDebt"] <= 0:
+        return []
+
+    due_date = (datetime.now() + timedelta(days=10)).date().isoformat()
+    return [
+        {
+            "name": "Loan EMI",
+            "amount": min(12500, max(2500, round(metrics["monthlyIncome"] * 0.12))),
+            "dueDate": due_date,
+            "type": "Loan",
+        }
+    ]
 
 
 def extract_financials_summary(financial_data: dict) -> dict:

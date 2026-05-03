@@ -1,48 +1,146 @@
-# 🚀 QUICK START GUIDE
+# AUREXIS AI - Quick Start Guide
 
-## ✅ Backend is Already Running!
-
-Your backend server is currently running on **http://localhost:8000**
+**Version**: 2.0.0  
+**Estimated Setup Time**: 5-10 minutes
 
 ---
 
-## 🎯 Start the Frontend
+## Prerequisites
 
-Open a **NEW terminal** and run:
+Ensure the following software is installed on your system:
 
+- **Python**: Version 3.11 or higher
+- **Node.js**: Version 18 LTS or higher
+- **npm**: Version 9.0 or higher (included with Node.js)
+- **Git**: Latest stable version
+
+Verify installations:
+```bash
+python --version  # Should show 3.11+
+node --version    # Should show 18+
+npm --version     # Should show 9+
+```
+
+---
+
+## Installation
+
+### Step 1: Repository Setup
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd aurexis-ai
+```
+
+### Step 2: Backend Configuration
+
+```bash
+# Navigate to backend directory
+cd backend
+
+# Create Python virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# Unix/MacOS:
+source venv/bin/activate
+
+# Install Python dependencies
+pip install -r requirements.txt
+```
+
+### Step 3: Frontend Configuration
+
+```bash
+# Navigate to frontend directory
+cd ../frontend
+
+# Install Node.js dependencies
+npm install
+```
+
+---
+
+## Configuration
+
+### Environment Variables (Optional)
+
+For enhanced features, create `backend/.env`:
+
+```env
+# JWT Authentication (Recommended for production)
+JWT_SECRET_KEY=<your-secure-key>
+
+# AI Chat Integration (Optional - requires Ollama)
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=deepseek-v3.1:671b-cloud
+```
+
+Generate secure JWT key:
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+---
+
+## Launch Application
+
+### Development Mode
+
+Open two terminal windows:
+
+**Terminal 1 - Backend Server:**
+```bash
+cd backend
+python server_json.py
+```
+
+Expected output:
+```
+🚀 AUREXIS AI - JSON-Based Financial Intelligence Platform
+✅ No database required - Reading from JSON files
+🌐 Server starting on: http://localhost:8000
+```
+
+**Terminal 2 - Frontend Server:**
 ```bash
 cd frontend
 npm run dev
 ```
 
-The frontend will start on **http://localhost:5173**
+Expected output:
+```
+VITE ready in XXX ms
+➜  Local:   http://localhost:5173/
+```
 
 ---
 
-## 🧪 Test the Application
+## Access Application
 
-### 1. Open Browser
-Navigate to: **http://localhost:5173**
+1. Open web browser
+2. Navigate to: **http://localhost:5173**
+3. Use demonstration credentials to login
 
-### 2. Login
-Use any of these test accounts:
-- Username: `Imayavarman` / Password: `Imayavarman@2000`
-- Username: `Kumar` / Password: `Kumar@2000`
-- Username: `Senthilkumaran` / Password: `Senthilkumaran@2000`
+### Demonstration Accounts
 
-**Note:** Username is the person's NAME, not the number!
+| User ID | Username | Password | Profile |
+|---------|----------|----------|---------|
+| 22243045 | Senthilkumaran | Senthilkumaran@2000 | Software Engineer |
+| 22243017 | Imayavarman | Imayavarman@2000 | Medical Professional |
+| 22243050 | Srivarshan | Srivarshan@2000 | Business Executive |
 
-### 3. Explore Dashboard
-- View financial metrics
-- Check expense breakdown
-- See investment portfolio
-- Try AI chat feature
+**Note**: Authentication accepts User ID, Username, or Account Number
 
 ---
 
-## 🔍 Verify Everything Works
+## Verification
 
 ### Backend Health Check
+
 ```bash
 curl http://localhost:8000/health
 ```
@@ -51,190 +149,172 @@ Expected response:
 ```json
 {
   "status": "healthy",
-  "service": "AUREXIS AI Backend",
-  "version": "2.0"
+  "version": "2.0.0",
+  "timestamp": "2026-05-02T..."
 }
 ```
 
-### Frontend Check
-- Open http://localhost:5173
-- Should see login page
-- No console errors in browser DevTools (F12)
+### API Documentation
+
+Access interactive API documentation:
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+### Test Authentication
+
+```bash
+curl -X POST http://localhost:8000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "22243045", "password": "Senthilkumaran@2000"}'
+```
 
 ---
 
-## 🐛 Troubleshooting
+## Platform Features
+
+### Dashboard Sections
+
+1. **Overview** - Comprehensive financial summary
+2. **Financial Health** - Health score and analysis
+3. **Risk Analysis** - Risk assessment and metrics
+4. **Savings** - Savings tracking and goals
+5. **Debt Management** - Debt analysis and payoff plans
+6. **Investments** - Portfolio management
+7. **Goals** - Financial goal tracking
+8. **Forecasting** - ML-based predictions
+9. **Scenario Simulation** - What-if analysis
+10. **Alerts** - Notifications and recommendations
+11. **Reports** - Financial reports and exports
+12. **AI Chat** - Intelligent financial advisor
+
+### Key Capabilities
+
+- Real-time financial metrics
+- Interactive data visualizations
+- ML-powered forecasting
+- Risk assessment tools
+- Goal progress tracking
+- AI-powered recommendations
+
+---
+
+## Troubleshooting
 
 ### Backend Issues
 
 **Port 8000 already in use:**
 ```bash
-# Windows
+# Windows:
 netstat -ano | findstr :8000
-taskkill /PID <PID> /F
+# Unix/MacOS:
+lsof -i :8000
 
-# Then restart backend
-cd backend
-python server.py
+# Kill the process or use different port
 ```
 
-**Module not found:**
+**Module import errors:**
 ```bash
-cd backend
-pip install -r requirements.txt
+pip install -r requirements.txt --force-reinstall
 ```
 
 ### Frontend Issues
 
 **Port 5173 already in use:**
 ```bash
-# Kill the process and restart
-npm run dev
+# Modify vite.config.ts to use different port
+# Or kill existing process
 ```
 
-**Dependencies missing:**
+**Dependency errors:**
 ```bash
-cd frontend
-npm install
-npm run dev
-```
-
-**Build errors:**
-```bash
-# Clear cache and rebuild
 rm -rf node_modules package-lock.json
 npm install
-npm run dev
 ```
 
----
+### Authentication Issues
 
-## 📊 What's Working
-
-✅ Backend API (60+ endpoints)  
-✅ User authentication  
-✅ Financial analytics  
-✅ ML forecasting  
-✅ Budget optimization  
-✅ Tax planning  
-✅ Fraud detection  
-✅ Real-time alerts  
-✅ Multi-agent system  
-✅ Chat with AI (requires Ollama)  
-
----
-
-## 🎨 Features to Test
-
-### Dashboard
-- Overview with key metrics
-- Financial health score
-- Expense breakdown
-- Investment portfolio
-- Goals tracking
-
-### Analytics
-- Monthly forecasts
-- Net worth projections
-- Expense trends
-- Savings projections
-
-### AI Features
-- Budget optimization
-- Credit score prediction
-- Tax planning
-- Fraud detection
-- Smart recommendations
-
-### Chat
-- AI financial advisor
-- Personalized advice
-- Multi-agent workflows
-
----
-
-## 🔧 Optional: Enable AI Chat
-
-If you want the AI chat feature to work:
-
-### 1. Install Ollama
-Download from: https://ollama.ai
-
-### 2. Start Ollama
-```bash
-ollama serve
-```
-
-### 3. Pull the Model
-```bash
-ollama pull deepseek-v3.1:671b-cloud
-```
-
-### 4. Test Chat
-- Go to dashboard
-- Click chat icon
-- Ask: "What's my financial health?"
-
----
-
-## 📝 Development Workflow
-
-### Making Changes
-
-**Backend changes:**
-- Edit files in `backend/`
-- Server auto-reloads (uvicorn --reload)
-- Check terminal for errors
-
-**Frontend changes:**
-- Edit files in `frontend/src/`
-- Vite auto-reloads
+- Verify credentials are case-sensitive
+- Ensure backend server is running
 - Check browser console for errors
+- Verify API endpoint accessibility
 
-### Testing
+---
 
-**Backend:**
+## Production Deployment
+
+### Backend (Gunicorn)
+
 ```bash
 cd backend
-pytest tests/
+gunicorn server:app \
+  --workers 4 \
+  --bind 0.0.0.0:8000 \
+  --access-logfile - \
+  --error-logfile -
 ```
 
-**Frontend:**
+### Frontend (Build & Serve)
+
 ```bash
 cd frontend
-npm test
+npm run build
+npx serve -s dist -p 5173
+```
+
+### Environment Configuration
+
+Set production environment variables:
+```bash
+export JWT_SECRET_KEY=<production-key>
+export NODE_ENV=production
 ```
 
 ---
 
-## 🎯 Next Steps
+## Next Steps
 
-1. ✅ Backend running
-2. ⏳ Start frontend
-3. ⏳ Test login with: **Imayavarman** / **Imayavarman@2000**
-4. ⏳ Explore features
-5. ⏳ Try AI chat (optional)
-
----
-
-## 📚 Documentation
-
-- `MIGRATION.md` - Breaking changes guide
-- `ALL_BUGS_FIXED.md` - Complete bug fix report
-- `API_DOCUMENTATION.md` - API endpoints reference
-- `README.md` - Project overview
+1. **Explore Dashboard**: Navigate through all sections
+2. **Test Features**: Try forecasting, simulation, and AI chat
+3. **Review API**: Examine API documentation at `/docs`
+4. **Customize**: Modify user data in `backend/user_data/`
+5. **Deploy**: Follow production deployment guidelines
 
 ---
 
-## 💡 Tips
+## Additional Resources
 
-- Keep backend terminal open to see logs
-- Use browser DevTools (F12) to debug frontend
-- Check `backend/logs/aurexis.log` for detailed logs
-- Use `/health` endpoint to verify backend status
+- **Full Documentation**: See README.md
+- **API Reference**: http://localhost:8000/docs
+- **Issue Reporting**: GitHub Issues
+- **Support**: Repository discussions
 
 ---
 
-**Happy Coding! 🚀**
+## System Architecture
 
-*Your AUREXIS AI application is ready to use!*
+```
+┌─────────────────┐
+│   Frontend      │  React + TypeScript
+│   Port: 5173    │  Vite Development Server
+└────────┬────────┘
+         │ HTTP/REST
+         ↓
+┌─────────────────┐
+│   Backend       │  FastAPI + Python
+│   Port: 8000    │  JSON-based Storage
+└────────┬────────┘
+         │ File I/O
+         ↓
+┌─────────────────┐
+│   User Data     │  JSON Files
+│   user_data/    │  12 Demo Accounts
+└─────────────────┘
+```
+
+---
+
+**AUREXIS AI** - Enterprise Financial Intelligence Platform
+
+For detailed information, refer to the complete documentation in README.md
+
+**Version 2.0.0** | **Quick Start Guide** | **May 2026**

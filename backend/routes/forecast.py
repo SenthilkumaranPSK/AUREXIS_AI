@@ -7,7 +7,7 @@ from typing import Dict
 from services.forecast_service import ForecastService
 from auth.dependencies import get_current_user
 
-forecast_router = APIRouter(prefix="/api/forecast", tags=["Forecasting"])
+forecast_router = APIRouter(tags=["Forecasting"])
 
 
 @forecast_router.get("/monthly")

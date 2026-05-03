@@ -18,16 +18,24 @@ export default function RiskIndicators() {
   const { currentUser } = useStore();
   const [indicators, setIndicators] = useState<RiskIndicator[]>([]);
 
+  console.log("RiskIndicators rendering, currentUser:", currentUser);
+
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      console.warn("RiskIndicators: No current user");
+      return;
+    }
 
-    const u = currentUser;
-    const dti = u.debtToIncomeRatio * 100;
-    const emergencyMonths = u.emergencyFundMonths;
-    const savingsRate = u.savingsRate;
-    const creditScore = u.creditScore;
+    try {
+      const u = currentUser;
+      const dti = u.debtToIncomeRatio * 100;
+      const emergencyMonths = u.emergencyFundMonths;
+      const savingsRate = u.savingsRate;
+      const creditScore = u.creditScore;
 
-    const risks: RiskIndicator[] = [
+      console.log("RiskIndicators data:", { dti, emergencyMonths, savingsRate, creditScore });
+
+      const risks: RiskIndicator[] = [
       {
         id: "dti",
         title: "Debt-to-Income Ratio",
@@ -74,7 +82,11 @@ export default function RiskIndicators() {
       },
     ];
 
+    console.log("RiskIndicators: Setting", risks.length, "indicators");
     setIndicators(risks);
+  } catch (error) {
+    console.error("RiskIndicators error:", error);
+  }
   }, [currentUser]);
 
   const statusConfig = {

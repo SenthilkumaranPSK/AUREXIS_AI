@@ -5,14 +5,16 @@ Business logic for authentication operations
 
 from typing import Optional, Dict, Tuple
 from datetime import datetime, timedelta, timezone
-from models.user import UserModel
+from user_manager_json import UserManagerJSON
 from auth.jwt_handler import (
     create_access_token,
     create_refresh_token,
     verify_token,
     verify_password
 )
-from database.connection_enhanced import get_db
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class AuthService:
@@ -31,71 +33,30 @@ class AuthService:
         Register a new user
         Returns: user dict and tokens
         """
-        # Check if email already exists
-        existing_user = UserModel.get_user_by_email(email)
-        if existing_user:
-            raise ValueError("Email already registered")
-        
-        # Create user
-        user = UserModel.create_user(
-            name=name,
-            email=email,
-            password=password,
-            occupation=occupation,
-            age=age,
-            location=location
-        )
-        
-        # Generate tokens
-        access_token = create_access_token({"sub": user["id"], "email": user["email"]})
-        refresh_token = create_refresh_token({"sub": user["id"]})
-        
-        # Store refresh token in database
-        with get_db() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO refresh_tokens (user_id, token, expires_at)
-                VALUES (?, ?, ?)
-            """, (
-                user["id"],
-                refresh_token,
-                datetime.now(timezone.utc) + timedelta(days=30)
-            ))
-        
-        return {
-            "user": user,
-            "access_token": access_token,
-            "refresh_token": refresh_token
-        }
+        # Note: Signup not fully supported in JSON mode
+        # This is a placeholder for future implementation
+        raise NotImplementedError("Signup is not available in JSON-based mode. Please contact administrator.")
     
     @staticmethod
-    def login(email: str, password: str) -> Dict:
+    def login(identifier: str, password: str) -> Dict:
         """
         Authenticate user and return tokens
         Returns: user dict and tokens
         """
-        user = UserModel.authenticate_user(email, password)
+        user = UserManagerJSON.authenticate_user(identifier, password)
         if not user:
-            raise ValueError("Invalid email or password")
+            raise ValueError("Invalid credentials")
         
-        if not user.get("is_active"):
+        if not user.get("is_active", True):
             raise ValueError("Account is deactivated")
         
         # Generate tokens
-        access_token = create_access_token({"sub": user["id"], "email": user["email"]})
-        refresh_token = create_refresh_token({"sub": user["id"]})
+        user_id = user.get("id") or user.get("user_id") or user.get("user_number")
+        access_token = create_access_token({"sub": user_id, "email": user.get("email", "")})
+        refresh_token = create_refresh_token({"sub": user_id})
         
-        # Store refresh token
-        with get_db() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO refresh_tokens (user_id, token, expires_at)
-                VALUES (?, ?, ?)
-            """, (
-                user["id"],
-                refresh_token,
-                datetime.now(timezone.utc) + timedelta(days=30)
-            ))
+        # Note: Refresh tokens are not persisted in JSON mode
+        logger.info(f"User logged in: {user.get('name')}")
         
         return {
             "user": user,
@@ -116,106 +77,38 @@ class AuthService:
         
         user_id = payload.get("sub")
         
-        # Check if token is in database and not revoked
-        with get_db() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                SELECT * FROM refresh_tokens 
-                WHERE user_id = ? AND token = ? AND is_revoked = 0
-                AND expires_at > ?
-            """, (user_id, refresh_token, datetime.now(timezone.utc)))
-            
-            token_record = cursor.fetchone()
-            if not token_record:
-                raise ValueError("Refresh token not found or revoked")
-            
-            # Revoke old refresh token
-            cursor.execute("""
-                UPDATE refresh_tokens SET is_revoked = 1 WHERE token = ?
-            """, (refresh_token,))
-        
         # Get user
-        user = UserModel.get_user_by_id(user_id)
-        if not user or not user.get("is_active"):
+        user = UserManagerJSON.get_user_by_id(user_id)
+        if not user or not user.get("is_active", True):
             raise ValueError("User not found or inactive")
         
         # Generate new tokens
-        new_access_token = create_access_token({"sub": user["id"], "email": user["email"]})
+        new_access_token = create_access_token({"sub": user["id"], "email": user.get("email", "")})
         new_refresh_token = create_refresh_token({"sub": user["id"]})
-        
-        # Store new refresh token
-        with get_db() as conn:
-            cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO refresh_tokens (user_id, token, expires_at)
-                VALUES (?, ?, ?)
-            """, (
-                user["id"],
-                new_refresh_token,
-                datetime.now(timezone.utc) + timedelta(days=30)
-            ))
         
         return new_access_token, new_refresh_token
     
     @staticmethod
     def logout(user_id: str, refresh_token: Optional[str] = None):
         """
-        Logout user by revoking refresh tokens
+        Logout user
+        Note: In JSON mode, tokens are not persisted, so logout is client-side only
         """
-        with get_db() as conn:
-            cursor = conn.cursor()
-            if refresh_token:
-                # Revoke specific token
-                cursor.execute("""
-                    UPDATE refresh_tokens 
-                    SET is_revoked = 1 
-                    WHERE user_id = ? AND token = ?
-                """, (user_id, refresh_token))
-            else:
-                # Revoke all tokens for user
-                cursor.execute("""
-                    UPDATE refresh_tokens 
-                    SET is_revoked = 1 
-                    WHERE user_id = ?
-                """, (user_id,))
+        logger.info(f"User logged out: {user_id}")
+        return True
     
     @staticmethod
     def change_password(user_id: str, current_password: str, new_password: str) -> bool:
         """
         Change user password
+        Note: Not supported in JSON mode
         """
-        # Get user with password hash
-        user = UserModel.get_user_by_id(user_id)
-        if not user:
-            raise ValueError("User not found")
-        
-        # Get password hash
-        with get_db() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT password_hash FROM users WHERE id = ?", (user_id,))
-            row = cursor.fetchone()
-            if not row:
-                raise ValueError("User not found")
-            
-            password_hash = row[0]
-        
-        # Verify current password
-        if not verify_password(current_password, password_hash):
-            raise ValueError("Current password is incorrect")
-        
-        # Change password
-        success = UserModel.change_password(user_id, new_password)
-        
-        if success:
-            # Revoke all refresh tokens (force re-login on all devices)
-            AuthService.logout(user_id)
-        
-        return success
+        raise NotImplementedError("Password change is not available in JSON-based mode. Please contact administrator.")
     
     @staticmethod
     def get_user_profile(user_id: str) -> Dict:
         """Get user profile"""
-        user = UserModel.get_user_by_id(user_id)
+        user = UserManagerJSON.get_user_by_id(user_id)
         if not user:
             raise ValueError("User not found")
         return user
@@ -223,7 +116,5 @@ class AuthService:
     @staticmethod
     def update_user_profile(user_id: str, **kwargs) -> Dict:
         """Update user profile"""
-        user = UserModel.update_user(user_id, **kwargs)
-        if not user:
-            raise ValueError("User not found")
-        return user
+        # Note: Profile updates not supported in JSON mode
+        raise NotImplementedError("Profile updates are not available in JSON-based mode. Please contact administrator.")

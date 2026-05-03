@@ -12,7 +12,7 @@ import json
 import io
 from datetime import datetime
 
-router = APIRouter(prefix="/api/export", tags=["export"])
+router = APIRouter(tags=["export"])
 
 
 @router.get("/{user_id}/expenses")

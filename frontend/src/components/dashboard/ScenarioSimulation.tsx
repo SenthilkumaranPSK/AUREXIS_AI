@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { formatCurrency } from "@/lib/formatters";
-import { runSimulation } from "@/lib/api";
+import { runSimulation, sendChatMessage } from "@/lib/api";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { FlaskConical, AlertTriangle, CheckCircle, Loader2, Bot, Send } from "lucide-react";
@@ -38,7 +38,7 @@ export default function ScenarioSimulation() {
       .finally(() => setLoading(false));
   }, [currentUser?.id, newLoanAmount, salaryIncrease, jobLoss, vacationExpense, housePurchase, carPurchase, investmentIncrease]);
 
-  const handleChatSubmit = (e: React.FormEvent) => {
+  const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
 
@@ -47,34 +47,60 @@ export default function ScenarioSimulation() {
     setChatInput("");
     setIsTyping(true);
 
-    setTimeout(() => {
-      let aiResponse = "Based on this scenario, I recommend keeping a close eye on your debt-to-income ratio. Feel free to tweak the sliders manually!";
-      let updatedParams = { ...simulationParams };
+    let fallbackResponse = "Based on this scenario, I recommend keeping a close eye on your debt-to-income ratio. Feel free to tweak the sliders manually!";
+    const updatedParams = { ...simulationParams };
 
-      if (currentInput.includes("house") || currentInput.includes("home")) {
-        updatedParams.housePurchase = true;
-        aiResponse = "I've simulated a House Purchase scenario! Notice how the ₹25K EMI impacts your monthly savings and debt ratio.";
-      } else if (currentInput.includes("car")) {
-        updatedParams.carPurchase = true;
-        aiResponse = "I've enabled the Car Purchase scenario. A ₹15K EMI has been added to your expenses.";
-      } else if (currentInput.includes("job") || currentInput.includes("fired") || currentInput.includes("lose")) {
-        updatedParams.jobLoss = true;
-        aiResponse = "I've activated the Job Loss scenario. This is highly risky. You will need a strong emergency fund to survive this.";
-      } else if (currentInput.includes("loan") || currentInput.includes("borrow")) {
-        updatedParams.newLoanAmount = 500000;
-        aiResponse = "I've added a new ₹500,000 loan to your simulation. Watch your debt ratio closely!";
-      } else if (currentInput.includes("vacation") || currentInput.includes("trip")) {
-        updatedParams.vacationExpense = 150000;
-        aiResponse = "I've factored in a ₹150,000 vacation expense. Make sure you have enough extra savings to cover this!";
-      } else if (currentInput.includes("salary") || currentInput.includes("raise") || currentInput.includes("promotion")) {
-        updatedParams.salaryIncrease = 20;
-        aiResponse = "Congratulations on the hypothetical promotion! I've increased your salary by 20%. Look at your new savings rate!";
-      }
+    if (currentInput.includes("house") || currentInput.includes("home")) {
+      updatedParams.housePurchase = true;
+      fallbackResponse = "I've simulated a House Purchase scenario. Notice how the new EMI changes your monthly savings and debt ratio.";
+    } else if (currentInput.includes("car")) {
+      updatedParams.carPurchase = true;
+      fallbackResponse = "I've enabled the Car Purchase scenario. A new EMI has been added to your monthly commitments.";
+    } else if (currentInput.includes("job") || currentInput.includes("fired") || currentInput.includes("lose")) {
+      updatedParams.jobLoss = true;
+      fallbackResponse = "I've activated the Job Loss scenario. This is high risk unless your emergency fund can carry your monthly expenses.";
+    } else if (currentInput.includes("loan") || currentInput.includes("borrow")) {
+      updatedParams.newLoanAmount = 500000;
+      fallbackResponse = "I've added a new ₹500,000 loan to your simulation. Watch your debt ratio closely.";
+    } else if (currentInput.includes("vacation") || currentInput.includes("trip")) {
+      updatedParams.vacationExpense = 150000;
+      fallbackResponse = "I've factored in a ₹150,000 vacation expense. Make sure your surplus cash can absorb it.";
+    } else if (currentInput.includes("salary") || currentInput.includes("raise") || currentInput.includes("promotion")) {
+      updatedParams.salaryIncrease = 20;
+      fallbackResponse = "I've increased your salary by 20% in the simulation so you can compare the cash-flow impact.";
+    }
 
-      setSimulationParams(updatedParams);
+    setSimulationParams(updatedParams);
+
+    try {
+      const scenarioSummary = [
+        `loan=${updatedParams.newLoanAmount}`,
+        `salaryIncrease=${updatedParams.salaryIncrease}%`,
+        `jobLoss=${updatedParams.jobLoss}`,
+        `vacationExpense=${updatedParams.vacationExpense}`,
+        `housePurchase=${updatedParams.housePurchase}`,
+        `carPurchase=${updatedParams.carPurchase}`,
+        `investmentIncrease=${updatedParams.investmentIncrease}`,
+      ].join(", ");
+
+      const response = await sendChatMessage({
+        message: `Assess this financial scenario in 2-3 concise sentences with focus on cash flow, debt, and risk. User request: "${chatInput}". Scenario: ${scenarioSummary}.`,
+        conversation_history: messages.slice(-4).map((message) => ({
+          role: message.role === "ai" ? "assistant" : message.role,
+          content: message.text,
+        })),
+      });
+
+      const aiResponse = response?.success && response?.response?.content
+        ? response.response.content
+        : fallbackResponse;
+
       setMessages(prev => [...prev, { role: "ai", text: aiResponse }]);
+    } catch {
+      setMessages(prev => [...prev, { role: "ai", text: fallbackResponse }]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   return (

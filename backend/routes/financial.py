@@ -25,18 +25,21 @@ from schemas.financial import (
 from services.financial_service import FinancialService
 from services.recommendation_service import RecommendationService
 from services.alert_service import AlertService
+from services.forecast_service import ForecastService
 from auth.dependencies import get_current_user
 
-financial_router = APIRouter(prefix="/api/financial", tags=["Financial"])
+financial_router = APIRouter(tags=["Financial"])
 
 
 class SimulationRequestBody(BaseModel):
     """Optional JSON body for scenario simulation (frontend uses JSON)."""
     new_loan: float = 0
     salary_increase: float = 0
-    new_expense: float = 0
-    investment_amount: float = 0
-    months: int = 12
+    job_loss: bool = False
+    vacation_expense: float = 0
+    house_purchase: bool = False
+    car_purchase: bool = False
+    investment_increase: float = 0
 
 
 # ==================== EXPENSES ====================
@@ -253,13 +256,13 @@ async def create_goal(
 
 @financial_router.get("/goals", response_model=List[GoalResponse])
 async def get_goals(
-    status: Optional[str] = Query(None, pattern="^(active|completed|cancelled)$"),
+    goal_status: Optional[str] = Query(None, pattern="^(active|completed|paused)$"),
     current_user: Dict = Depends(get_current_user)
 ):
     """Get user goals"""
     try:
         user_id = current_user.get("sub")
-        goals = FinancialService.get_goals(user_id, status)
+        goals = FinancialService.get_goals(user_id, goal_status)
         return [GoalResponse(**goal) for goal in goals]
     except Exception as e:
         raise HTTPException(
@@ -415,13 +418,13 @@ async def generate_alerts(current_user: Dict = Depends(get_current_user)):
 
 @financial_router.get("/recommendations", response_model=List[RecommendationResponse])
 async def get_recommendations(
-    status: Optional[str] = Query(None, pattern="^(pending|accepted|rejected)$"),
+    rec_status: Optional[str] = Query(None, pattern="^(pending|accepted|rejected)$"),
     current_user: Dict = Depends(get_current_user)
 ):
     """Get user recommendations"""
     try:
         user_id = current_user.get("sub")
-        recommendations = RecommendationService.get_stored_recommendations(user_id, status)
+        recommendations = RecommendationService.get_stored_recommendations(user_id, rec_status)
         return [RecommendationResponse(**rec) for rec in recommendations]
     except Exception as e:
         raise HTTPException(
@@ -512,6 +515,19 @@ async def get_financial_health(current_user: Dict = Depends(get_current_user)):
         )
 
 
+@financial_router.get("/risk")
+async def get_risk_analysis(current_user: Dict = Depends(get_current_user)):
+    """Get risk analysis and assessment"""
+    try:
+        user_id = current_user.get("sub")
+        return FinancialService.get_risk_analysis(user_id)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch risk analysis: {str(e)}"
+        )
+
+
 # ==================== SCENARIO SIMULATION ====================
 
 @financial_router.post("/simulation")
@@ -521,7 +537,11 @@ async def run_scenario_simulation(
     salary_increase: float = 0,
     new_expense: float = 0,
     investment_amount: float = 0,
-    months: int = 12,
+    job_loss: bool = False,
+    vacation_expense: float = 0,
+    house_purchase: bool = False,
+    car_purchase: bool = False,
+    investment_increase: float = 0,
     current_user: Dict = Depends(get_current_user)
 ):
     """
@@ -543,148 +563,25 @@ async def run_scenario_simulation(
         if body is not None:
             new_loan = body.new_loan
             salary_increase = body.salary_increase
-            new_expense = body.new_expense
-            investment_amount = body.investment_amount
-            months = body.months
-        
-        # Get current financial data
-        from database.db_utils import get_db
-        
-        with get_db() as conn:
-            cursor = conn.cursor()
-            
-            # Get current income
-            cursor.execute("""
-                SELECT amount FROM monthly_income
-                WHERE user_id = ?
-                ORDER BY month DESC
-                LIMIT 1
-            """, (user_id,))
-            income_row = cursor.fetchone()
-            current_income = income_row['amount'] if income_row else 75000
-            
-            # Get current expenses (last 30 days average)
-            cursor.execute("""
-                SELECT AVG(monthly_total) as avg_expense
-                FROM (
-                    SELECT strftime('%Y-%m', date) as month, SUM(amount) as monthly_total
-                    FROM expenses
-                    WHERE user_id = ? AND date >= date('now', '-90 days')
-                    GROUP BY month
-                )
-            """, (user_id,))
-            expense_row = cursor.fetchone()
-            current_expense = expense_row['avg_expense'] if expense_row and expense_row['avg_expense'] else 45000
-        
-        # Calculate projected values
-        projected_income = current_income + salary_increase
-        projected_expense = current_expense + new_expense
-        
-        # Calculate loan impact (assuming 10% annual interest)
-        monthly_loan_payment = 0
-        if new_loan > 0:
-            annual_rate = 0.10
-            monthly_rate = annual_rate / 12
-            num_payments = months
-            if monthly_rate > 0:
-                monthly_loan_payment = new_loan * (monthly_rate * (1 + monthly_rate)**num_payments) / ((1 + monthly_rate)**num_payments - 1)
-        
-        projected_expense += monthly_loan_payment
-        
-        # Calculate investment growth (assuming 8% annual return)
-        investment_value = 0
-        if investment_amount > 0:
-            monthly_return = 0.08 / 12
-            investment_value = investment_amount * ((1 + monthly_return)**months)
-        
-        # Calculate monthly savings
-        monthly_savings = projected_income - projected_expense
-        total_savings = monthly_savings * months
-        
-        # Calculate final net worth
-        final_net_worth = total_savings + investment_value - new_loan
-        
-        # Calculate savings rate
-        savings_rate = (monthly_savings / projected_income * 100) if projected_income > 0 else 0
-        
-        # Generate recommendations
-        recommendations = []
-        
-        if savings_rate < 10:
-            recommendations.append({
-                "type": "warning",
-                "message": "Low savings rate. Consider reducing expenses or increasing income."
-            })
-        elif savings_rate >= 20:
-            recommendations.append({
-                "type": "success",
-                "message": "Excellent savings rate! You're on track for financial security."
-            })
-        
-        if new_loan > 0 and monthly_loan_payment > projected_income * 0.3:
-            recommendations.append({
-                "type": "warning",
-                "message": "Loan payment exceeds 30% of income. This may strain your budget."
-            })
-        
-        if investment_amount > 0:
-            roi = ((investment_value - investment_amount) / investment_amount * 100) if investment_amount > 0 else 0
-            recommendations.append({
-                "type": "info",
-                "message": f"Projected investment return: ₹{investment_value - investment_amount:,.0f} ({roi:.1f}% over {months} months)"
-            })
-        
-        # Return simulation results
-        debt_ratio = (projected_expense / projected_income * 100) if projected_income > 0 else 0
-        is_viable = savings_rate >= 10 and debt_ratio < 50
-        advice = (
-            "This scenario looks viable. Keep maintaining a strong savings rate and monitor your EMI burden."
-            if is_viable
-            else "This scenario looks risky. Reduce expenses/loan size or increase income before proceeding."
-        )
+            job_loss = body.job_loss
+            vacation_expense = body.vacation_expense
+            house_purchase = body.house_purchase
+            car_purchase = body.car_purchase
+            investment_increase = body.investment_increase
+        else:
+            vacation_expense = new_expense
+            investment_increase = investment_amount
 
-        # Backward-compatible flattened fields for the frontend UI component.
-        response_payload = {
-            "success": True,
-            "newSavings": monthly_savings,
-            "newEMI": monthly_loan_payment,
-            "newRiskScore": max(0, min(100, 100 - savings_rate)),  # heuristic
-            "newDebtRatio": max(0, min(100, debt_ratio)),
-            "isViable": is_viable,
-            "advice": advice,
-            "simulation": {
-                "current": {
-                    "monthly_income": current_income,
-                    "monthly_expense": current_expense,
-                    "monthly_savings": current_income - current_expense,
-                    "savings_rate": ((current_income - current_expense) / current_income * 100) if current_income > 0 else 0
-                },
-                "projected": {
-                    "monthly_income": projected_income,
-                    "monthly_expense": projected_expense,
-                    "monthly_savings": monthly_savings,
-                    "savings_rate": savings_rate,
-                    "loan_payment": monthly_loan_payment,
-                    "investment_value": investment_value,
-                    "total_savings": total_savings,
-                    "final_net_worth": final_net_worth
-                },
-                "changes": {
-                    "income_change": salary_increase,
-                    "expense_change": new_expense + monthly_loan_payment,
-                    "savings_change": monthly_savings - (current_income - current_expense),
-                    "net_worth_change": final_net_worth
-                },
-                "timeline": {
-                    "months": months,
-                    "start_date": datetime.now().strftime("%Y-%m"),
-                    "end_date": (datetime.now().replace(day=1) + timedelta(days=32*months)).strftime("%Y-%m")
-                }
-            },
-            "recommendations": recommendations,
-            "timestamp": datetime.now().isoformat()
-        }
-        return response_payload
+        return ForecastService.run_scenario_simulation(
+            user_id=user_id,
+            new_loan=new_loan,
+            salary_increase=salary_increase,
+            job_loss=job_loss,
+            vacation_expense=vacation_expense,
+            house_purchase=house_purchase,
+            car_purchase=car_purchase,
+            investment_increase=investment_increase,
+        )
         
     except Exception as e:
         logger.error(f"Error running simulation: {e}")

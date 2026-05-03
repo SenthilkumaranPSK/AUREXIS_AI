@@ -4,7 +4,7 @@ Business logic for forecasting and predictions
 """
 
 from typing import Dict, List
-from user_manager_secure import UserManager
+from user_manager_json import UserManagerJSON
 from forecasting import (
     compute_monthly_forecast,
     compute_net_worth_forecast,
@@ -22,7 +22,7 @@ class ForecastService:
     @staticmethod
     def get_monthly_forecast(user_id: str, months: int = 6) -> Dict:
         """Get monthly income/expense/savings forecast"""
-        data = UserManager.get_all_user_data(user_id)
+        data = UserManagerJSON.get_all_user_data(user_id)
         return {
             "forecast": compute_monthly_forecast(data, months),
             "user_id": user_id,
@@ -32,7 +32,7 @@ class ForecastService:
     @staticmethod
     def get_networth_forecast(user_id: str, years: int = 5) -> Dict:
         """Get multi-year net worth projection"""
-        data = UserManager.get_all_user_data(user_id)
+        data = UserManagerJSON.get_all_user_data(user_id)
         return {
             "forecast": compute_net_worth_forecast(data, years),
             "user_id": user_id,
@@ -42,7 +42,7 @@ class ForecastService:
     @staticmethod
     def get_goal_forecast(user_id: str) -> Dict:
         """Get goal completion timeline forecast"""
-        data = UserManager.get_all_user_data(user_id)
+        data = UserManagerJSON.get_all_user_data(user_id)
         return {
             "goals": compute_goal_forecast(data),
             "user_id": user_id
@@ -51,7 +51,7 @@ class ForecastService:
     @staticmethod
     def get_expense_forecast(user_id: str, months: int = 6) -> Dict:
         """Get category-wise expense trend forecast"""
-        data = UserManager.get_all_user_data(user_id)
+        data = UserManagerJSON.get_all_user_data(user_id)
         return {
             "categories": compute_expense_forecast(data, months),
             "user_id": user_id,
@@ -61,13 +61,13 @@ class ForecastService:
     @staticmethod
     def get_savings_projection(user_id: str) -> Dict:
         """Get savings projection at different rates"""
-        data = UserManager.get_all_user_data(user_id)
+        data = UserManagerJSON.get_all_user_data(user_id)
         return compute_savings_projection(data)
 
     @staticmethod
     def get_ml_forecast(user_id: str, steps: int = 6) -> Dict:
         """Get ML-based forecast using multiple models"""
-        data = UserManager.get_all_user_data(user_id)
+        data = UserManagerJSON.get_all_user_data(user_id)
         return compute_ml_forecast(data, steps)
 
     @staticmethod
@@ -82,7 +82,7 @@ class ForecastService:
         investment_increase: float = 0
     ) -> Dict:
         """Run what-if scenario simulation"""
-        data = UserManager.get_all_user_data(user_id)
+        data = UserManagerJSON.get_all_user_data(user_id)
         return compute_simulation(
             data,
             new_loan=new_loan,

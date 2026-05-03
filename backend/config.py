@@ -9,7 +9,11 @@ from typing import List, Optional
 from functools import lru_cache
 import os
 import logging
+from pathlib import Path
 
+
+logs_path = Path(__file__).parent.parent / "logs"
+logs_path.mkdir(parents=True, exist_ok=True)
 logger = logging.getLogger(__name__)
 
 
@@ -30,7 +34,7 @@ class Settings(BaseSettings):
     
     # ── Security ───────────────────────────────────────────────────────────
     SECRET_KEY: str = os.getenv("SECRET_KEY")  # REQUIRED - no default
-    JWT_SECRET_KEY: Optional[str] = None
+    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")  # REQUIRED
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440  # 24 hours
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
@@ -38,14 +42,16 @@ class Settings(BaseSettings):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Validate that SECRET_KEY is set
-        if not self.SECRET_KEY or self.SECRET_KEY == "dev-secret-key-CHANGE-IN-PRODUCTION":
-            if self.ENVIRONMENT == "production":
-                raise ValueError("SECRET_KEY must be set in production environment")
-            else:
-                # Only allow default in development
-                logger.warning("⚠️  Using default SECRET_KEY - DO NOT USE IN PRODUCTION!")
-                self.SECRET_KEY = "dev-secret-key-CHANGE-IN-PRODUCTION"
+        # Validate that SECRET_KEY and JWT_SECRET_KEY are set
+        if not self.SECRET_KEY:
+            raise ValueError("SECRET_KEY environment variable is required")
+        if not self.JWT_SECRET_KEY:
+            raise ValueError("JWT_SECRET_KEY environment variable is required")
+        # In development allow a placeholder with a warning
+        if self.ENVIRONMENT != "production" and self.SECRET_KEY == "dev-secret-key-CHANGE-IN-PRODUCTION":
+            logger.warning("⚠️  Using placeholder SECRET_KEY - replace in production!")
+        if self.ENVIRONMENT != "production" and self.JWT_SECRET_KEY == "dev-jwt-secret-key-CHANGE-IN-PRODUCTION":
+            logger.warning("⚠️  Using placeholder JWT_SECRET_KEY - replace in production!")
     
     # ── CORS ───────────────────────────────────────────────────────────────
     ALLOWED_ORIGINS: List[str] = [
@@ -147,10 +153,14 @@ if settings.ENVIRONMENT == "production":
     settings.LOG_LEVEL = "WARNING"
     
     # Validate critical security settings in production
-    if settings.SECRET_KEY == "dev-secret-key-CHANGE-IN-PRODUCTION":
+    if not settings.SECRET_KEY or settings.SECRET_KEY == "dev-secret-key-CHANGE-IN-PRODUCTION":
         raise ValueError(
             "SECRET_KEY must be set via environment variable in production. "
             "Generate one with: openssl rand -hex 32"
+        )
+    if not settings.JWT_SECRET_KEY or settings.JWT_SECRET_KEY == "dev-jwt-secret-key-CHANGE-IN-PRODUCTION":
+        raise ValueError(
+            "JWT_SECRET_KEY must be set via environment variable in production."
         )
 elif settings.ENVIRONMENT == "testing":
     settings.DATABASE_URL = "sqlite:///./test_aurexis.db"

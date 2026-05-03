@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { useStore } from "@/store/useStore";
 import { formatCurrency } from "@/lib/formatters";
+import { getMonthlyForecast } from "@/lib/api";
 import { motion } from "framer-motion";
 import { TrendingUp, Loader2 } from "lucide-react";
 
@@ -63,12 +64,14 @@ export default function ForecastChart() {
   useEffect(() => {
     if (!currentUser?.id) return;
     
-    // Simulate API call with mock data
     setLoading(true);
-    setTimeout(() => {
-      setData(generateForecastData(currentUser));
-      setLoading(false);
-    }, 800);
+    getMonthlyForecast()
+      .then((response) => {
+        const forecast = Array.isArray(response?.forecast) ? response.forecast : [];
+        setData(forecast.length ? forecast.slice(-6) : generateForecastData(currentUser));
+      })
+      .catch(() => setData(generateForecastData(currentUser)))
+      .finally(() => setLoading(false));
   }, [currentUser?.id]);
 
   return (

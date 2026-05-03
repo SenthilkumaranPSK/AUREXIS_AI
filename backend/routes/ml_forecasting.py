@@ -14,7 +14,7 @@ from ml.ensemble_forecasting import ensemble_forecaster
 from ml.time_series_analysis import time_series_analyzer
 from ml.confidence_intervals import confidence_interval_calculator
 
-router = APIRouter(prefix="/api/ml", tags=["ML Forecasting"])
+router = APIRouter(prefix="/ml", tags=["ML Forecasting"])
 
 
 @router.post("/ensemble-forecast")

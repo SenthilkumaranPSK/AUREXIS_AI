@@ -14,7 +14,7 @@ from analytics.pattern_detector import pattern_detector
 from analytics.insight_generator import insight_generator
 from analytics.behavior_analyzer import behavior_analyzer
 
-router = APIRouter(prefix="/api/analytics", tags=["Advanced Analytics"])
+router = APIRouter(prefix="/analytics", tags=["Advanced Analytics"])
 
 
 @router.get("/patterns")

@@ -34,9 +34,12 @@ export default function LoginPage() {
     }
     try {
       const response = await login({ username, password });
-      if (response.success && response.data) {
-        setCurrentUser(response.data.user as unknown as UserProfile);
-        setSessionId(response.data.session_id);
+      const user = response.data?.user ?? response.user;
+      const sessionId = response.data?.session_id ?? (user ? `session_${user.id}` : null);
+
+      if (response.success && user && sessionId) {
+        setCurrentUser(user as UserProfile);
+        setSessionId(sessionId);
         navigate("/dashboard");
       } else {
         setError("Login failed. Please try again.");

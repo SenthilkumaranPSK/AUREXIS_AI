@@ -61,48 +61,73 @@ export interface LoginCredentials {
 
 export interface LoginResponse {
   success: boolean;
-  access_token: string;
-  refresh_token: string;
-  user: UserProfile;
+  access_token?: string;
+  refresh_token?: string;
+  user?: UserProfile;
   data?: {
+    access_token?: string;
+    refresh_token?: string;
     session_id: string;
-    user: any;
+    user: UserProfile;
     expires_in: number;
   };
   message?: string;
 }
 
 export async function login(credentials: LoginCredentials): Promise<LoginResponse> {
-  const response = await apiRequest<LoginResponse>("/login", {  // Changed from /auth/login to /login
+  const response = await apiRequest<LoginResponse>("/login", {
     method: "POST",
     body: JSON.stringify(credentials),
   });
-  
-  // Backend returns tokens under `data.*` (legacy compatibility wrapper).
-  // Store actual JWT access token so protected endpoints work.
-  if (response.success && response.data?.access_token) {
-    localStorage.setItem('access_token', response.data.access_token);
+
+  const normalized: LoginResponse = response.data
+    ? response
+    : {
+        ...response,
+        data: response.user
+          ? {
+              access_token: response.access_token,
+              refresh_token: response.refresh_token,
+              session_id: `session_${response.user.id}`,
+              user: response.user,
+              expires_in: 1800,
+            }
+          : undefined,
+      };
+
+  if (normalized.success && normalized.data?.access_token) {
+    localStorage.setItem("access_token", normalized.data.access_token);
   }
-  if (response.success && response.data?.refresh_token) {
-    localStorage.setItem('refresh_token', response.data.refresh_token);
+  if (normalized.success && normalized.data?.refresh_token) {
+    localStorage.setItem("refresh_token", normalized.data.refresh_token);
   }
-  if (response.success && response.data?.user) {
-    localStorage.setItem('user_data', JSON.stringify(response.data.user));
+  if (normalized.success && normalized.data?.user) {
+    localStorage.setItem("user_data", JSON.stringify(normalized.data.user));
   }
-  
-  return response;
+
+  return normalized;
 }
 
-export async function logout(): Promise<{ success: boolean }> {
-  const refreshToken = localStorage.getItem('refresh_token');
+export async function logout(sessionId?: string | null): Promise<{ success: boolean }> {
+  const refreshToken = localStorage.getItem("refresh_token");
   try {
-    await apiRequest("/auth/logout", {
-      method: "POST",
-      body: JSON.stringify({ refresh_token: refreshToken }),
-    });
+    if (sessionId) {
+      await apiRequest("/logout", {
+        method: "POST",
+        body: JSON.stringify({ session_id: sessionId }),
+      });
+    }
+
+    if (refreshToken) {
+      await apiRequest("/auth/logout", {
+        method: "POST",
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      });
+    }
   } finally {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user_data");
   }
   return { success: true };
 }
@@ -113,7 +138,7 @@ export async function getUserMetrics(): Promise<any> {
   return apiRequest(`/financial/metrics`);
 }
 
-export async function getUserGoals(): Promise<any> {
+export async function getUserGoals(_userId?: string): Promise<any> {
   return apiRequest(`/financial/goals`);
 }
 
@@ -133,11 +158,11 @@ export async function getUserRisk(): Promise<any> {
   return apiRequest(`/financial/risk`);
 }
 
-export async function getUserHealth(): Promise<any> {
+export async function getUserHealth(_userId?: string): Promise<any> {
   return apiRequest(`/financial/health`);
 }
 
-export async function getUserAlerts(): Promise<any> {
+export async function getUserAlerts(_userId?: string): Promise<any> {
   return apiRequest(`/financial/alerts`);
 }
 
@@ -158,7 +183,7 @@ export async function addTransaction(transaction: any): Promise<any> {
 
 export async function updateGoal(goalId: string | number, updates: any): Promise<any> {
   return apiRequest(`/financial/goals/${goalId}`, {
-    method: "PATCH",
+    method: "PUT",
     body: JSON.stringify(updates),
   });
 }
@@ -184,10 +209,14 @@ export interface ChatRequest {
   message: string;
   session_id?: string;
   use_memory?: boolean;
+  conversation_history?: Array<{
+    role: string;
+    content: string;
+  }>;
 }
 
 export async function sendChatMessage(request: ChatRequest): Promise<any> {
-  return apiRequest("/chat", {
+  return apiRequest("/chat/message", {
     method: "POST",
     body: JSON.stringify(request),
   });
@@ -201,11 +230,17 @@ export async function getChatHistory(sessionId?: string): Promise<any> {
 // --- Advanced API ---
 
 export async function getMLForecast(steps = 6): Promise<any> {
-  return apiRequest(`/ml/forecast?steps=${steps}`);
+  return apiRequest(`/forecast/ml?steps=${steps}`);
 }
 
 export async function getRecommendations(): Promise<any> {
   return apiRequest(`/financial/recommendations`);
+}
+
+export async function generateRecommendations(): Promise<any> {
+  return apiRequest(`/financial/recommendations/generate`, {
+    method: "POST",
+  });
 }
 
 export async function runSimulation(_userId: string, params: any): Promise<any> {

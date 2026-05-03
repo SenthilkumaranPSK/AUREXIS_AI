@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/store/useStore";
+import { generateRecommendations, getRecommendations } from "@/lib/api";
 import { Lightbulb, ArrowRight, Loader2 } from "lucide-react";
 
 const typeColors: Record<string, string> = {
@@ -25,8 +26,7 @@ const typeDot: Record<string, string> = {
   warning:  "bg-warning",
 };
 
-// Generate mock recommendations based on user data
-const generateRecommendations = (currentUser: any) => {
+const generateFallbackRecommendations = (currentUser: any) => {
   const recommendations = [];
   
   // Use alerts from user profile if available
@@ -75,6 +75,16 @@ const generateRecommendations = (currentUser: any) => {
   return recommendations.slice(0, 6); // Limit to 6 recommendations
 };
 
+const mapRecommendation = (recommendation: any) => ({
+  text: recommendation.description || recommendation.title || "Recommendation available",
+  type: recommendation.category || recommendation.priority || "planning",
+  impact: recommendation.impact
+    ? recommendation.impact.charAt(0).toUpperCase() + recommendation.impact.slice(1)
+    : recommendation.priority
+      ? recommendation.priority.charAt(0).toUpperCase() + recommendation.priority.slice(1)
+      : "Review"
+});
+
 export default function RecommendationFeed() {
   const { currentUser } = useStore();
   const [recs, setRecs] = useState<any[]>([]);
@@ -83,13 +93,25 @@ export default function RecommendationFeed() {
   useEffect(() => {
     if (!currentUser?.id) return;
     
-    // Simulate API call with mock data
     setLoading(true);
-    setTimeout(() => {
-      setRecs(generateRecommendations(currentUser));
-      setLoading(false);
-    }, 600);
-  }, [currentUser?.id]);
+    (async () => {
+      try {
+        const response = await getRecommendations();
+        let recommendations = (Array.isArray(response) ? response : response?.recommendations || []).map(mapRecommendation);
+
+        if (!recommendations.length) {
+          const generated = await generateRecommendations();
+          recommendations = (generated?.recommendations || []).map(mapRecommendation);
+        }
+
+        setRecs(recommendations.length ? recommendations : generateFallbackRecommendations(currentUser));
+      } catch {
+        setRecs(generateFallbackRecommendations(currentUser));
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [currentUser]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}

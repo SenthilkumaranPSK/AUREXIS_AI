@@ -8,11 +8,10 @@ from datetime import datetime
 import uuid
 from schemas.report import ReportRequest, ReportResponse
 from auth.dependencies import get_current_user
-from user_manager_secure import UserManager
+from user_manager_json import UserManagerJSON
 from report import generate_report
-from database.connection_enhanced import get_db
 
-reports_router = APIRouter(prefix="/api/reports", tags=["Reports"])
+reports_router = APIRouter(tags=["Reports"])
 
 
 @reports_router.post("/generate", response_model=ReportResponse, status_code=status.HTTP_201_CREATED)
@@ -23,8 +22,8 @@ async def generate_new_report(
     """Generate a new financial report"""
     try:
         user_id = current_user.get("sub")
-        user = UserManager.get_user_by_id(user_id) or {"name": "User", "number": user_id}      
-        data = UserManager.get_all_user_data(user_id)
+        user = UserManagerJSON.get_user_by_id(user_id) or {"name": "User", "number": user_id}      
+        data = UserManagerJSON.get_all_user_data(user_id)
 
         # Generate report
         report_data = generate_report(user, data)
@@ -190,8 +189,8 @@ async def download_report(
 
         # For now, return report data as JSON
         # In production, this would return the actual file
-        user = UserManager.get_user_by_id(user_id) or {"name": "User", "number": user_id}      
-        data = UserManager.get_all_user_data(user_id)
+        user = UserManagerJSON.get_user_by_id(user_id) or {"name": "User", "number": user_id}      
+        data = UserManagerJSON.get_all_user_data(user_id)
         report_data = generate_report(user, data)
 
         return {

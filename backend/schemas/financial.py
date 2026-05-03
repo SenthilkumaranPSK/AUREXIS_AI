@@ -72,7 +72,7 @@ class GoalUpdate(BaseModel):
     current_amount: Optional[float] = Field(None, ge=0)
     deadline: Optional[date] = None
     category: Optional[str] = Field(None, min_length=1, max_length=50)
-    status: Optional[str] = Field(None, pattern="^(active|completed|cancelled)$")
+    status: Optional[str] = Field(None, pattern="^(active|completed|paused)$")
 
 
 class GoalResponse(BaseModel):

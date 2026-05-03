@@ -8,11 +8,11 @@ from datetime import datetime
 from schemas.chat import ChatRequest, ChatResponse
 from auth.dependencies import get_current_user
 from chat_memory import chat_memory_manager
-from user_manager_secure import UserManager
+from user_manager_json import UserManagerJSON
 import httpx
 import os
 
-chat_router = APIRouter(prefix="/api/chat", tags=["Chat"])
+chat_router = APIRouter(tags=["Chat"])
 
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "deepseek-v3.1:671b-cloud")
@@ -28,8 +28,8 @@ async def send_message(
         user_id = current_user.get("sub")
         
         # Get user data
-        user = UserManager.get_user_by_id(user_id) or {"name": "User"}
-        financial_data = UserManager.get_all_user_data(user_id)
+        user = UserManagerJSON.get_user_by_id(user_id) or {"name": "User"}
+        financial_data = UserManagerJSON.get_all_user_data(user_id)
         
         # Generate session ID if not provided
         session_id = request.session_id or f"session_{user_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"

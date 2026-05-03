@@ -4,16 +4,21 @@ Generates a complete structured financial report for a user.
 All logic in Python — frontend just renders the JSON.
 """
 
-from typing import Dict, Any
+from typing import Dict, Any, List
 from analytics import (
     extract_transactions, extract_net_worth, extract_credit_score,
     compute_metrics, compute_risk, compute_expenses, compute_investments, compute_goals
 )
 from health import compute_health
-from recommendations_legacy import generate_recommendations
+# from recommendations_legacy import generate_recommendations  # Disabled for JSON mode
 from alerts import generate_alerts
 from forecasting import compute_net_worth_forecast, compute_goal_forecast, compute_savings_projection
 from datetime import datetime
+
+
+def generate_recommendations(financial_data: Dict) -> List[Dict]:
+    """Stub function for recommendations in JSON mode"""
+    return []
 
 
 def _grade(score: int) -> str:

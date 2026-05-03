@@ -42,7 +42,7 @@ class ValidationError(AUREXISError):
         super().__init__(
             error_code="VALIDATION_ERROR",
             message=message,
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             details=details
         )
 
@@ -148,7 +148,7 @@ class BusinessLogicError(AUREXISError):
 
 # Error code to HTTP status mapping
 ERROR_STATUS_MAP = {
-    "VALIDATION_ERROR": status.HTTP_422_UNPROCESSABLE_CONTENT,
+    "VALIDATION_ERROR": status.HTTP_422_UNPROCESSABLE_ENTITY,
     "AUTHENTICATION_ERROR": status.HTTP_401_UNAUTHORIZED,
     "AUTHORIZATION_ERROR": status.HTTP_403_FORBIDDEN,
     "NOT_FOUND": status.HTTP_404_NOT_FOUND,

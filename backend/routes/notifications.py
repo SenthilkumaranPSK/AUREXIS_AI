@@ -9,7 +9,6 @@ from typing import Dict, List, Optional
 from datetime import datetime
 
 from auth.dependencies import get_current_user
-from database_legacy import User
 from notifications.notification_manager import (
     notification_manager,
     NotificationType,
@@ -17,7 +16,7 @@ from notifications.notification_manager import (
 )
 from notifications.templates import notification_templates
 
-router = APIRouter(prefix="/api/notifications", tags=["Notifications"])
+router = APIRouter(tags=["Notifications"])
 
 
 class CreateNotificationRequest(BaseModel):
@@ -49,7 +48,7 @@ async def get_notifications(
     unread_only: bool = False,
     notification_type: Optional[str] = None,
     limit: int = 50,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Get user notifications
@@ -76,7 +75,7 @@ async def get_notifications(
                 )
         
         notifications = notification_manager.get_user_notifications(
-            user_id=current_user.id,
+            user_id=current_user.get("sub"),
             unread_only=unread_only,
             notification_type=type_filter,
             limit=limit
@@ -98,7 +97,7 @@ async def get_notifications(
 @router.post("/")
 async def create_notification(
     request: CreateNotificationRequest,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Create a new notification
@@ -131,7 +130,7 @@ async def create_notification(
         
         # Create notification
         notification = notification_manager.create_notification(
-            user_id=current_user.id,
+            user_id=current_user.get("sub"),
             notification_type=notif_type,
             title=request.title,
             message=request.message,
@@ -158,7 +157,7 @@ async def create_notification(
 @router.post("/template")
 async def create_from_template(
     request: TemplateNotificationRequest,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Create notification from template
@@ -179,7 +178,7 @@ async def create_from_template(
         
         # Create notification
         notification = notification_manager.create_notification(
-            user_id=current_user.id,
+            user_id=current_user.get("sub"),
             notification_type=rendered["type"],
             title=rendered["title"],
             message=rendered["message"],
@@ -205,7 +204,7 @@ async def create_from_template(
 
 @router.get("/templates")
 async def list_templates(
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     List available notification templates
@@ -233,7 +232,7 @@ async def list_templates(
 @router.put("/{notification_id}/read")
 async def mark_as_read(
     notification_id: str,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Mark notification as read
@@ -249,7 +248,7 @@ async def mark_as_read(
         notification = notification_manager.mark_as_read(notification_id)
         
         # Verify ownership
-        if notification["user_id"] != current_user.id:
+        if notification["user_id"] != current_user.get("sub"):
             raise HTTPException(status_code=403, detail="Access denied")
         
         return {
@@ -269,7 +268,7 @@ async def mark_as_read(
 @router.delete("/{notification_id}")
 async def delete_notification(
     notification_id: str,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Delete a notification
@@ -284,7 +283,7 @@ async def delete_notification(
     try:
         # Get notification to verify ownership
         notifications = notification_manager.get_user_notifications(
-            user_id=current_user.id,
+            user_id=current_user.get("sub"),
             limit=1000
         )
         
@@ -313,7 +312,7 @@ async def delete_notification(
 @router.delete("/")
 async def delete_all_notifications(
     older_than_days: Optional[int] = None,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Delete all notifications for user
@@ -327,7 +326,7 @@ async def delete_all_notifications(
     """
     try:
         deleted_count = notification_manager.delete_user_notifications(
-            user_id=current_user.id,
+            user_id=current_user.get("sub"),
             older_than_days=older_than_days
         )
         
@@ -343,7 +342,7 @@ async def delete_all_notifications(
 
 @router.get("/stats")
 async def get_notification_stats(
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Get notification statistics
@@ -355,7 +354,7 @@ async def get_notification_stats(
         Notification statistics
     """
     try:
-        stats = notification_manager.get_notification_stats(current_user.id)
+        stats = notification_manager.get_notification_stats(current_user.get("sub"))
         
         return {
             "success": True,
@@ -369,7 +368,7 @@ async def get_notification_stats(
 
 @router.get("/preferences")
 async def get_preferences(
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Get notification preferences
@@ -381,7 +380,7 @@ async def get_preferences(
         User notification preferences
     """
     try:
-        preferences = notification_manager.get_user_preferences(current_user.id)
+        preferences = notification_manager.get_user_preferences(current_user.get("sub"))
         
         return {
             "success": True,
@@ -396,7 +395,7 @@ async def get_preferences(
 @router.put("/preferences")
 async def update_preferences(
     request: NotificationPreferencesRequest,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Update notification preferences
@@ -410,7 +409,7 @@ async def update_preferences(
     """
     try:
         preferences = notification_manager.set_user_preferences(
-            user_id=current_user.id,
+            user_id=current_user.get("sub"),
             preferences=request.dict()
         )
         
@@ -427,7 +426,7 @@ async def update_preferences(
 @router.post("/batch")
 async def create_batch_notifications(
     notifications: List[CreateNotificationRequest],
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Create multiple notifications at once
@@ -444,7 +443,7 @@ async def create_batch_notifications(
         notif_data = []
         for notif in notifications:
             notif_data.append({
-                "user_id": current_user.id,
+                "user_id": current_user.get("sub"),
                 "type": notif.notification_type,
                 "title": notif.title,
                 "message": notif.message,

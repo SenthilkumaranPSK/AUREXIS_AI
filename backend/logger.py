@@ -61,6 +61,13 @@ class ColoredFormatter(logging.Formatter):
         return super().format(record)
 
 
+def build_formatter(format_string: str) -> logging.Formatter:
+    """Return a formatter object, supporting `json` as a config shortcut."""
+    if format_string.strip().lower() == "json":
+        return JSONFormatter()
+    return logging.Formatter(format_string)
+
+
 def setup_logger(name: str = "aurexis") -> logging.Logger:
     """
     Setup application logger with multiple handlers
@@ -92,7 +99,7 @@ def setup_logger(name: str = "aurexis") -> logging.Logger:
             datefmt='%H:%M:%S'
         )
     else:
-        console_formatter = logging.Formatter(settings.LOG_FORMAT)
+        console_formatter = build_formatter(settings.LOG_FORMAT)
     
     console_handler.setFormatter(console_formatter)
     logger.addHandler(console_handler)
@@ -105,7 +112,7 @@ def setup_logger(name: str = "aurexis") -> logging.Logger:
         encoding='utf-8'
     )
     file_handler.setLevel(logging.DEBUG)
-    file_formatter = logging.Formatter(settings.LOG_FORMAT)
+    file_formatter = build_formatter(settings.LOG_FORMAT)
     file_handler.setFormatter(file_formatter)
     logger.addHandler(file_handler)
     

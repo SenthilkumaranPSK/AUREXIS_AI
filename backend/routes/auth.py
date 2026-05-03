@@ -2,8 +2,8 @@
 Authentication Routes
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status, Request
-from typing import Dict
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Body
+from typing import Dict, Optional
 from schemas.auth import (
     SignupRequest,
     LoginRequest,
@@ -112,7 +112,7 @@ async def refresh_token(request: RefreshTokenRequest):
 
 @router.post("/logout")
 async def logout(
-    refresh_token: str = None,
+    refresh_token: Optional[str] = Body(default=None, embed=True),
     current_user: Dict = Depends(get_current_user)
 ):
     """Logout user by revoking tokens"""

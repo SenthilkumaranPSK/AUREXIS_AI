@@ -4,19 +4,18 @@ API endpoints for monitoring agent performance
 """
 
 from fastapi import APIRouter, Depends, HTTPException
-from typing import Optional
+from typing import Optional, Dict
 from datetime import datetime
 
 from auth.dependencies import get_current_user
-from database_legacy import User
 from agents.agent_monitor import agent_monitor
 
-router = APIRouter(prefix="/api/agents", tags=["Agent Monitoring"])
+router = APIRouter(tags=["Agent Monitoring"])
 
 
 @router.get("/metrics")
 async def get_all_agent_metrics(
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Get metrics for all agents
@@ -43,7 +42,7 @@ async def get_all_agent_metrics(
 @router.get("/metrics/{agent_name}")
 async def get_agent_metrics(
     agent_name: str,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Get metrics for a specific agent
@@ -78,7 +77,7 @@ async def get_agent_metrics(
 async def get_execution_history(
     agent_name: Optional[str] = None,
     limit: int = 50,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Get agent execution history
@@ -111,7 +110,7 @@ async def get_execution_history(
 
 @router.get("/summary")
 async def get_performance_summary(
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Get overall performance summary
@@ -137,7 +136,7 @@ async def get_performance_summary(
 
 @router.get("/leaderboard")
 async def get_agent_leaderboard(
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Get agent leaderboard by performance
@@ -165,7 +164,7 @@ async def get_agent_leaderboard(
 @router.get("/slow")
 async def get_slow_agents(
     threshold: Optional[float] = None,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Get agents with slow execution times
@@ -195,7 +194,7 @@ async def get_slow_agents(
 @router.get("/errors")
 async def get_error_prone_agents(
     threshold: Optional[float] = None,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Get agents with high error rates
@@ -225,7 +224,7 @@ async def get_error_prone_agents(
 @router.delete("/history")
 async def clear_history(
     older_than_days: Optional[int] = None,
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Clear agent execution history
@@ -252,7 +251,7 @@ async def clear_history(
 
 @router.get("/health")
 async def get_agent_health(
-    current_user: User = Depends(get_current_user)
+    current_user: Dict = Depends(get_current_user)
 ):
     """
     Get health status of all agents

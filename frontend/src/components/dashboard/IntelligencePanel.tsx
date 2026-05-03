@@ -42,28 +42,37 @@ export default function IntelligencePanel() {
 
   useEffect(() => {
     if (!currentUser?.id) return;
+    setAlerts(currentUser.alerts || []);
+    setEmis(currentUser.upcomingEMIs || []);
+    setGoals(currentUser.goals || []);
+    setHealth({
+      overall: currentUser.financialHealthScore,
+      color: currentUser.financialHealthScore >= 80 ? "success" : currentUser.financialHealthScore >= 65 ? "primary" : currentUser.financialHealthScore >= 50 ? "warning" : "danger",
+      label: currentUser.financialHealthScore >= 80 ? "Excellent" : currentUser.financialHealthScore >= 65 ? "Good" : currentUser.financialHealthScore >= 50 ? "Fair" : "Needs Improvement",
+    });
+
     getUserAlerts(currentUser.id).then(r => { 
       // Handle both {alerts: [], emis: []} and [] formats
       if (Array.isArray(r)) {
-        setAlerts(r);
-        setEmis([]);
+        setAlerts(r.length ? r : currentUser.alerts || []);
+        setEmis(currentUser.upcomingEMIs || []);
       } else if (r && typeof r === 'object') {
-        setAlerts(r.alerts || []); 
-        setEmis(r.emis || []); 
+        setAlerts((r.alerts && r.alerts.length ? r.alerts : currentUser.alerts) || []);
+        setEmis((r.emis && r.emis.length ? r.emis : currentUser.upcomingEMIs) || []);
       }
     }).catch(() => {});
     
     getUserGoals(currentUser.id).then(r => {
       // Handle both {goals: []} and [] formats
       if (Array.isArray(r)) {
-        setGoals(r);
+        setGoals(r.length ? r : currentUser.goals || []);
       } else if (r && typeof r === 'object') {
-        setGoals(r.goals || []);
+        setGoals((r.goals && r.goals.length ? r.goals : currentUser.goals) || []);
       }
     }).catch(() => {});
     
     getUserHealth(currentUser.id).then(r => setHealth(r)).catch(() => {});
-  }, [currentUser?.id]);
+  }, [currentUser]);
 
   if (!currentUser) return null;
 
