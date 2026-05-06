@@ -1,44 +1,238 @@
 # ============================================
-# AUREXIS AI - CLEAN .gitignore
+# AUREXIS AI - Comprehensive .gitignore
 # ============================================
-# AI Tool folders
+
+# ── AI Tool Folders ─────────────────────────
 .gemini/
 .kiro/
 .claude/
 _bmad/
-
-# Reports
-*-report.json
-
-# Excel / temp data (optional)
-*.xlsx
+.cursor/
+.windsurf/
 
 # ── Python ──────────────────────────────────
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*$py.class
 *.so
 *.dylib
 *.dll
 
+# C extensions
+*.c
+*.cpp
+*.h
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
 # Virtual Environments
 venv/
 env/
+ENV/
+env.bak/
+venv.bak/
 .venv/
+.virtualenv/
+pythonenv*/
 
-# Python Packaging
-build/
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# ── Node.js / Frontend ──────────────────────
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Production builds
 dist/
-*.egg-info/
+build/
+.next/
+out/
+.nuxt/
+.output/
+.vercel/
+.netlify/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Cache directories
+.npm
+.eslintcache
+.stylelintcache
+.node_repl_history
+.yarn-integrity
+.cache/
+.parcel-cache/
+.vite/
+.turbo/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
 
 # ── Environment & Secrets ───────────────────
 .env
 .env.*
+!.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 secrets.json
 credentials.json
+config.json
 *.pem
 *.key
+*.crt
+*.cer
+*.p12
+*.pfx
+.secrets/
+.credentials/
 
-# ── Database ────────────────────────────────
+# ── Database Files ──────────────────────────
 *.sqlite
 *.sqlite3
 *.db
@@ -48,64 +242,217 @@ credentials.json
 *.sqlite-shm
 *.sqlite3-wal
 *.sqlite3-shm
+*.mdb
+*.accdb
 
 # ── Logs ────────────────────────────────────
 *.log
 logs/
-
-# ── Node.js / Frontend ──────────────────────
-node_modules/
-dist/
-build/
-.next/
-out/
-
-# ── Testing ─────────────────────────────────
-.pytest_cache/
-.coverage*
-htmlcov/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
 
 # ── IDE & Editors ───────────────────────────
-.vscode/
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.history/
+*.vsix
+
+# JetBrains IDEs
 .idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
 *.swp
 *~
+Session.vim
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
 
 # ── OS Files ────────────────────────────────
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
 Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+.directory
+.Trash-*
+.nfs*
 
 # ── Temporary Files ─────────────────────────
 *.tmp
+*.temp
 *.bak
+*.backup
+*.old
+*.orig
+*~
+.#*
 
-# ── Cache ───────────────────────────────────
-.cache/
-.parcel-cache/
-.vite/
+# ── Docker ──────────────────────────────────
+.dockerignore
+docker-compose.override.yml
 
-# ── AI / ML Models (if large) ───────────────
+# ── AI / ML Models ──────────────────────────
 *.pkl
+*.pickle
 *.joblib
+*.h5
+*.hdf5
+*.pb
+*.onnx
+*.pt
+*.pth
 models/
 checkpoints/
+weights/
+*.model
+*.weights
 
-# ── Large Files (optional) ──────────────────
+# ── Large Files ─────────────────────────────
 *.zip
+*.tar
 *.tar.gz
+*.tgz
 *.rar
+*.7z
+*.iso
+*.dmg
+*.pkg
+
+# ── Reports & Exports ───────────────────────
+*-report.json
+*-report.html
+*-report.xml
+*.xlsx
+*.xls
+*.csv
+reports/
+exports/
+
+# ── Backups ─────────────────────────────────
+backups/
+*.backup
+backup-*/
+
+# ── Uploads ─────────────────────────────────
+uploads/
+upload/
+tmp/
+temp/
+
+# ── Generated Documentation ─────────────────
+docs/_build/
+docs/.doctrees/
+site/
+
+# ── Terraform ───────────────────────────────
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# ── Kubernetes ──────────────────────────────
+*.kubeconfig
+
+# ── Cloud Provider Configs ──────────────────
+.aws/
+.azure/
+.gcloud/
+
+# ── Monitoring & Analytics ──────────────────
+.sentry/
+.newrelic/
 
 # ── KEEP IMPORTANT FILES ────────────────────
 !README.md
+!LICENSE
 !requirements.txt
 !package.json
 !package-lock.json
 !yarn.lock
+!pnpm-lock.yaml
+!.gitignore
+!.gitattributes
+!.dockerignore
+!.env.example
+!.env.sample
 
-# Keep sample data only
+# Keep sample/example data
 data/*
 !data/sample.*
+!data/examples/
+!data/README.md
 
-# ── App Generated Folders ───────────────────
-exports/
-backups/
+# Keep test fixtures
+!tests/fixtures/
+!backend/tests/fixtures/
+!frontend/src/__tests__/fixtures/
+
+# ── Project Specific ────────────────────────
+# AUREXIS AI specific patterns
+aurexis.db
+aurexis.db-*
+user_data.json
+financial_data.json
+chat_history.json
+*.aurexis
