@@ -415,20 +415,10 @@ Built with amazing open-source technologies:
 
 ---
 
-## 📞 Contact & Support
-
-- **GitHub Issues**: [Report bugs or request features](https://github.com/SenthilkumaranPSK/AUREXIS_AI/issues)
-- **Email**: support@aurexis.ai
-- **Security**: security@aurexis.ai
-
----
-
 <div align="center">
 
-**AUREXIS AI** - Empowering Financial Intelligence
+**AUREXIS AI** - Enterprise Financial Intelligence Platform
 
-Made with ❤️ by [Senthilkumaran PSK](https://github.com/SenthilkumaranPSK)
-
-⭐ Star us on GitHub if you find this project useful!
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/SenthilkumaranPSK/AUREXIS_AI)
 
 </div>
