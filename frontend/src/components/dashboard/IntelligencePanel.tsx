@@ -94,8 +94,16 @@ export default function IntelligencePanel() {
       <div className="p-4 space-y-3">
 
         {/* Profile */}
-        <div className="glass-card rounded-2xl p-4 border border-border">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="glass-card rounded-2xl p-4 border border-border relative overflow-hidden">
+          {/* Privacy Badge for Tour */}
+          <div id="privacy-badge" className="absolute -top-1 -right-1">
+             <div className="px-2 py-1 rounded-bl-xl border-b border-l border-success/30 bg-success/10 text-success text-[8px] font-bold uppercase tracking-wider flex items-center gap-1">
+               <ShieldCheck className="w-2.5 h-2.5" />
+               Privacy Secured
+             </div>
+          </div>
+
+          <div className="flex items-center gap-3 mb-4 mt-1">
             <div className="relative">
               <img src={currentUser.avatar} alt="" className="w-10 h-10 rounded-xl ring-1 ring-border" />
               <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-success rounded-full ring-1 ring-background" />

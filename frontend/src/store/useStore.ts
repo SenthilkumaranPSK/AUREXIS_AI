@@ -14,6 +14,8 @@ interface AppStore {
   setIsDark: (dark: boolean) => void;
   simulationParams: SimulationParams;
   setSimulationParams: (params: Partial<SimulationParams>) => void;
+  currency: 'INR' | 'USD';
+  setCurrency: (currency: 'INR' | 'USD') => void;
 }
 
 export const useStore = create<AppStore>((set) => ({
@@ -27,6 +29,8 @@ export const useStore = create<AppStore>((set) => ({
   setChatOpen: (open) => set({ chatOpen: open }),
   isDark: true,
   setIsDark: (dark) => set({ isDark: dark }),
+  currency: 'INR',
+  setCurrency: (currency) => set({ currency }),
   simulationParams: {
     newLoanAmount: 0,
     salaryIncrease: 0,

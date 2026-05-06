@@ -30,7 +30,6 @@ const sections: SettingsSection[] = [
 export default function SettingsPanel() {
   const [activeSection, setActiveSection] = useState("profile");
   const [theme, setTheme] = useState<"light" | "dark" | "system">("system");
-  const [currency, setCurrency] = useState("INR");
   const [language, setLanguage] = useState("en");
   const [notifications, setNotifications] = useState({
     email: true,
@@ -41,7 +40,7 @@ export default function SettingsPanel() {
     reports: false,
   });
 
-  const { currentUser, setCurrentUser } = useStore();
+  const { currentUser, setCurrentUser, currency, setCurrency: setGlobalCurrency } = useStore();
 
   const [profile, setProfile] = useState({
     name: currentUser?.name || "",
@@ -98,7 +97,7 @@ export default function SettingsPanel() {
       case "appearance":
         return <AppearanceSettings theme={theme} setTheme={setTheme} />;
       case "preferences":
-        return <PreferenceSettings currency={currency} setCurrency={setCurrency} language={language} setLanguage={setLanguage} />;
+        return <PreferenceSettings currency={currency} setCurrency={(c: any) => setGlobalCurrency(c)} language={language} setLanguage={setLanguage} />;
       case "data":
         return <DataSettings />;
       default:

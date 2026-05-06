@@ -125,6 +125,7 @@ export default function RiskIndicators() {
   return (
     <motion.div
       ref={ref}
+      id="risk-audit-panel"
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}

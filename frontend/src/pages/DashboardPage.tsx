@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   Wallet, TrendingUp, TrendingDown, PiggyBank, CreditCard,
   Shield, Target, AlertTriangle, RefreshCw, ArrowRight,
-  Heart, ShieldAlert, FlaskConical, Bell
+  Heart, ShieldAlert, FlaskConical, Bell, Sparkles
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { formatCurrency } from "@/lib/formatters";
@@ -30,6 +30,7 @@ import DebtPayoffTimeline from "@/components/dashboard/DebtPayoffTimeline";
 import RiskIndicators from "@/components/dashboard/RiskIndicators";
 import ReportsExport from "@/components/dashboard/ReportsExport";
 import SettingsPanel from "@/components/dashboard/SettingsPanel";
+import ProductTour from "@/components/dashboard/ProductTour";
 
 // Quick summary card — shows a snapshot with a "View Details" link
 function SummaryCard({
@@ -362,20 +363,37 @@ export default function DashboardPage() {
         <AppHeader />
         <div className="flex flex-1 min-h-0">
           <main className="flex-1 overflow-y-auto p-6 space-y-6">
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-              <h1 className="text-2xl font-bold text-foreground">
-                {path === "/dashboard" ? `Welcome back, ${u.name.split(" ")[0]}` : title}
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                {path === "/dashboard" ? "Your financial intelligence at a glance" : `Viewing: ${title}`}
-              </p>
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} id="dashboard-header">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-2xl font-bold text-foreground">
+                    {path === "/dashboard" ? `Welcome back, ${u.name.split(" ")[0]}` : title}
+                  </h1>
+                  <p className="text-sm text-muted-foreground">
+                    {path === "/dashboard" ? "Your financial intelligence at a glance" : `Viewing: ${title}`}
+                  </p>
+                </div>
+                {path === "/dashboard" && (
+                  <button 
+                    onClick={() => { localStorage.removeItem("hasSeenTour"); window.location.reload(); }}
+                    className="px-4 py-2 rounded-xl bg-muted/40 hover:bg-muted text-muted-foreground text-xs font-bold flex items-center gap-2 transition-all border border-border/50"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-primary" />
+                    Take Tour
+                  </button>
+                )}
+              </div>
             </motion.div>
-            {renderSection()}
+            
+            <div id={path === "/dashboard/forecasting" ? "ml-forecast-chart" : ""}>
+              {renderSection()}
+            </div>
           </main>
           {path === "/dashboard" && <IntelligencePanel />}
         </div>
       </div>
       <FloatingChat />
+      <ProductTour />
     </div>
   );
 }
