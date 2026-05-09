@@ -23,6 +23,10 @@ from slowapi.util import get_remote_address
 # Import configuration
 from config import settings
 
+# Ensure critical directories exist for Render/Production
+if not os.path.exists("user_data"):
+    os.makedirs("user_data")
+
 # Import user management (JSON-based, no database)
 from user_manager_json import authenticate_user, get_all_users
 
