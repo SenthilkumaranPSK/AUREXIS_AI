@@ -1,4 +1,4 @@
-import { Search, Bell, Sun, Moon, LogOut, User, Mail, Briefcase, MapPin, Calendar, CreditCard, Shield } from "lucide-react";
+import { Search, Bell, Sun, Moon, LogOut, User, Mail, Briefcase, MapPin, Calendar, CreditCard, Shield, Sparkles } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { useNavigate } from "react-router-dom";
 import { logout } from "@/lib/api";
@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { formatCurrency } from "@/lib/formatters";
 
 export default function AppHeader() {
-  const { currentUser, sessionId, isDark, setIsDark, setCurrentUser, setSessionId, notifications } = useStore();
+  const { currentUser, sessionId, isDark, setIsDark, setCurrentUser, setSessionId, currency, setCurrency } = useStore();
   const navigate = useNavigate();
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -53,8 +53,8 @@ export default function AppHeader() {
         className="h-16 border-b border-border flex items-center justify-between px-6 sticky top-0 z-20"
         style={{ background: "hsl(var(--background) / 0.80)", backdropFilter: "blur(24px)" }}
       >
-        {/* Search */}
-        <div className="flex items-center gap-3 flex-1 max-w-lg">
+        {/* Search & AI Tip */}
+        <div className="flex items-center gap-4 flex-1 max-w-2xl ml-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
             <input
@@ -62,17 +62,47 @@ export default function AppHeader() {
               className="w-full pl-9 pr-4 py-2 bg-secondary/60 rounded-xl text-xs text-foreground placeholder:text-muted-foreground border border-border focus:outline-none focus:border-primary/50 focus:bg-secondary transition-all"
             />
           </div>
+          
+          <motion.div 
+            className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 border border-primary/20 cursor-help group relative"
+            whileHover={{ scale: 1.02 }}
+          >
+            <Sparkles className="w-3 h-3 text-primary animate-pulse" />
+            <span className="text-[10px] font-bold text-primary uppercase tracking-tight">AI Tip:</span>
+            <span className="text-[10px] text-muted-foreground truncate max-w-[120px] group-hover:max-w-[300px] transition-all duration-500">
+              {currentUser?.savingsRate && currentUser.savingsRate > 25 ? "Invest your ₹45K surplus for 12% returns" : "Reduce dining costs to save ₹5K/mo"}
+            </span>
+          </motion.div>
         </div>
 
         {/* Right */}
-        <div className="flex items-center gap-1 ml-4">
+        <div className="flex items-center gap-2 ml-4">
+          {/* Currency Toggle */}
+          <div className="flex items-center bg-secondary/60 p-1 rounded-xl border border-border mr-2">
+            {[
+              { id: 'INR', label: '₹', title: 'Indian Rupee' },
+              { id: 'USD', label: '$', title: 'US Dollar' }
+            ].map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setCurrency(c.id as 'INR' | 'USD')}
+                className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs font-bold transition-all ${
+                  currency === c.id 
+                    ? "bg-card text-primary shadow-sm ring-1 ring-border" 
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                title={c.title}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+
           {/* Theme */}
           <button
             onClick={() => setIsDark(!isDark)}
             className="p-2 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-all"
             title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            aria-pressed={isDark}
           >
             {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
@@ -327,9 +357,9 @@ export default function AppHeader() {
                       }}
                     >
                       {[
-                        { label: "Net Worth", value: formatCurrency(currentUser.netWorth) },
+                        { label: "Net Worth", value: formatCurrency(currentUser.netWorth, currency) },
                         { label: "Credit Score", value: currentUser.creditScore },
-                        { label: "Monthly Income", value: formatCurrency(currentUser.monthlyIncome) },
+                        { label: "Monthly Income", value: formatCurrency(currentUser.monthlyIncome, currency) },
                         { label: "Savings Rate", value: `${currentUser.savingsRate}%` }
                       ].map((item, index) => (
                         <motion.div

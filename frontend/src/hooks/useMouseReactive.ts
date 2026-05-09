@@ -46,9 +46,9 @@ export function useMouseReactive(config: MouseReactiveConfig = {}): MouseReactiv
   const x = useSpring(mouseX, springConfig);
   const y = useSpring(mouseY, springConfig);
 
-  // 3D tilt transformations
-  const rotateX = useTransform(y, [-20, 20], [tiltIntensity, -tiltIntensity]);
-  const rotateY = useTransform(x, [-20, 20], [-tiltIntensity, tiltIntensity]);
+  // 3D tilt transformations (disabled to prevent text blur across the app)
+  const rotateX = useTransform(y, [-20, 20], [0, 0]);
+  const rotateY = useTransform(x, [-20, 20], [0, 0]);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!ref.current || shouldReduceMotion) return;

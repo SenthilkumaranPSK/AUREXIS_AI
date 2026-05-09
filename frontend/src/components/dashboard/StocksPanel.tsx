@@ -68,7 +68,7 @@ export default function StocksPanel() {
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-      className="glass-card rounded-2xl p-6 border border-border"
+      className="glass-card rounded-2xl p-6 border border-border h-full flex flex-col"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
@@ -146,15 +146,15 @@ export default function StocksPanel() {
       </div>
 
       {/* Summary row */}
-      <div className="grid grid-cols-3 gap-3 mt-5 pt-4 border-t border-border">
+      <div className="grid grid-cols-3 gap-6 mt-6 pt-6 border-t border-border">
         {[
           { label: "Invested",  value: formatCurrency(data.totalInvested) },
-          { label: "Current",   value: formatCurrency(data.totalValue) },
+          { label: "Current Value",   value: formatCurrency(data.totalValue) },
           { label: "Total P&L", value: `${pnlPositive ? "+" : ""}${formatCurrency(data.totalPnL)}`, color: pnlPositive ? "text-success" : "text-danger" },
         ].map(s => (
-          <div key={s.label} className="bg-muted/50 rounded-xl p-3 text-center border border-border">
-            <div className="text-[10px] text-muted-foreground mb-1">{s.label}</div>
-            <div className={`text-sm font-bold tabular-nums ${s.color || "text-foreground"}`}>{s.value}</div>
+          <div key={s.label} className="bg-muted/30 rounded-xl p-4 text-center border border-border/50">
+            <div className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">{s.label}</div>
+            <div className={`text-base font-bold tabular-nums ${s.color || "text-foreground"}`}>{s.value}</div>
           </div>
         ))}
       </div>

@@ -456,3 +456,19 @@ user_data.json
 financial_data.json
 chat_history.json
 *.aurexis
+
+# User Sensitive Data (Crucial for Privacy)
+backend/user_data/
+backend/logs/
+frontend/dist/
+frontend/node_modules/
+backend/venv/
+backend/__pycache__/
+.env
+.env.local
+.env.*.local
+
+# Build & Test
+.pytest_cache/
+.eslintcache
+coverage/

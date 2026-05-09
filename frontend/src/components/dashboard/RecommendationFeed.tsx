@@ -121,7 +121,7 @@ export default function RecommendationFeed() {
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-      className="glass-card rounded-2xl p-6 border border-border"
+      className="glass-card rounded-2xl p-6 border border-border h-full flex flex-col"
     >
       <div className="flex items-center gap-2 mb-4">
         <Lightbulb className="w-4 h-4 text-warning" />

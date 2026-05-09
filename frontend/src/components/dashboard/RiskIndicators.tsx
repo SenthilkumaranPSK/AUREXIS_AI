@@ -129,7 +129,7 @@ export default function RiskIndicators() {
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-      className="glass-card rounded-2xl p-6 border border-border"
+      className="glass-card rounded-2xl p-6 border border-border h-full flex flex-col"
     >
       <div className="flex items-center gap-2 mb-6">
         <div className="p-1.5 rounded-lg bg-warning/10">
@@ -141,7 +141,7 @@ export default function RiskIndicators() {
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {indicators.map((indicator, i) => {
           const config = statusConfig[indicator.status];
           const Icon = indicator.icon;
@@ -152,46 +152,48 @@ export default function RiskIndicators() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.1 }}
-              className={`p-4 rounded-xl border ${config.bg} ${config.border}`}
+              className={`p-4 rounded-xl border flex flex-col justify-between ${config.bg} ${config.border}`}
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className={`p-2 rounded-lg ${config.bg}`}>
-                    <Icon className={`w-4 h-4 ${config.text}`} />
+              <div>
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`p-2 rounded-lg ${config.bg}`}>
+                      <Icon className={`w-4 h-4 ${config.text}`} />
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-foreground">{indicator.title}</div>
+                      <div className="text-[10px] text-muted-foreground">{indicator.description}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-sm font-semibold text-foreground">{indicator.title}</div>
-                    <div className="text-[10px] text-muted-foreground">{indicator.description}</div>
+                  <div className="text-right">
+                    <div className={`text-lg font-bold ${config.text} tabular-nums`}>{indicator.value}</div>
+                    <div className={`text-[9px] font-semibold uppercase tracking-wider ${config.text}`}>
+                      {config.label}
+                    </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className={`text-lg font-bold ${config.text} tabular-nums`}>{indicator.value}</div>
-                  <div className={`text-[9px] font-semibold uppercase tracking-wider ${config.text}`}>
-                    {config.label}
-                  </div>
-                </div>
-              </div>
 
-              {/* Risk level bar */}
-              <div className="mb-3">
-                <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      indicator.status === "low" ? "bg-success" :
-                      indicator.status === "medium" ? "bg-warning" :
-                      "bg-danger"
-                    }`}
-                    style={{
-                      width: indicator.status === "low" ? "25%" :
-                             indicator.status === "medium" ? "50%" :
-                             indicator.status === "high" ? "75%" : "100%"
-                    }}
-                  />
+                {/* Risk level bar */}
+                <div className="mb-3">
+                  <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        indicator.status === "low" ? "bg-success" :
+                        indicator.status === "medium" ? "bg-warning" :
+                        "bg-danger"
+                      }`}
+                      style={{
+                        width: indicator.status === "low" ? "25%" :
+                               indicator.status === "medium" ? "50%" :
+                               indicator.status === "high" ? "75%" : "100%"
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Recommendation */}
-              <div className={`text-[11px] ${config.text} font-medium`}>
+              <div className={`text-[11px] ${config.text} font-medium mt-auto`}>
                 💡 {indicator.recommendation}
               </div>
             </motion.div>

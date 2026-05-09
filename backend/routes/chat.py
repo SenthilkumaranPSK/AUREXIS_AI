@@ -9,13 +9,19 @@ from schemas.chat import ChatRequest, ChatResponse
 from auth.dependencies import get_current_user
 from chat_memory import chat_memory_manager
 from user_manager_json import UserManagerJSON
+from config import settings
 import httpx
-import os
+import logging
 
 chat_router = APIRouter(tags=["Chat"])
+logger = logging.getLogger(__name__)
 
-OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
-OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "deepseek-v3.1:671b-cloud")
+# Use settings from config.py which loads from .env
+OLLAMA_BASE_URL = settings.OLLAMA_BASE_URL
+OLLAMA_MODEL = settings.OLLAMA_MODEL
+
+# Debug logging
+logger.info(f"🔧 Chat route loaded with OLLAMA_BASE_URL={OLLAMA_BASE_URL}, OLLAMA_MODEL={OLLAMA_MODEL}")
 
 
 @chat_router.post("/message", response_model=ChatResponse)
@@ -295,7 +301,8 @@ Give specific, personalized advice using exact numbers. Be direct and actionable
     
     # Call Ollama
     try:
-        async with httpx.AsyncClient(timeout=120.0) as client:
+        logger.info(f"🔄 Calling Ollama at {OLLAMA_BASE_URL} with model {OLLAMA_MODEL}")
+        async with httpx.AsyncClient(timeout=180.0) as client:
             resp = await client.post(
                 f"{OLLAMA_BASE_URL}/api/chat",
                 json={
@@ -308,10 +315,13 @@ Give specific, personalized advice using exact numbers. Be direct and actionable
                     "stream": False,
                 },
             )
+            logger.info(f"✅ Ollama response status: {resp.status_code}")
             resp.raise_for_status()
             reply = resp.json().get("message", {}).get("content", "")
-    except (httpx.ConnectError, httpx.TimeoutException, httpx.HTTPStatusError):
+            logger.info(f"✅ Got reply from Ollama: {reply[:100]}...")
+    except (httpx.ConnectError, httpx.TimeoutException, httpx.HTTPStatusError) as e:
         # Fallback for testing/unreachable Ollama
+        logger.error(f"❌ Ollama error: {type(e).__name__}: {str(e)}")
         reply = f"Hello {name}! I am currently operating in offline mode. Your monthly savings rate is {savings_rate}%, which is {risk_level.lower()} risk. How can I help you with your net worth of ₹{net_worth:,.0f} today?"
     
     return {

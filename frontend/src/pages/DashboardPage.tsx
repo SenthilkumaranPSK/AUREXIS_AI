@@ -34,10 +34,11 @@ import ProductTour from "@/components/dashboard/ProductTour";
 
 // Quick summary card — shows a snapshot with a "View Details" link
 function SummaryCard({
-  icon: Icon, title, value, sub, color, path, navigate
+  icon: Icon, title, value, sub, color, path, navigate, valueClass
 }: {
   icon: any; title: string; value: string; sub: string;
   color: string; path: string; navigate: (p: string) => void;
+  valueClass?: string;
 }) {
   const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({
     sensitivity: 20,
@@ -56,7 +57,7 @@ function SummaryCard({
       whileTap={{ scale: 0.98 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
       onClick={() => navigate(path)}
-      className="glass-card rounded-2xl p-5 border border-border cursor-pointer group transition-all duration-200 hover:border-primary/30 hover:shadow-lg"
+      className="glass-card rounded-2xl p-5 border border-border cursor-pointer group transition-all duration-200 hover:border-primary/30 hover:shadow-lg h-full flex flex-col"
     >
       <div className="flex items-start justify-between mb-3">
         <motion.div 
@@ -67,24 +68,25 @@ function SummaryCard({
           <Icon className="w-4 h-4" />
         </motion.div>
         <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 0, x: 0 }}
-          whileHover={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.2 }}
+          className="text-muted-foreground/40 group-hover:text-primary transition-colors duration-200"
+          initial={{ x: -2 }}
+          whileHover={{ x: 2 }}
         >
-          <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
+          <ArrowRight className="w-4 h-4" />
         </motion.div>
       </div>
-      <motion.div 
-        className="text-xl font-bold text-foreground tabular-nums mb-0.5"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.1 }}
-      >
-        {value}
-      </motion.div>
-      <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{title}</div>
-      <div className="text-[10px] text-muted-foreground/60 mt-1">{sub}</div>
+      <div className="mt-auto">
+        <motion.div 
+          className={`text-xl font-bold text-foreground tabular-nums mb-0.5 ${valueClass || ""}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
+          {value}
+        </motion.div>
+        <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{title}</div>
+        <div className="text-[10px] text-muted-foreground/60 mt-1">{sub}</div>
+      </div>
     </motion.div>
   );
 }
@@ -93,6 +95,7 @@ import { UserProfile } from "@/types/finance";
 
 function OverviewSection({ u }: { u: UserProfile }) {
   const navigate = useNavigate();
+  const { currency } = useStore();
   if (!u) return null;
 
   const avgGoalPct = u.goals?.length
@@ -103,7 +106,7 @@ function OverviewSection({ u }: { u: UserProfile }) {
     <>
       {/* Key metrics - Summary only */}
       <motion.div 
-        className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+        className="grid grid-cols-12 gap-6"
         initial="hidden"
         animate="visible"
         variants={{
@@ -116,32 +119,35 @@ function OverviewSection({ u }: { u: UserProfile }) {
           }
         }}
       >
-        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
-          <MetricCard title="Net Worth"      value={formatCurrency(u.netWorth)}      icon={Wallet}      variant="primary" trend={{ value: "4.2%", positive: true }} />
+        <motion.div className="col-span-12 md:col-span-6 lg:col-span-3" variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
+          <MetricCard title="Net Worth"      value={formatCurrency(u.netWorth, currency)}      icon={Wallet}      variant="primary" trend={{ value: "4.2%", positive: true }} />
         </motion.div>
-        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
-          <MetricCard title="Monthly Income" value={formatCurrency(u.monthlyIncome)} icon={TrendingUp}  variant="success" />
+        <motion.div className="col-span-12 md:col-span-6 lg:col-span-3" variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
+          <MetricCard title="Monthly Income" value={formatCurrency(u.monthlyIncome, currency)} icon={TrendingUp}  variant="success" />
         </motion.div>
-        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
-          <MetricCard title="Monthly Expense"value={formatCurrency(u.monthlyExpense)}icon={TrendingDown} variant="danger" />
+        <motion.div className="col-span-12 md:col-span-6 lg:col-span-3" variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
+          <MetricCard title="Monthly Expense"value={formatCurrency(u.monthlyExpense, currency)}icon={TrendingDown} variant="danger" />
         </motion.div>
-        <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
+        <motion.div className="col-span-12 md:col-span-6 lg:col-span-3" variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
           <MetricCard title="Savings Rate"   value={`${u.savingsRate}%`}             icon={PiggyBank}   variant={u.savingsRate > 30 ? "success" : "warning"} trend={{ value: "2.1%", positive: u.savingsRate > 30 }} />
         </motion.div>
       </motion.div>
 
       {/* Quick summary cards — click to navigate */}
       <motion.div
+        className="mt-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-foreground">Quick Summary</h2>
-          <span className="text-[11px] text-muted-foreground">Click any card to explore</span>
+        <div className="flex items-end justify-between mb-6">
+          <div>
+            <h2 className="text-lg font-bold text-foreground">Quick Summary</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">Click any card to explore deep insights</p>
+          </div>
         </div>
         <motion.div 
-          className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3"
+          className="grid grid-cols-12 gap-6"
           initial="hidden"
           animate="visible"
           variants={{
@@ -155,34 +161,39 @@ function OverviewSection({ u }: { u: UserProfile }) {
             }
           }}
         >
-          <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}>
+          <motion.div className="col-span-12 sm:col-span-6 lg:col-span-4 xl:col-span-2" variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}>
             <SummaryCard icon={Heart}       title="Health"      value={`${u.financialHealthScore}/100`}   sub="Financial health score"          color="bg-success/10 text-success"  path="/dashboard/health"     navigate={navigate} />
           </motion.div>
-          <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}>
+          <motion.div className="col-span-12 sm:col-span-6 lg:col-span-4 xl:col-span-2" variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}>
             <SummaryCard icon={ShieldAlert} title="Risk"        value={u.riskLevel}                        sub={`DTI: ${(u.debtToIncomeRatio*100).toFixed(0)}%`} color="bg-warning/10 text-warning"  path="/dashboard/risk"       navigate={navigate} />
           </motion.div>
-          <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}>
-            <SummaryCard icon={TrendingUp}  title="Investments" value={formatCurrency(u.investmentValue)} sub="Portfolio value"                 color="bg-primary/10 text-primary"  path="/dashboard/investments" navigate={navigate} />
+          <motion.div className="col-span-12 sm:col-span-6 lg:col-span-4 xl:col-span-2" variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}>
+            <SummaryCard icon={TrendingUp}  title="Investments" value={formatCurrency(u.investmentValue, currency)} sub="Portfolio value"                 color="bg-primary/10 text-primary"  path="/dashboard/investments" navigate={navigate} />
           </motion.div>
-          <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}>
+          <motion.div className="col-span-12 sm:col-span-6 lg:col-span-4 xl:col-span-2" variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}>
             <SummaryCard icon={Target}      title="Goals"       value={`${avgGoalPct}%`}                   sub={`${u.goals?.length || 0} active goals`} color="bg-success/10 text-success"  path="/dashboard/goals"      navigate={navigate} />
           </motion.div>
-          <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}>
-            <SummaryCard icon={CreditCard}  title="Debt"        value={formatCurrency(u.totalDebt)}        sub="Total outstanding"               color="bg-danger/10 text-danger"    path="/dashboard/debt"       navigate={navigate} />
+          <motion.div className="col-span-12 sm:col-span-6 lg:col-span-4 xl:col-span-2" variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}>
+            <SummaryCard icon={CreditCard}  title="Debt"        value={formatCurrency(u.totalDebt, currency)}        sub="Total outstanding"               color="bg-danger/10 text-danger"    path="/dashboard/debt"       navigate={navigate} />
           </motion.div>
-          <motion.div variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}>
-            <SummaryCard icon={FlaskConical}title="Simulator"   value="What-if"                            sub="Run scenario analysis"           color="bg-primary/10 text-primary"  path="/dashboard/simulation" navigate={navigate} />
+          <motion.div className="col-span-12 sm:col-span-6 lg:col-span-4 xl:col-span-2" variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}>
+            <SummaryCard icon={FlaskConical}title="Simulator"   value="What-if" valueClass="text-base tracking-normal mt-1" sub="Run scenario analysis"           color="bg-primary/10 text-primary"  path="/dashboard/simulation" navigate={navigate} />
           </motion.div>
         </motion.div>
       </motion.div>
 
       {/* Recent alerts preview */}
       {u.alerts?.length > 0 && (
-        <div className="glass-card rounded-2xl p-5 border border-border">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Bell className="w-4 h-4 text-warning" />
-              <span className="text-sm font-semibold text-foreground">Recent Alerts</span>
+        <div className="glass-card rounded-2xl p-6 border border-border mt-12">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-warning/10">
+                <Bell className="w-5 h-5 text-warning" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-foreground">Critical Alerts</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">Urgent actions required for your portfolio</p>
+              </div>
             </div>
             <button onClick={() => navigate("/dashboard/alerts")}
               className="text-[11px] text-primary flex items-center gap-1 hover:underline">
@@ -217,78 +228,107 @@ function OverviewSection({ u }: { u: UserProfile }) {
 function HealthSection({ u }: { u: UserProfile }) {
   if (!u) return null;
   return (
-    <>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Health Score"   value={`${u.financialHealthScore}/100`} icon={Shield}    variant={u.financialHealthScore >= 70 ? "success" : u.financialHealthScore >= 50 ? "warning" : "danger"} />
-        <MetricCard title="Savings Rate"   value={`${u.savingsRate}%`}             icon={PiggyBank} variant={u.savingsRate > 30 ? "success" : "warning"} />
-        <MetricCard title="Emergency Fund" value={`${u.emergencyFundMonths} months`} icon={Shield}  variant={u.emergencyFundMonths >= 6 ? "success" : "warning"} />
-        <MetricCard title="Credit Score"   value={`${u.creditScore}`}              icon={CreditCard} variant={u.creditScore >= 750 ? "success" : u.creditScore >= 650 ? "warning" : "danger"} />
+    <div className="space-y-8">
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Health Score"   value={`${u.financialHealthScore}/100`} icon={Shield}    variant={u.financialHealthScore >= 70 ? "success" : u.financialHealthScore >= 50 ? "warning" : "danger"} />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Savings Rate"   value={`${u.savingsRate}%`}             icon={PiggyBank} variant={u.savingsRate > 30 ? "success" : "warning"} />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Emergency Fund" value={`${u.emergencyFundMonths} months`} icon={Shield}  variant={u.emergencyFundMonths >= 6 ? "success" : "warning"} />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Credit Score"   value={`${u.creditScore}`}              icon={CreditCard} variant={u.creditScore >= 750 ? "success" : u.creditScore >= 650 ? "warning" : "danger"} />
+        </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <HealthScoreGauge />
-        <HealthRadarChart />
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 lg:col-span-6">
+          <HealthScoreGauge />
+        </div>
+        <div className="col-span-12 lg:col-span-6">
+          <HealthRadarChart />
+        </div>
       </div>
       <RecommendationFeed />
-    </>
+    </div>
   );
 }
 
 function RiskSection({ u }: { u: UserProfile }) {
-  console.log("RiskSection rendering with user:", u);
+  const { currency } = useStore();
+  if (!u) return null;
   
-  if (!u) {
-    console.error("RiskSection: No user data");
-    return <div className="text-danger">No user data available</div>;
-  }
-  
-  try {
-    return (
-      <>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+  return (
+    <div className="space-y-8">
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
           <MetricCard title="Risk Level"     value={u.riskLevel}                                        icon={AlertTriangle} variant={u.riskLevel === "Low" ? "success" : u.riskLevel === "Medium" ? "warning" : "danger"} />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
           <MetricCard title="Debt-to-Income" value={`${(u.debtToIncomeRatio * 100).toFixed(1)}%`}       icon={CreditCard}    variant={u.debtToIncomeRatio < 0.3 ? "success" : "danger"} />
-          <MetricCard title="Total Debt"     value={formatCurrency(u.totalDebt)}                        icon={CreditCard}    variant="danger" />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Total Debt"     value={formatCurrency(u.totalDebt, currency)}                        icon={CreditCard}    variant="danger" />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
           <MetricCard title="Credit Score"   value={`${u.creditScore}`}                                 icon={Shield}        variant={u.creditScore >= 750 ? "success" : "warning"} />
         </div>
-        <RiskIndicators />
-        <RecommendationFeed />
-      </>
-    );
-  } catch (error) {
-    console.error("RiskSection error:", error);
-    return <div className="text-danger">Error rendering risk section: {String(error)}</div>;
-  }
+      </div>
+      <RiskIndicators />
+      <RecommendationFeed />
+    </div>
+  );
 }
 
 function SavingsSection({ u }: { u: UserProfile }) {
+  const { currency } = useStore();
   if (!u) return null;
   return (
-    <>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Monthly Savings" value={formatCurrency(u.savings)}          icon={PiggyBank} variant="success" />
-        <MetricCard title="Savings Rate"    value={`${u.savingsRate}%`}                icon={PiggyBank} variant={u.savingsRate > 30 ? "success" : "warning"} />
-        <MetricCard title="Emergency Fund"  value={`${u.emergencyFundMonths} months`}  icon={Shield}    variant={u.emergencyFundMonths >= 6 ? "success" : "warning"} />
-        <MetricCard title="Net Worth"       value={formatCurrency(u.netWorth)}         icon={Wallet}    variant="primary" />
+    <div className="space-y-8">
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Monthly Savings" value={formatCurrency(u.savings, currency)}          icon={PiggyBank} variant="success" />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Savings Rate"    value={`${u.savingsRate}%`}                icon={PiggyBank} variant={u.savingsRate > 30 ? "success" : "warning"} />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Emergency Fund"  value={`${u.emergencyFundMonths} months`}  icon={Shield}    variant={u.emergencyFundMonths >= 6 ? "success" : "warning"} />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Net Worth"       value={formatCurrency(u.netWorth, currency)}         icon={Wallet}    variant="primary" />
+        </div>
       </div>
       <SavingsTrendChart />
       <GoalsPanel />
-    </>
+    </div>
   );
 }
 
 function DebtSection({ u }: { u: UserProfile }) {
+  const { currency } = useStore();
   if (!u) return null;
   return (
-    <>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Total Debt"      value={formatCurrency(u.totalDebt)}                  icon={CreditCard} variant="danger" />
-        <MetricCard title="Debt-to-Income"  value={`${(u.debtToIncomeRatio * 100).toFixed(1)}%`} icon={CreditCard} variant={u.debtToIncomeRatio < 0.3 ? "success" : "danger"} />
-        <MetricCard title="Monthly Income"  value={formatCurrency(u.monthlyIncome)}              icon={TrendingUp} variant="success" />
-        <MetricCard title="Credit Score"    value={`${u.creditScore}`}                           icon={Shield}     variant={u.creditScore >= 750 ? "success" : "warning"} />
+    <div className="space-y-8">
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Total Debt"      value={formatCurrency(u.totalDebt, currency)}                  icon={CreditCard} variant="danger" />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Debt-to-Income"  value={`${(u.debtToIncomeRatio * 100).toFixed(1)}%`} icon={CreditCard} variant={u.debtToIncomeRatio < 0.3 ? "success" : "danger"} />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Monthly Income"  value={formatCurrency(u.monthlyIncome, currency)}              icon={TrendingUp} variant="success" />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-3">
+          <MetricCard title="Credit Score"    value={`${u.creditScore}`}                           icon={Shield}     variant={u.creditScore >= 750 ? "success" : "warning"} />
+        </div>
       </div>
       <DebtPayoffTimeline />
       <RecommendationFeed />
-    </>
+    </div>
   );
 }
 
@@ -297,12 +337,12 @@ const sectionMap: Record<string, (u: any) => JSX.Element | null> = {
   "/dashboard/risk":        (u) => <RiskSection u={u} />,
   "/dashboard/savings":     (u) => <SavingsSection u={u} />,
   "/dashboard/debt":        (u) => <DebtSection u={u} />,
-  "/dashboard/investments": ()  => <><InvestmentPanel /><StocksPanel /><MutualFundsPanel /><RecommendationFeed /></>,
+  "/dashboard/investments": ()  => <div className="space-y-8"><InvestmentPanel /><StocksPanel /><MutualFundsPanel /><RecommendationFeed /></div>,
   "/dashboard/goals":       ()  => <GoalsPanel />,
-  "/dashboard/forecasting": ()  => <><ForecastChart /><MLForecastChart /></>,
+  "/dashboard/forecasting": ()  => <div className="space-y-8"><ForecastChart /><MLForecastChart /></div>,
   "/dashboard/simulation":  ()  => <ScenarioSimulation />,
   "/dashboard/alerts":      ()  => <RecommendationFeed />,
-  "/dashboard/reports":     ()  => <><ReportsExport /><ExpenseBreakdown /></>,
+  "/dashboard/reports":     ()  => <div className="space-y-8"><ReportsExport /><ExpenseBreakdown /></div>,
   "/dashboard/settings":    ()  => <SettingsPanel />,
 };
 
@@ -362,7 +402,7 @@ export default function DashboardPage() {
       <div className="flex-1 flex flex-col min-w-0">
         <AppHeader />
         <div className="flex flex-1 min-h-0">
-          <main className="flex-1 overflow-y-auto p-6 space-y-6">
+          <main className="flex-1 overflow-y-auto p-8 space-y-8">
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} id="dashboard-header">
               <div className="flex items-center justify-between">
                 <div>

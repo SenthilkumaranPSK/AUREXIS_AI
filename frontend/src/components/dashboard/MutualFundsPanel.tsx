@@ -86,7 +86,7 @@ const generateMockMutualFundData = (userId: string) => {
 
 export default function MutualFundsPanel() {
   const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 25, tiltIntensity: 2 });
-  const { currentUser } = useStore();
+  const { currentUser, currency } = useStore();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -121,7 +121,7 @@ export default function MutualFundsPanel() {
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-      className="glass-card rounded-2xl p-6 border border-border"
+      className="glass-card rounded-2xl p-6 border border-border h-full flex flex-col"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
@@ -213,15 +213,15 @@ export default function MutualFundsPanel() {
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-3 mt-5 pt-4 border-t border-border">
+      <div className="grid grid-cols-3 gap-6 mt-6 pt-6 border-t border-border">
         {[
-          { label: "Invested",  value: formatCurrency(data.totalInvested) },
-          { label: "Current",   value: formatCurrency(data.totalValue) },
+          { label: "Invested",  value: formatCurrency(data.totalInvested, currency) },
+          { label: "Current Value",   value: formatCurrency(data.totalValue, currency) },
           { label: "Avg XIRR",  value: `${data.avgXIRR}%`, color: "text-primary" },
         ].map(s => (
-          <div key={s.label} className="bg-muted/50 rounded-xl p-3 text-center border border-border">
-            <div className="text-[10px] text-muted-foreground mb-1">{s.label}</div>
-            <div className={`text-sm font-bold tabular-nums ${s.color || "text-foreground"}`}>{s.value}</div>
+          <div key={s.label} className="bg-muted/30 rounded-xl p-4 text-center border border-border/50">
+            <div className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">{s.label}</div>
+            <div className={`text-base font-bold tabular-nums ${s.color || "text-foreground"}`}>{s.value}</div>
           </div>
         ))}
       </div>

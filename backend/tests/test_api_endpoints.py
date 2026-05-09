@@ -13,8 +13,8 @@ class TestHealthEndpoints:
         response = client.get("/")
         assert response.status_code == 200
         data = response.json()
-        assert "app_name" in data
-        assert "version" in data
+        assert "service" in data
+        assert "status" in data
     
     def test_health_endpoint(self, client: TestClient):
         """Test health check endpoint"""
@@ -30,8 +30,8 @@ class TestAuthEndpoints:
     def test_login_success(self, client: TestClient):
         """Test successful login"""
         response = client.post("/api/login", json={
-            "username": "22243045",
-            "password": "Senthilkumaran@2000"
+            "username": "test_user_123",
+            "password": "TestPassword123!"
         })
         assert response.status_code == 200
         data = response.json()

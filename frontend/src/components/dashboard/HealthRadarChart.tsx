@@ -99,7 +99,7 @@ export default function HealthRadarChart() {
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-      className="glass-card rounded-2xl p-6 border border-border"
+      className="glass-card rounded-2xl p-6 border border-border h-full flex flex-col"
     >
       <div className="flex items-start justify-between mb-6">
         <div>
@@ -137,16 +137,16 @@ export default function HealthRadarChart() {
         </RadarChart>
       </ResponsiveContainer>
 
-      <div className="grid grid-cols-2 gap-2 mt-4">
+      <div className="grid grid-cols-2 gap-4 mt-6">
         {data.map((item, i) => (
-          <div key={i} className="bg-muted/50 rounded-xl p-2.5 border border-border">
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-[10px] text-muted-foreground font-medium">{item.factor}</span>
+          <div key={i} className="bg-muted/30 rounded-xl p-3 border border-border/50">
+            <div className="flex justify-between items-center mb-1.5">
+              <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">{item.factor}</span>
               <span className="text-xs font-bold text-primary">{item.value}</span>
             </div>
             <div className="h-1 bg-muted rounded-full overflow-hidden">
               <div 
-                className="h-full rounded-full bg-primary transition-all duration-500" 
+                className="h-full rounded-full bg-primary transition-all duration-500 shadow-[0_0_8px_rgba(59,130,246,0.3)]" 
                 style={{ width: `${item.value}%` }} 
               />
             </div>

@@ -65,7 +65,7 @@ export default function MetricCard({ title, value, subtitle, icon: Icon, trend, 
       onMouseLeave={handleMouseLeave}
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className={`glass-card rounded-2xl p-5 border ${borderColor[variant]} transition-all duration-300 group cursor-default relative overflow-hidden hover:shadow-lg`}
+      className={`glass-card rounded-2xl p-5 border ${borderColor[variant]} transition-all duration-300 group cursor-default relative overflow-hidden hover:shadow-lg h-full flex flex-col`}
     >
       {/* Top row */}
       <div className="flex items-start justify-between mb-4">
@@ -93,21 +93,23 @@ export default function MetricCard({ title, value, subtitle, icon: Icon, trend, 
         )}
       </div>
 
-      {/* Value */}
-      <motion.div
-        className="text-2xl font-bold tracking-tight mb-0.5 tabular-nums"
-        style={{ color: variant === "default" ? "hsl(var(--foreground))" : accentColor[variant] }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.1, type: "spring", stiffness: 400 }}
-      >
-        {value}
-      </motion.div>
+      <div className="mt-auto">
+        {/* Value */}
+        <motion.div
+          className="text-2xl font-bold tracking-tight mb-0.5 tabular-nums"
+          style={{ color: variant === "default" ? "hsl(var(--foreground))" : accentColor[variant] }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1, type: "spring", stiffness: 400 }}
+        >
+          {value}
+        </motion.div>
 
-      {/* Title */}
-      <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{title}</div>
+        {/* Title */}
+        <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{title}</div>
 
-      {subtitle && <div className="text-[10px] text-muted-foreground/60 mt-1">{subtitle}</div>}
+        {subtitle && <div className="text-[10px] text-muted-foreground/60 mt-1">{subtitle}</div>}
+      </div>
 
       {/* Bottom accent line on hover */}
       <motion.div

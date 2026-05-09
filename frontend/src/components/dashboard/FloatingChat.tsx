@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect, MouseEvent } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from "react-markdown";
 import { MessageCircle, X, Send, Sparkles, Bot, User, Maximize2, Minimize2 } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { sendChatMessage } from "@/lib/api";
@@ -22,39 +23,21 @@ export default function FloatingChat() {
   const [input, setInput]         = useState("");
   const [typing, setTyping]       = useState(false);
   const [connected, setConnected] = useState(true);
+  const [modelName, setModelName] = useState(import.meta.env.VITE_AI_MODEL || "Ollama Model");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
 
-  // Mouse tracking for interactive animations
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
 
-  const springConfig = { stiffness: 150, damping: 15 };
-  const x = useSpring(mouseX, springConfig);
-  const y = useSpring(mouseY, springConfig);
-
-  const transformX = useTransform(x, [-10, 10], [-2, 2]);
-  const transformY = useTransform(y, [-10, 10], [-2, 2]);
-  const transformRotateX = useTransform(y, [-10, 10], [1, -1]);
-  const transformRotateY = useTransform(x, [-10, 10], [-1, 1]);
-
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (!chatRef.current) return;
-    const rect = chatRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    mouseX.set((e.clientX - centerX) / 30);
-    mouseY.set((e.clientY - centerY) / 30);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-  };
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    if (!scrollRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+    // Auto-scroll only if we're already near the bottom (within 100px)
+    const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+    if (isNearBottom) {
+      scrollRef.current.scrollTo({ top: scrollHeight, behavior: "smooth" });
+    }
   }, [messages, typing]);
 
   // Auto-warmup Ollama on load so it's instantly fast during the presentation
@@ -144,14 +127,7 @@ export default function FloatingChat() {
                 opacity: 0, 
                 scale: 0.85
               }}
-              style={{
-                x: isFullscreen ? 0 : transformX,
-                y: isFullscreen ? 0 : transformY,
-                rotateX: isFullscreen ? 0 : transformRotateX,
-                rotateY: isFullscreen ? 0 : transformRotateY
-              }}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
+
               transition={{ 
                 type: "spring", 
                 stiffness: 300, 
@@ -161,7 +137,7 @@ export default function FloatingChat() {
               className={`flex flex-col z-[100] bg-card rounded-2xl overflow-hidden shadow-2xl glass-card border border-border ${
                 isFullscreen 
                   ? "fixed inset-0 m-auto w-[min(900px,90vw)] h-[min(700px,85vh)]" 
-                  : "fixed bottom-6 right-6 w-[380px] h-[580px]"
+                  : "fixed bottom-6 right-6 w-[380px] h-[580px] max-w-[calc(100vw-2rem)] max-h-[calc(100vh-8rem)]"
               }`}
             >
               {/* Header */}
@@ -182,9 +158,9 @@ export default function FloatingChat() {
                         animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
                         transition={{ duration: 2, repeat: Infinity }}
                       />
-                      {connected ? "Ollama · Local AI Active" : "Offline"}
+                      {connected ? `${modelName} · Active` : "Offline"}
                       {connected && (
-                        <span className="ml-1.5 px-1.5 py-0.5 rounded bg-success/20 text-success text-[8px] font-bold tracking-wider uppercase border border-success/30">
+                        <span className="ml-1.5 px-1.5 py-0.5 rounded bg-success/20 text-success text-[9px] font-bold tracking-wider uppercase border border-success/30">
                           Privacy Secured
                         </span>
                       )}
@@ -251,15 +227,15 @@ export default function FloatingChat() {
                     )}
                   </motion.div>
                   <motion.div 
-                    className={`${isFullscreen ? "max-w-[85%]" : "max-w-[78%]"} px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${
+                    className={`${isFullscreen ? "max-w-[85%]" : "max-w-[78%]"} px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed ${
                       msg.role === "user"
-                        ? "bg-primary/15 text-foreground rounded-tr-sm border border-primary/20"
-                        : "bg-muted text-foreground rounded-tl-sm border border-border"
+                        ? "bg-primary/15 text-foreground rounded-tr-sm border border-primary/20 whitespace-pre-wrap"
+                        : "bg-muted text-foreground rounded-tl-sm border border-border [&>p]:mb-2 last:[&>p]:mb-0 [&>ul]:list-disc [&>ul]:ml-4 [&>ol]:list-decimal [&>ol]:ml-4 [&>pre]:bg-background [&>pre]:p-2 [&>pre]:rounded-md [&>code]:bg-background [&>code]:px-1 [&>code]:rounded"
                     }`}
                     whileHover={{ scale: 1.01 }}
                     transition={{ type: "spring", stiffness: 400 }}
                   >
-                    {msg.content}
+                    {msg.role === "user" ? msg.content : <ReactMarkdown>{msg.content}</ReactMarkdown>}
                   </motion.div>
                 </motion.div>
               ))}

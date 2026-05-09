@@ -30,7 +30,7 @@ export default function ExpenseBreakdown() {
       onMouseLeave={handleMouseLeave}
       initial={{ opacity: 0, y: 12 }} 
       animate={{ opacity: 1, y: 0 }}
-      className="glass-card rounded-2xl p-6 border border-border"
+      className="glass-card rounded-2xl p-6 border border-border h-full flex flex-col"
     >
       <h3 className="text-sm font-semibold text-foreground mb-1">Spending Breakdown</h3>
       <p className="text-xs text-muted-foreground mb-4">Monthly expense categories</p>

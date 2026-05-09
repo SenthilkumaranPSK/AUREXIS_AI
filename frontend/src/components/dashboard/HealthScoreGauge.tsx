@@ -144,17 +144,17 @@ export default function HealthScoreGauge() {
       </div>
 
       {/* Sub-scores from backend */}
-      <div className="w-full mt-5 grid grid-cols-2 gap-2">
+      <div className="w-full mt-6 grid grid-cols-2 gap-4">
         {health.subScores?.map((s: any) => (
-          <div key={s.name} className="bg-muted/50 rounded-xl p-2 border border-border">
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-[9px] text-muted-foreground">{s.name}</span>
+          <div key={s.name} className="bg-muted/30 rounded-xl p-3 border border-border/50">
+            <div className="flex justify-between items-center mb-1.5">
+              <span className="text-[9px] text-muted-foreground font-semibold uppercase tracking-widest">{s.name}</span>
               <span className="text-[9px] font-bold" style={{ color: cssColor[s.color] }}>{s.score}</span>
             </div>
             <div className="h-1 bg-muted rounded-full overflow-hidden">
-              <div className="h-full rounded-full" style={{ width: `${s.score}%`, background: cssColor[s.color] }} />
+              <div className="h-full rounded-full transition-all duration-500" style={{ width: `${s.score}%`, background: cssColor[s.color] }} />
             </div>
-            <div className="text-[9px] text-muted-foreground mt-1">{s.detail}</div>
+            <div className="text-[9px] text-muted-foreground mt-1.5 italic font-medium">{s.detail}</div>
           </div>
         ))}
       </div>

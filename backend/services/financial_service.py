@@ -141,16 +141,21 @@ class FinancialService:
             deadline = (datetime.now() + timedelta(days=365)).date()
             created_at = datetime.now()
             
+            # Give some realistic progress based on goal_id
+            target = 100000.0 * goal_id
+            current = target * (0.15 * goal_id) if goal_id < 4 else target * 0.05
+            progress = (current / target) * 100
+            
             goals.append({
                 'id': goal_id,
                 'user_id': user_id,
                 'name': goal_name,
-                'target_amount': 100000.0,  # Default target
-                'current_amount': 0.0,
+                'target_amount': target,
+                'current_amount': current,
                 'deadline': deadline,
                 'category': 'General',
                 'status': 'active',
-                'progress': 0.0,
+                'progress': progress,
                 'created_at': created_at,
                 'updated_at': created_at
             })

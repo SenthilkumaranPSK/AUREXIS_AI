@@ -77,7 +77,7 @@ export default function DebtPayoffTimeline() {
 
   if (!data.length) {
     return (
-      <div className="glass-card rounded-2xl p-6 border border-border">
+      <div className="glass-card rounded-2xl p-6 border border-border h-full flex flex-col">
         <div className="flex items-center gap-2 mb-4">
           <div className="p-1.5 rounded-lg bg-success/10">
             <Calendar className="w-3.5 h-3.5 text-success" />
@@ -100,7 +100,7 @@ export default function DebtPayoffTimeline() {
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-      className="glass-card rounded-2xl p-6 border border-border"
+      className="glass-card rounded-2xl p-6 border border-border h-full flex flex-col"
     >
       <div className="flex items-start justify-between mb-6">
         <div>

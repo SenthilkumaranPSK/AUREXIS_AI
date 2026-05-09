@@ -10,7 +10,7 @@ const INVESTMENT_COLORS = ["#3B82F6", "#8B5CF6", "#F59E0B", "#10B981", "#EC4899"
 
 export default function InvestmentPanel() {
   const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 25, tiltIntensity: 2 });
-  const { currentUser } = useStore();
+  const { currentUser, currency } = useStore();
   const [loading, setLoading] = useState(false);
 
   // Use investment data from user profile
@@ -35,11 +35,11 @@ export default function InvestmentPanel() {
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-      className="glass-card rounded-2xl p-6 border border-border"
+      className="glass-card rounded-2xl p-6 border border-border h-full flex flex-col"
     >
       <h3 className="text-sm font-semibold text-foreground mb-1">Investment Portfolio</h3>
       <p className="text-xs text-muted-foreground mb-4">
-        {portfolio.length > 0 ? `Total: ${formatCurrency(totalValue)} · Avg Returns: ${avgReturns.toFixed(1)}%` : "No investments found"}
+        {portfolio.length > 0 ? `Total: ${formatCurrency(totalValue, currency)} · Avg Returns: ${avgReturns.toFixed(1)}%` : "No investments found"}
       </p>
 
       {loading ? (
@@ -54,7 +54,10 @@ export default function InvestmentPanel() {
                 <Pie data={portfolio} dataKey="allocation" cx="50%" cy="50%" innerRadius={30} outerRadius={55} strokeWidth={0} paddingAngle={2}>
                   {portfolio.map((p: any, i: number) => <Cell key={i} fill={p.color} />)}
                 </Pie>
-                <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 12, fontSize: 12 }} />
+                <Tooltip 
+                  contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 12, fontSize: 10 }}
+                  formatter={(value: number) => [`${value}%`, "Allocation"]}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>

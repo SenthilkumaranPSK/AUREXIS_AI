@@ -39,12 +39,14 @@ def client(test_app) -> Generator:
         yield test_client
 
 
-@pytest.fixture
+import pytest_asyncio
+
+@pytest_asyncio.fixture
 async def async_client(test_app) -> AsyncGenerator:
     """Create async test client"""
-    from httpx import AsyncClient
+    from httpx import AsyncClient, ASGITransport
     
-    async with AsyncClient(app=test_app, base_url="http://test") as ac:
+    async with AsyncClient(transport=ASGITransport(app=test_app), base_url="http://test") as ac:
         yield ac
 
 
@@ -145,3 +147,40 @@ def cleanup_test_data():
     yield
     # Cleanup code here if needed
     pass
+
+
+@pytest.fixture
+def sample_financial_data():
+    """Sample complete financial data matching production API structure"""
+    return {
+        "fetch_bank_transactions": {
+            "bankTransactions": [
+                {
+                    "bank": "HDFC",
+                    "txns": [
+                        [50000, "Salary", "2026-05-01", 1],
+                        [20000, "Rent", "2026-05-02", 2],
+                        [5000, "Food", "2026-05-03", 2]
+                    ]
+                }
+            ]
+        },
+        "fetch_net_worth": {
+            "netWorthResponse": {
+                "totalNetWorthValue": {
+                    "units": "500000"
+                }
+            }
+        },
+        "fetch_credit_report": {
+            "creditReports": [
+                {
+                    "creditReportData": {
+                        "score": {
+                            "bureauScore": "750"
+                        }
+                    }
+                }
+            ]
+        }
+    }

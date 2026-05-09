@@ -73,7 +73,7 @@ export default function MLForecastChart() {
       onMouseLeave={handleMouseLeave}
       initial={{ opacity: 0, y: 12 }} 
       animate={{ opacity: 1, y: 0 }}
-      className="glass-card rounded-2xl p-6 border border-border"
+      className="glass-card rounded-2xl p-6 border border-border h-full flex flex-col"
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-5">
