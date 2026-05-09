@@ -3,6 +3,7 @@ AUREXIS AI Backend Server
 Simple FastAPI server with essential endpoints
 """
 
+import os
 import builtins
 import logging
 import time
