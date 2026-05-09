@@ -123,6 +123,29 @@ npm run dev
 
 ---
 
+## 🌐 Deployment
+
+### Frontend (Vercel)
+1. Push your code to GitHub.
+2. Import the project into [Vercel](https://vercel.com).
+3. Set the **Root Directory** to `frontend`.
+4. Add the following **Environment Variables**:
+   - `VITE_API_BASE_URL`: Your Render backend URL (e.g., `https://aurexis-api.onrender.com`).
+5. Deploy!
+
+### Backend (Render)
+1. Create a **Web Service** on [Render](https://render.com).
+2. Connect your GitHub repo.
+3. Set the **Root Directory** to `backend`.
+4. **Build Command**: `pip install -r requirements.txt`
+5. **Start Command**: `uvicorn server:app --host 0.0.0.0 --port $PORT`
+6. Add the following **Environment Variables**:
+   - `JWT_SECRET_KEY`: A secure random string.
+   - `FRONTEND_URL`: Your Vercel frontend URL.
+   - `ENVIRONMENT`: `production`
+
+---
+
 ## 🏗 Architecture
 
 ```mermaid

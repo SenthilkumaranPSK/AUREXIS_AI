@@ -109,31 +109,22 @@ app = FastAPI(
 )
 
 # Add CORS middleware
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:8080")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://localhost:3000",
-        "http://localhost:8080",  # Added for Vite dev server
+        "http://localhost:8080",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:3000",
-        "http://127.0.0.1:8080",  # Added for Vite dev server
+        "http://127.0.0.1:8080",
+        frontend_url,
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Health check endpoint for Docker and monitoring
-@app.get("/health", tags=["health"])
-async def health_check():
-    """Service health check endpoint"""
-    return {
-        "status": "ok",
-        "timestamp": datetime.now().isoformat(),
-        "version": "2.1.0",
-        "environment": settings.ENVIRONMENT
-    }
 
 # Import and include financial routes
 try:
