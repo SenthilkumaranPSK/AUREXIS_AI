@@ -35,8 +35,8 @@ class UserManagerJSON:
         "5555555555": {"user_id": "22243019", "name": "Janakrishnan", "password": "Janakrishnan@2000"},
     }
 
-    @staticmethod
-    def _generate_mock_user_data(account_number: str, user_info: Dict[str, str]):
+    @classmethod
+    def _generate_mock_user_data(cls, account_number: str, user_info: Dict[str, str]):
         """Generate a complete set of high-quality mock data for a new production user"""
         folder = USER_DATA_DIR / account_number
         folder.mkdir(parents=True, exist_ok=True)
@@ -81,8 +81,8 @@ class UserManagerJSON:
         for bf in basic_files:
             with open(folder / f"{bf}.json", 'w') as f: json.dump([], f)
 
-    @staticmethod
-    def _load_json_file(file_path: Path) -> Optional[Dict[str, Any]]:
+    @classmethod
+    def _load_json_file(cls, file_path: Path) -> Optional[Dict[str, Any]]:
         """Load JSON file safely"""
         try:
             if file_path.exists():
@@ -92,8 +92,8 @@ class UserManagerJSON:
             logger.error(f"Error loading {file_path}: {e}")
         return None
 
-    @staticmethod
-    def _get_user_folder(identifier: str) -> Optional[Path]:
+    @classmethod
+    def _get_user_folder(cls, identifier: str) -> Optional[Path]:
         """
         Get user folder by account number, user_id, or name
         Returns the folder path if found
@@ -104,7 +104,7 @@ class UserManagerJSON:
             return folder
 
         # Try to find by user_id or name in mapping
-        for account_num, user_info in UserManagerJSON._account_to_user_map.items():
+        for account_num, user_info in cls._account_to_user_map.items():
             if user_info["user_id"] == identifier or user_info["name"].lower() == identifier.lower():
                 folder = USER_DATA_DIR / account_num
                 if folder.exists():
@@ -112,8 +112,8 @@ class UserManagerJSON:
 
         return None
 
-    @staticmethod
-    def _load_user_profile(account_number: str) -> Optional[Dict[str, Any]]:
+    @classmethod
+    def _load_user_profile(cls, account_number: str) -> Optional[Dict[str, Any]]:
         """Load user profile from profile.json"""
         folder = USER_DATA_DIR / account_number
         profile_file = folder / "profile.json"
@@ -121,12 +121,12 @@ class UserManagerJSON:
         if not profile_file.exists():
             return None
 
-        profile = UserManagerJSON._load_json_file(profile_file)
+        profile = cls._load_json_file(profile_file)
         if not profile:
             return None
 
         # Enrich with mapping data
-        user_info = UserManagerJSON._account_to_user_map.get(account_number, {})
+        user_info = cls._account_to_user_map.get(account_number, {})
         
         # Build complete user profile
         return {
@@ -149,8 +149,8 @@ class UserManagerJSON:
             "last_login": datetime.now().isoformat(),
         }
 
-    @staticmethod
-    def get_all_user_data(identifier: str) -> Dict[str, Any]:
+    @classmethod
+    def get_all_user_data(cls, identifier: str) -> Dict[str, Any]:
         """
         Get all financial data for a user by account number, user_id, or name
         """
@@ -163,7 +163,7 @@ class UserManagerJSON:
         account_number = folder.name
         
         # Load profile
-        profile = UserManagerJSON._load_user_profile(account_number)
+        profile = cls._load_user_profile(account_number)
         if not profile:
             return {"user_id": identifier, "error": "Profile not found"}
 
@@ -184,14 +184,14 @@ class UserManagerJSON:
 
         for data_type in data_files:
             file_path = folder / f"{data_type}.json"
-            data = UserManagerJSON._load_json_file(file_path)
+            data = cls._load_json_file(file_path)
             if data:
                 result[data_type] = data
 
         return result
 
-    @staticmethod
-    def authenticate_user(username: str, password: str) -> Optional[Dict[str, Any]]:
+    @classmethod
+    def authenticate_user(cls, username: str, password: str) -> Optional[Dict[str, Any]]:
         """
         Authenticate user by username (can be user_id, name, or account number) and password
         """
@@ -200,12 +200,12 @@ class UserManagerJSON:
         account_number = None
 
         # Check if username is account number
-        if username in UserManagerJSON._account_to_user_map:
+        if username in cls._account_to_user_map:
             account_number = username
-            user_info = UserManagerJSON._account_to_user_map[username]
+            user_info = cls._account_to_user_map[username]
         else:
             # Search by user_id or name
-            for acc_num, info in UserManagerJSON._account_to_user_map.items():
+            for acc_num, info in cls._account_to_user_map.items():
                 if info["user_id"] == username or info["name"].lower() == username.lower():
                     account_number = acc_num
                     user_info = info
@@ -221,19 +221,19 @@ class UserManagerJSON:
             return None
 
         # Load full user profile
-        profile = UserManagerJSON._load_user_profile(account_number)
+        profile = cls._load_user_profile(account_number)
         
         # PRODUCTION FALLBACK: If folder is missing on Render, auto-generate high-quality mock data
         if not profile:
             logger.info(f"Auto-generating mock data for production user: {user_info['name']}")
-            UserManagerJSON._generate_mock_user_data(account_number, user_info)
-            profile = UserManagerJSON._load_user_profile(account_number)
+            cls._generate_mock_user_data(account_number, user_info)
+            profile = cls._load_user_profile(account_number)
 
         if not profile:
             return None
 
         # Load financial data
-        financial_data = UserManagerJSON.get_all_user_data(account_number)
+        financial_data = cls.get_all_user_data(account_number)
         
         # Combine profile with financial data
         user_data = {**profile}
@@ -242,35 +242,35 @@ class UserManagerJSON:
         logger.info(f"User authenticated successfully: {user_info['name']}")
         return user_data
 
-    @staticmethod
-    def get_user_by_id(user_id: str) -> Optional[Dict[str, Any]]:
+    @classmethod
+    def get_user_by_id(cls, user_id: str) -> Optional[Dict[str, Any]]:
         """Get user by user_id"""
-        for account_num, info in UserManagerJSON._account_to_user_map.items():
+        for account_num, info in cls._account_to_user_map.items():
             if info["user_id"] == user_id:
-                return UserManagerJSON._load_user_profile(account_num)
+                return cls._load_user_profile(account_num)
         return None
 
-    @staticmethod
-    def get_user_by_name(name: str) -> Optional[Dict[str, Any]]:
+    @classmethod
+    def get_user_by_name(cls, name: str) -> Optional[Dict[str, Any]]:
         """Get user by name"""
-        for account_num, info in UserManagerJSON._account_to_user_map.items():
+        for account_num, info in cls._account_to_user_map.items():
             if info["name"].lower() == name.lower():
-                return UserManagerJSON._load_user_profile(account_num)
+                return cls._load_user_profile(account_num)
         return None
 
-    @staticmethod
-    def get_user_by_user_number(user_number: str) -> Optional[Dict[str, Any]]:
+    @classmethod
+    def get_user_by_user_number(cls, user_number: str) -> Optional[Dict[str, Any]]:
         """Get user by user number (account number)"""
-        if user_number in UserManagerJSON._account_to_user_map:
-            return UserManagerJSON._load_user_profile(user_number)
+        if user_number in cls._account_to_user_map:
+            return cls._load_user_profile(user_number)
         return None
 
-    @staticmethod
-    def get_all_users() -> List[Dict[str, Any]]:
+    @classmethod
+    def get_all_users(cls) -> List[Dict[str, Any]]:
         """Get all users"""
         users = []
-        for account_num in UserManagerJSON._account_to_user_map.keys():
-            profile = UserManagerJSON._load_user_profile(account_num)
+        for account_num in cls._account_to_user_map.keys():
+            profile = cls._load_user_profile(account_num)
             if profile:
                 # Remove sensitive data
                 safe_profile = {k: v for k, v in profile.items() if k != "password_hash"}
