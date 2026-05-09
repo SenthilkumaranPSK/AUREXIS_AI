@@ -33,7 +33,7 @@ const generateMockStockData = (userId: string) => {
 
 export default function StocksPanel() {
   const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 25, tiltIntensity: 2 });
-  const { currentUser } = useStore();
+  const { currentUser, currency } = useStore();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -67,7 +67,8 @@ export default function StocksPanel() {
       ref={ref}
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+      onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       className="glass-card rounded-2xl p-6 border border-border h-full flex flex-col"
     >
       {/* Header */}
@@ -82,10 +83,10 @@ export default function StocksPanel() {
           </div>
         </div>
         <div className="text-right">
-          <div className="text-lg font-bold text-foreground tabular-nums">{formatCurrency(data.totalValue)}</div>
+          <div className="text-lg font-bold text-foreground tabular-nums">{formatCurrency(data.totalValue, currency)}</div>
           <div className={`text-xs font-semibold flex items-center gap-1 justify-end ${pnlPositive ? "text-success" : "text-danger"}`}>
             {pnlPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-            {pnlPositive ? "+" : ""}{formatCurrency(data.totalPnL)} ({data.totalPnLPct}%)
+            {pnlPositive ? "+" : ""}{formatCurrency(data.totalPnL, currency)} ({data.totalPnLPct}%)
           </div>
         </div>
       </div>
@@ -109,7 +110,7 @@ export default function StocksPanel() {
                 <div className="text-[10px] text-muted-foreground truncate">{h.companyName}</div>
               </div>
               <div className="text-right text-muted-foreground">{h.quantity}</div>
-              <div className="text-right font-medium text-foreground tabular-nums">{formatCurrency(h.currentValue)}</div>
+              <div className="text-right font-medium text-foreground tabular-nums">{formatCurrency(h.currentValue, currency)}</div>
               <div className={`text-right font-semibold tabular-nums ${h.pnl >= 0 ? "text-success" : "text-danger"}`}>
                 {h.pnl >= 0 ? "+" : ""}{h.pnlPct}%
               </div>
@@ -127,7 +128,7 @@ export default function StocksPanel() {
                   {data.sectorBreakdown.map((_: any, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Pie>
                 <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11 }}
-                  formatter={(v: number) => [formatCurrency(v)]} />
+                  formatter={(v: number) => [formatCurrency(v, currency)]} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -148,9 +149,9 @@ export default function StocksPanel() {
       {/* Summary row */}
       <div className="grid grid-cols-3 gap-6 mt-6 pt-6 border-t border-border">
         {[
-          { label: "Invested",  value: formatCurrency(data.totalInvested) },
-          { label: "Current Value",   value: formatCurrency(data.totalValue) },
-          { label: "Total P&L", value: `${pnlPositive ? "+" : ""}${formatCurrency(data.totalPnL)}`, color: pnlPositive ? "text-success" : "text-danger" },
+          { label: "Invested",  value: formatCurrency(data.totalInvested, currency) },
+          { label: "Current Value",   value: formatCurrency(data.totalValue, currency) },
+          { label: "Total P&L", value: `${pnlPositive ? "+" : ""}${formatCurrency(data.totalPnL, currency)}`, color: pnlPositive ? "text-success" : "text-danger" },
         ].map(s => (
           <div key={s.label} className="bg-muted/30 rounded-xl p-4 text-center border border-border/50">
             <div className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">{s.label}</div>

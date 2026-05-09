@@ -86,7 +86,7 @@ class Settings(BaseSettings):
     
     # ── Ollama AI ──────────────────────────────────────────────────────────
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "deepseek-v3.1:671b-cloud"
+    OLLAMA_MODEL: str = "deepseek-v2:7b"
     OLLAMA_TIMEOUT: int = 120
     OLLAMA_MAX_RETRIES: int = 3
     OLLAMA_CONTEXT_WINDOW: int = 10  # Last N conversation turns

@@ -6,6 +6,7 @@ Simple FastAPI server with essential endpoints
 import builtins
 import logging
 import time
+from typing import Optional, Dict, List, Any
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from urllib.parse import quote
@@ -44,8 +45,7 @@ from health import compute_health
 # from exceptions import AuthenticationError, DatabaseError
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from logger import logger
 
 # Global state
 active_sessions = {}
@@ -124,6 +124,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Health check endpoint for Docker and monitoring
+@app.get("/health", tags=["health"])
+async def health_check():
+    """Service health check endpoint"""
+    return {
+        "status": "ok",
+        "timestamp": datetime.now().isoformat(),
+        "version": "2.1.0",
+        "environment": settings.ENVIRONMENT
+    }
+
 # Import and include financial routes
 try:
     from routes.api_v1 import api_v1_router
@@ -136,6 +147,7 @@ try:
     from routes.notifications import router as notification_router
     from routes.agent_monitoring import router as agent_router
     from routes.websocket_routes import router as websocket_router
+    from routes.advanced_analytics import router as analytics_router
     
     # Canonical legacy API surface used by the frontend/startup docs.
     # NOTE: auth_router is commented out because it conflicts with server.py /api/login
@@ -147,6 +159,7 @@ try:
     app.include_router(export_router, prefix="/api/export", tags=["Export"])
     app.include_router(notification_router, prefix="/api/notifications", tags=["Notifications"])
     app.include_router(agent_router, prefix="/api/agents", tags=["Agents"])
+    app.include_router(analytics_router, prefix="/api", tags=["Advanced Analytics"])
     app.include_router(websocket_router)
 
     # Versioned surface used by the test suite and newer clients.
@@ -194,7 +207,7 @@ class LoginRequest(BaseModel):
 
 class APIResponse(BaseModel):
     success: bool
-    data: dict = None
+    data: Optional[Dict[str, Any]] = None
     message: str = ""
     timestamp: str = ""
     version: str = "v1"

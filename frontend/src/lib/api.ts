@@ -5,7 +5,7 @@ import { UserProfile } from "@/types/finance";
  * Handles communication between frontend and modern Python backend (v1)
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 const API_V1_URL = `${API_BASE_URL}/api`;
 
 /**
@@ -248,4 +248,8 @@ export async function runSimulation(_userId: string, params: any): Promise<any> 
     method: "POST",
     body: JSON.stringify(params),
   });
+}
+
+export async function getAdvancedAnalytics(): Promise<any> {
+  return apiRequest("/analytics/dashboard");
 }

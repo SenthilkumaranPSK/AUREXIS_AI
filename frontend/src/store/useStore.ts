@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { UserProfile, SimulationParams } from "@/types/finance";
 
 interface AppStore {
@@ -18,30 +19,38 @@ interface AppStore {
   setCurrency: (currency: 'INR' | 'USD') => void;
 }
 
-export const useStore = create<AppStore>((set) => ({
-  currentUser: null,
-  sessionId: null,
-  setCurrentUser: (user) => set({ currentUser: user }),
-  setSessionId: (id) => set({ sessionId: id }),
-  sidebarOpen: true,
-  setSidebarOpen: (open) => set({ sidebarOpen: open }),
-  chatOpen: false,
-  setChatOpen: (open) => set({ chatOpen: open }),
-  isDark: true,
-  setIsDark: (dark) => set({ isDark: dark }),
-  currency: 'INR',
-  setCurrency: (currency) => set({ currency }),
-  simulationParams: {
-    newLoanAmount: 0,
-    salaryIncrease: 0,
-    jobLoss: false,
-    vacationExpense: 0,
-    housePurchase: false,
-    carPurchase: false,
-    investmentIncrease: 0,
-  },
-  setSimulationParams: (params) =>
-    set((state) => ({
-      simulationParams: { ...state.simulationParams, ...params },
-    })),
-}));
+export const useStore = create<AppStore>()(
+  persist(
+    (set) => ({
+      currentUser: null,
+      sessionId: null,
+      setCurrentUser: (user) => set({ currentUser: user }),
+      setSessionId: (id) => set({ sessionId: id }),
+      sidebarOpen: true,
+      setSidebarOpen: (open) => set({ sidebarOpen: open }),
+      chatOpen: false,
+      setChatOpen: (open) => set({ chatOpen: open }),
+      isDark: true,
+      setIsDark: (dark) => set({ isDark: dark }),
+      currency: 'INR',
+      setCurrency: (currency) => set({ currency }),
+      simulationParams: {
+        newLoanAmount: 0,
+        salaryIncrease: 0,
+        jobLoss: false,
+        vacationExpense: 0,
+        housePurchase: false,
+        carPurchase: false,
+        investmentIncrease: 0,
+      },
+      setSimulationParams: (params) =>
+        set((state) => ({
+          simulationParams: { ...state.simulationParams, ...params },
+        })),
+    }),
+    {
+      name: "aurexis-storage",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);

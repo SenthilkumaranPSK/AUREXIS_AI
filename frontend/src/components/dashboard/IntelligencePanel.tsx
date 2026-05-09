@@ -35,7 +35,7 @@ const cssColor: Record<string, string> = {
 };
 
 export default function IntelligencePanel() {
-  const { currentUser } = useStore();
+  const { currentUser, currency } = useStore();
   const [alerts, setAlerts]   = useState<any[]>([]);
   const [emis, setEmis]       = useState<any[]>([]);
   const [goals, setGoals]     = useState<any[]>([]);
@@ -87,8 +87,9 @@ export default function IntelligencePanel() {
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      initial={{ opacity: 0, x: 20 }} 
+      initial={{ opacity: 0, x: 10 }} 
       animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
       className="w-[268px] shrink-0 h-[calc(100vh-64px)] sticky top-16 overflow-y-auto border-l border-border hidden xl:block"
     >
       <div className="p-4 space-y-3">
@@ -116,9 +117,9 @@ export default function IntelligencePanel() {
           </div>
           <div className="grid grid-cols-2 gap-2">
             {[
-              { label: "Net Worth", value: formatCurrency(currentUser.netWorth) },
+              { label: "Net Worth", value: formatCurrency(currentUser.netWorth, currency) },
               { label: "Credit",    value: String(currentUser.creditScore) },
-              { label: "Income",    value: formatCurrency(currentUser.monthlyIncome) },
+              { label: "Income",    value: formatCurrency(currentUser.monthlyIncome, currency) },
               { label: "Savings",   value: `${currentUser.savingsRate}%` },
             ].map(s => (
               <div key={s.label} className="bg-muted/50 rounded-xl p-2.5 border border-border">
@@ -178,7 +179,7 @@ export default function IntelligencePanel() {
                     <div className="text-xs font-medium text-foreground">{emi.name}</div>
                     <div className="text-[10px] text-muted-foreground">{emi.dueDate}</div>
                   </div>
-                  <span className="text-xs font-bold tabular-nums text-danger">{formatCurrency(emi.amount)}</span>
+                  <span className="text-xs font-bold tabular-nums text-danger">{formatCurrency(emi.amount, currency)}</span>
                 </div>
               ))}
             </div>

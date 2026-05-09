@@ -456,10 +456,29 @@ user_data.json
 financial_data.json
 chat_history.json
 *.aurexis
-.vscode/
+
+# Whitelist Assets
+!assets/
+!assets/*.png
+!assets/*.jpg
+!assets/*.svg
 
 # User Sensitive Data (Crucial for Privacy)
-backend/user_data/
+# By default ignore user_data, but keep the 12 demo users
+backend/user_data/*
+!backend/user_data/1010101010/
+!backend/user_data/1111111111/
+!backend/user_data/1212121212/
+!backend/user_data/1313131313/
+!backend/user_data/1414141414/
+!backend/user_data/2020202020/
+!backend/user_data/2121212121/
+!backend/user_data/2222222222/
+!backend/user_data/2525252525/
+!backend/user_data/3333333333/
+!backend/user_data/4444444444/
+!backend/user_data/5555555555/
+
 backend/logs/
 frontend/dist/
 frontend/node_modules/

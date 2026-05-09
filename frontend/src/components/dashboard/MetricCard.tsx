@@ -58,13 +58,13 @@ export default function MetricCard({ title, value, subtitle, icon: Icon, trend, 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      whileHover={{ y: -4 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      whileHover={{ y: -2 }}
+      transition={{ type: "spring", stiffness: 200, damping: 30 }}
       className={`glass-card rounded-2xl p-5 border ${borderColor[variant]} transition-all duration-300 group cursor-default relative overflow-hidden hover:shadow-lg h-full flex flex-col`}
     >
       {/* Top row */}

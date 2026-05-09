@@ -120,7 +120,8 @@ export default function MutualFundsPanel() {
       ref={ref}
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+      onMouseLeave={handleMouseLeave} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       className="glass-card rounded-2xl p-6 border border-border h-full flex flex-col"
     >
       {/* Header */}
@@ -135,10 +136,10 @@ export default function MutualFundsPanel() {
           </div>
         </div>
         <div className="text-right">
-          <div className="text-lg font-bold text-foreground tabular-nums">{formatCurrency(data.totalValue)}</div>
+          <div className="text-lg font-bold text-foreground tabular-nums">{formatCurrency(data.totalValue, currency)}</div>
           <div className={`text-xs font-semibold flex items-center gap-1 justify-end ${pnlPositive ? "text-success" : "text-danger"}`}>
             {pnlPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-            {pnlPositive ? "+" : ""}{formatCurrency(data.totalPnL)} ({data.totalPnLPct}%)
+            {pnlPositive ? "+" : ""}{formatCurrency(data.totalPnL, currency)} ({data.totalPnLPct}%)
           </div>
         </div>
       </div>
@@ -163,11 +164,11 @@ export default function MutualFundsPanel() {
               <div className="grid grid-cols-4 gap-2 text-[10px]">
                 <div>
                   <div className="text-muted-foreground">Invested</div>
-                  <div className="font-semibold text-foreground tabular-nums">{formatCurrency(h.investedValue)}</div>
+                  <div className="font-semibold text-foreground tabular-nums">{formatCurrency(h.investedValue, currency)}</div>
                 </div>
                 <div>
                   <div className="text-muted-foreground">Current</div>
-                  <div className="font-semibold text-foreground tabular-nums">{formatCurrency(h.currentValue)}</div>
+                  <div className="font-semibold text-foreground tabular-nums">{formatCurrency(h.currentValue, currency)}</div>
                 </div>
                 <div>
                   <div className="text-muted-foreground">P&L</div>
@@ -194,7 +195,7 @@ export default function MutualFundsPanel() {
                   {data.assetBreakdown.map((_: any, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Pie>
                 <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11 }}
-                  formatter={(v: number) => [formatCurrency(v)]} />
+                  formatter={(v: number) => [formatCurrency(v, currency)]} />
               </PieChart>
             </ResponsiveContainer>
           </div>

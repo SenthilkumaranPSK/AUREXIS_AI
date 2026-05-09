@@ -13,19 +13,13 @@ from uuid import uuid4
 
 logger = logging.getLogger(__name__)
 
-# JWT Configuration - REQUIRE environment variable
-SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-if not SECRET_KEY:
-    # Check if we're in development
-    if os.getenv("ENVIRONMENT", "development") == "production":
-        raise ValueError("JWT_SECRET_KEY environment variable must be set in production")
-    else:
-        logger.warning("⚠️  JWT_SECRET_KEY not set - using default for development only!")
-        SECRET_KEY = "dev-jwt-secret-CHANGE-IN-PRODUCTION"
+from config import settings
 
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 15
-REFRESH_TOKEN_EXPIRE_DAYS = 30
+# JWT Configuration
+SECRET_KEY = settings.JWT_SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+REFRESH_TOKEN_EXPIRE_DAYS = settings.REFRESH_TOKEN_EXPIRE_DAYS
 
 # Password hashing
 # Use pbkdf2_sha256 to avoid bcrypt backend incompatibilities in some environments.

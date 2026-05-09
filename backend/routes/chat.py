@@ -242,8 +242,8 @@ async def call_ollama_chat(
     user_id: str,
     use_memory: bool = True
 ) -> Dict:
-    """Call Ollama for chat response"""
-    from analytics import extract_financials_summary
+    """Call Ollama for chat response with deep financial context"""
+    from analytics.legacy_adapter import extract_financials_summary, compute_investments, compute_risk
     from multi_agent_system import multi_agent_coordinator
     
     name = user_context.get("name", "User")
@@ -251,8 +251,11 @@ async def call_ollama_chat(
     age = user_context.get("age", 30)
     city = user_context.get("location", "")
     
-    # Extract financial summary
+    # Extract deep financial metrics
     fm = extract_financials_summary(financial_data)
+    inv = compute_investments(financial_data)
+    risk = compute_risk(financial_data)
+    
     monthly_income = fm["monthly_income"]
     monthly_expense = fm["monthly_expense"]
     monthly_savings = fm["monthly_savings"]
@@ -261,7 +264,13 @@ async def call_ollama_chat(
     credit_score = fm["credit_score"]
     
     health_score = min(100, max(0, int(50 + savings_rate)))
-    risk_level = "Low" if savings_rate > 30 else "Medium" if savings_rate > 10 else "High"
+    risk_level = risk.get("riskLevel", "Medium")
+    
+    # Build portfolio summary
+    portfolio_summary = "\n".join([
+        f"- {p['name']}: ₹{p['value']:,.0f} ({p['allocation']}% allocation, {p['returns']}% returns)"
+        for p in inv.get("portfolio", [])[:3]
+    ])
     
     # Get agent status
     agent_status = multi_agent_coordinator.get_agent_status()
@@ -270,28 +279,38 @@ async def call_ollama_chat(
         for name, info in agent_status.items()
     ])
     
-    # Get preferences if memory enabled
+    # Get preferences
     preferences_info = ""
     if use_memory:
         preferences = chat_memory_manager.get_user_preferences(user_id)
         if preferences.get("topics_of_interest"):
             preferences_info = f"\n\nUser Interests: {', '.join(preferences['topics_of_interest'][:5])}"
     
-    system_prompt = f"""You are AUREXIS AI, an expert personal financial advisor for {name}.
+    system_prompt = f"""You are AUREXIS AI, a sophisticated institutional-grade financial advisor for {name}.
+Your tone is professional, insightful, and proactive. You don't just answer questions; you analyze data.
 
-=== USER PROFILE ===
-Name: {name} | Age: {age} | Occupation: {occ} | Location: {city}
-Credit Score: {credit_score} | Risk Profile: {risk_level}
+=== USER BIOMETRICS ===
+Name: {name} | Age: {age} | Role: {occ} | Location: {city}
+Credit: {credit_score} | Risk Profile: {risk_level} | Health Score: {health_score}/100
 
-=== MONTHLY FINANCIALS ===
-Income: ₹{monthly_income:,.0f} | Expenses: ₹{monthly_expense:,.0f} | Savings: ₹{monthly_savings:,.0f}
-Savings Rate: {savings_rate}% | Net Worth: ₹{net_worth:,.0f} | Health Score: {health_score}/100
+=== CORE FINANCIALS (Monthly) ===
+Income: ₹{monthly_income:,.0f} | Expenses: ₹{monthly_expense:,.0f} | Savings: ₹{monthly_savings:,.0f} ({savings_rate}%)
+Net Worth: ₹{net_worth:,.0f} | Debt-to-Income: {risk.get('debtToIncomeRatio', 0)}
 
-=== AI AGENTS ===
+=== PORTFOLIO SNAPSHOT ===
+{portfolio_summary}
+Average Portfolio Returns: {inv.get('avgReturns', 0)}%
+
+=== ACTIVE AI AGENTS ===
 {agent_info}
 {preferences_info}
 
-Give specific, personalized advice using exact numbers. Be direct and actionable (3-5 sentences)."""
+GUIDELINES:
+1. Always use the user's specific numbers in your advice.
+2. If you see a high debt-to-income ratio or low savings rate (<10%), mention it as a priority.
+3. Be concise (max 4 sentences) but extremely high-value.
+4. If asked about investments, refer to their current Equity/FD/Gold allocation.
+5. Address the user as {name} occasionally to maintain rapport."""
     
     # Get conversation context
     if use_memory:
@@ -322,15 +341,15 @@ Give specific, personalized advice using exact numbers. Be direct and actionable
     except (httpx.ConnectError, httpx.TimeoutException, httpx.HTTPStatusError) as e:
         # Fallback for testing/unreachable Ollama
         logger.error(f"❌ Ollama error: {type(e).__name__}: {str(e)}")
-        reply = f"Hello {name}! I am currently operating in offline mode. Your monthly savings rate is {savings_rate}%, which is {risk_level.lower()} risk. How can I help you with your net worth of ₹{net_worth:,.0f} today?"
+        reply = f"Hello {name}, I am currently processing in standby mode. Based on your {savings_rate}% savings rate and ₹{net_worth:,.0f} net worth, I recommend focusing on liquidity. How can I assist with your portfolio today?"
     
     return {
-        "summary": "AUREXIS AI",
+        "summary": "AUREXIS AI Executive Insight",
         "content": reply,
         "insights": [
             f"Savings rate: {savings_rate}%",
             f"Net worth: ₹{net_worth:,.0f}",
             f"Health score: {health_score}/100"
         ],
-        "confidence": 0.85
+        "confidence": 0.95
     }

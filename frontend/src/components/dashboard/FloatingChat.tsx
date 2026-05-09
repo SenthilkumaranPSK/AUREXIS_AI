@@ -87,7 +87,7 @@ export default function FloatingChat() {
             exit={{ scale: 0, opacity: 0 }}
             whileHover={{ scale: 1.08, rotate: 5 }} 
             whileTap={{ scale: 0.92 }}
-            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             onClick={() => setChatOpen(true)}
             className="fixed bottom-6 right-6 w-14 h-14 rounded-2xl gradient-primary glow-primary flex items-center justify-center z-[100] shadow-2xl"
           >
@@ -130,7 +130,7 @@ export default function FloatingChat() {
 
               transition={{ 
                 type: "spring", 
-                stiffness: 300, 
+                stiffness: 200, 
                 damping: 30,
                 opacity: { duration: 0.2 }
               }}

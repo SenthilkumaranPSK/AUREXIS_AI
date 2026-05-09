@@ -111,9 +111,9 @@ export default function ReportsExport() {
           startY: 68,
           head: [['Metric', 'Value']],
           body: [
-            ['Net Worth', formatCurrency(currentUser.netWorth || 0)],
-            ['Monthly Income', formatCurrency(currentUser.monthlyIncome || 0)],
-            ['Monthly Expenses', formatCurrency(currentUser.monthlyExpense || 0)],
+            ['Net Worth', formatCurrency(currentUser.netWorth || 0, currency)],
+            ['Monthly Income', formatCurrency(currentUser.monthlyIncome || 0, currency)],
+            ['Monthly Expenses', formatCurrency(currentUser.monthlyExpense || 0, currency)],
             ['Savings Rate', `${currentUser.savingsRate || 0}%`],
             ['Credit Score', `${currentUser.creditScore || "N/A"}`],
           ],
@@ -130,7 +130,7 @@ export default function ReportsExport() {
             head: [['Category', 'Amount', 'Percentage']],
             body: currentUser.expenses.map((e: any) => [
               e.category, 
-              formatCurrency(e.amount), 
+              formatCurrency(e.amount, currency), 
               `${e.percentage}%`
             ]),
             theme: 'striped',
@@ -147,7 +147,7 @@ export default function ReportsExport() {
             body: currentUser.investments.map((inv: any) => [
               inv.name, 
               inv.type, 
-              formatCurrency(inv.value), 
+              formatCurrency(inv.value, currency), 
               `${inv.allocation}%`
             ]),
             theme: 'striped',
@@ -171,8 +171,8 @@ export default function ReportsExport() {
             startY: 40,
             head: [['Metric', 'Confidence', 'Estimated Impact']],
             body: [
-              ['Value at Risk (VaR 95%)', '95%', formatCurrency(currentUser.riskMetrics?.var_95 || 0)],
-              ['Conditional VaR (CVaR)', '95%', formatCurrency(currentUser.riskMetrics?.cvar_95 || 0)],
+              ['Value at Risk (VaR 95%)', '95%', formatCurrency(currentUser.riskMetrics?.var_95 || 0, currency)],
+              ['Conditional VaR (CVaR)', '95%', formatCurrency(currentUser.riskMetrics?.cvar_95 || 0, currency)],
               ['Portfolio Volatility', 'High', `${currentUser.riskMetrics?.portfolio_volatility || 0}%`],
               ['Diversification Ratio', 'N/A', `${currentUser.riskMetrics?.diversification_ratio || 0}`],
             ],
@@ -187,12 +187,12 @@ export default function ReportsExport() {
             startY: forecastY + 5,
             head: [['Month', 'Predicted Income', 'Predicted Expense', 'Confidence']],
             body: [
-              ['Month 1', formatCurrency(currentUser.monthlyIncome * 1.02), formatCurrency(currentUser.monthlyExpense * 0.98), '96.5%'],
-              ['Month 2', formatCurrency(currentUser.monthlyIncome * 1.04), formatCurrency(currentUser.monthlyExpense * 0.97), '95.2%'],
-              ['Month 3', formatCurrency(currentUser.monthlyIncome * 1.06), formatCurrency(currentUser.monthlyExpense * 0.96), '94.0%'],
-              ['Month 4', formatCurrency(currentUser.monthlyIncome * 1.08), formatCurrency(currentUser.monthlyExpense * 0.95), '92.8%'],
-              ['Month 5', formatCurrency(currentUser.monthlyIncome * 1.10), formatCurrency(currentUser.monthlyExpense * 0.94), '91.5%'],
-              ['Month 6', formatCurrency(currentUser.monthlyIncome * 1.12), formatCurrency(currentUser.monthlyExpense * 0.93), '90.2%'],
+              ['Month 1', formatCurrency(currentUser.monthlyIncome * 1.02, currency), formatCurrency(currentUser.monthlyExpense * 0.98, currency), '96.5%'],
+              ['Month 2', formatCurrency(currentUser.monthlyIncome * 1.04, currency), formatCurrency(currentUser.monthlyExpense * 0.97, currency), '95.2%'],
+              ['Month 3', formatCurrency(currentUser.monthlyIncome * 1.06, currency), formatCurrency(currentUser.monthlyExpense * 0.96, currency), '94.0%'],
+              ['Month 4', formatCurrency(currentUser.monthlyIncome * 1.08, currency), formatCurrency(currentUser.monthlyExpense * 0.95, currency), '92.8%'],
+              ['Month 5', formatCurrency(currentUser.monthlyIncome * 1.10, currency), formatCurrency(currentUser.monthlyExpense * 0.94, currency), '91.5%'],
+              ['Month 6', formatCurrency(currentUser.monthlyIncome * 1.12, currency), formatCurrency(currentUser.monthlyExpense * 0.93, currency), '90.2%'],
             ],
             theme: 'striped',
             headStyles: { fillColor: [108, 115, 127] }
@@ -284,11 +284,11 @@ export default function ReportsExport() {
       <div className="grid grid-cols-3 gap-3 mb-6 p-4 rounded-xl bg-muted/30 border border-border">
         <div className="text-center">
           <div className="text-[10px] text-muted-foreground mb-1">Net Worth</div>
-          <div className="text-sm font-bold text-foreground">{formatCurrency(currentUser.netWorth)}</div>
+          <div className="text-sm font-bold text-foreground">{formatCurrency(currentUser.netWorth, currency)}</div>
         </div>
         <div className="text-center">
           <div className="text-[10px] text-muted-foreground mb-1">Monthly Income</div>
-          <div className="text-sm font-bold text-success">{formatCurrency(currentUser.monthlyIncome)}</div>
+          <div className="text-sm font-bold text-success">{formatCurrency(currentUser.monthlyIncome, currency)}</div>
         </div>
         <div className="text-center">
           <div className="text-[10px] text-muted-foreground mb-1">Savings Rate</div>

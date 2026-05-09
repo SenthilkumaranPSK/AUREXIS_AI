@@ -2,11 +2,17 @@
 
 <div align="center">
 
-![AUREXIS AI Dashboard Preview](C:\Users\SENTHILKUMARAN\.gemini\antigravity\brain\960f31ad-4808-4b30-aeed-c02360d12483\aurexis_dashboard_preview_1778325988159.png)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![React 18](https://img.shields.io/badge/react-18-61dafb.svg)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/vite-latest-646cff.svg)](https://vitejs.dev/)
+[![Docker](https://img.shields.io/badge/docker-ready-2496ed.svg)](https://www.docker.com/)
+
+![AUREXIS AI Dashboard Preview](assets/preview.png)
 
 **Next-Generation AI-powered financial intelligence platform with real-time analytics, risk assessment, and local LLM integration.**
 
-[Features](#-key-features) • [Installation](#-installation--setup) • [Ollama Setup](#-ollama-ai-integration) • [Users](#-authorized-users) • [Architecture](#-architecture)
+[Features](#-key-features) • [Quick Start](#-quick-start) • [Installation](#-installation--setup) • [Ollama Setup](#-ollama-ai-integration) • [Architecture](#-architecture)
 
 </div>
 
@@ -16,13 +22,24 @@
 
 **AUREXIS AI** is a comprehensive financial decision support system designed to provide institutional-grade insights. By combining advanced machine learning models with a premium, glassmorphic UI, AUREXIS transforms raw financial data into actionable intelligence.
 
-### why AUREXIS AI?
+### Why AUREXIS AI?
 
 - **🤖 Local Intelligence**: Privacy-first AI interactions using local LLMs via Ollama.
 - **📊 Financial Health DNA**: Dynamic scoring system based on 15+ financial vectors.
 - **🔮 Predictive Roadmap**: ML-driven goal achievement forecasting and wealth timelines.
 - **🎨 Elite UI/UX**: 3D mouse-reactive components, glassmorphism, and premium micro-animations.
 - **💱 Global Ready**: Integrated multi-currency engine (INR/USD) with real-time formatting.
+
+---
+
+## 🚀 Quick Start (Docker)
+
+Run the entire stack with a single command:
+
+```bash
+docker-compose up --build
+```
+*Requires Docker and Docker Compose installed. Ollama must be running locally or in a container.*
 
 ---
 
@@ -47,7 +64,7 @@
 
 ---
 
-## 🚀 Installation & Setup
+## 🛠 Installation & Setup
 
 ### 1. Prerequisites
 - **Python 3.11+**
@@ -60,43 +77,34 @@ AUREXIS AI uses local LLMs for data privacy.
 2. Install and run the Ollama service.
 3. Pull the required models:
    ```bash
-   ollama pull deepseek-v2
+   ollama pull deepseek-v2:7b
    ```
 
 ### 3. Backend Setup
 ```bash
 cd backend
 python -m venv venv
-source venv/Scripts/activate  # Mac/Linux: source venv/bin/activate
-pip install -r requirements.txt
 
-# Create environment file
+# Windows
+venv\Scripts\activate
+# Mac/Linux
+source venv/bin/activate
+
+pip install -r requirements.txt
 cp .env.example .env
+python server.py
 ```
 
 ### 4. Frontend Setup
 ```bash
 cd frontend
 npm install
-```
-
-### 5. Running the Application
-**Terminal 1 (Backend):**
-```bash
-cd backend
-python server.py
-```
-**Terminal 2 (Frontend):**
-```bash
-cd frontend
 npm run dev
 ```
 
 ---
 
-## 👥 Authorized Users
-
-The platform is pre-configured with 12 institutional user profiles:
+## 👥 Authorized Demo Accounts
 
 | User ID | Name | Role |
 | :--- | :--- | :--- |
@@ -113,8 +121,6 @@ The platform is pre-configured with 12 institutional user profiles:
 | **4444444444** | Hari | Security Engineer |
 | **5555555555** | Janakrishnan | Data Engineer |
 
-*All users are part of the AUREXIS AI financial ecosystem.*
-
 ---
 
 ## 🏗 Architecture
@@ -123,7 +129,7 @@ The platform is pre-configured with 12 institutional user profiles:
 graph TD
     User((User)) -->|React Router| FE[Frontend - Vite/React]
     FE -->|Zustand| State[Global State Management]
-    State -->|Axios| API[FastAPI Backend]
+    State -->|Fetch API| API[FastAPI Backend]
     API -->|Services| ML[ML Engine - Scikit-learn]
     API -->|Local AI| Ollama[Ollama LLM Runtime]
     API -->|Persistence| JSON[(JSON Data Store)]

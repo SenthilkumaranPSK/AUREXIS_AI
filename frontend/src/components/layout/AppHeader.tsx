@@ -64,13 +64,14 @@ export default function AppHeader() {
           </div>
           
           <motion.div 
-            className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 border border-primary/20 cursor-help group relative"
+            className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 border border-primary/20 cursor-pointer group relative"
             whileHover={{ scale: 1.02 }}
+            onClick={() => navigate("/dashboard/analytics")}
           >
             <Sparkles className="w-3 h-3 text-primary animate-pulse" />
-            <span className="text-[10px] font-bold text-primary uppercase tracking-tight">AI Tip:</span>
+            <span className="text-[10px] font-bold text-primary uppercase tracking-tight">AI Insights:</span>
             <span className="text-[10px] text-muted-foreground truncate max-w-[120px] group-hover:max-w-[300px] transition-all duration-500">
-              {currentUser?.savingsRate && currentUser.savingsRate > 25 ? "Invest your ₹45K surplus for 12% returns" : "Reduce dining costs to save ₹5K/mo"}
+              {currentUser?.savingsRate && currentUser.savingsRate > 25 ? "View your deep performance audit" : "Explore spending anomalies"}
             </span>
           </motion.div>
         </div>

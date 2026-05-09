@@ -10,6 +10,7 @@ import { useStore } from "@/store/useStore";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Overview",        path: "/dashboard",             group: "main" },
+  { icon: Sparkles,        label: "AI Analytics",     path: "/dashboard/analytics",   group: "main" },
   { icon: Heart,           label: "Financial Health", path: "/dashboard/health",      group: "main" },
   { icon: ShieldAlert,     label: "Risk Analysis",    path: "/dashboard/risk",        group: "main" },
   { icon: PiggyBank,       label: "Savings",          path: "/dashboard/savings",     group: "finance" },

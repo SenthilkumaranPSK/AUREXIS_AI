@@ -138,10 +138,10 @@ export default function MLForecastChart() {
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false}
-                tickFormatter={(v) => `₹${(v/1000).toFixed(0)}k`} width={48} />
+                tickFormatter={(v) => `${currency === 'INR' ? '₹' : '$'}${(v/1000).toFixed(0)}k`} width={48} />
               <Tooltip
                 contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 10, fontSize: 11 }}
-                formatter={(v: number, name: string) => [formatCurrency(v), MODEL_LABELS[name] || name]}
+                formatter={(v: number, name: string) => [formatCurrency(v, currency), MODEL_LABELS[name] || name]}
               />
               {activeModels.map(model => (
                 <Line key={model} type="monotone" dataKey={model}

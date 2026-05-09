@@ -31,6 +31,8 @@ import RiskIndicators from "@/components/dashboard/RiskIndicators";
 import ReportsExport from "@/components/dashboard/ReportsExport";
 import SettingsPanel from "@/components/dashboard/SettingsPanel";
 import ProductTour from "@/components/dashboard/ProductTour";
+import AdvancedAnalyticsView from "@/components/dashboard/AdvancedAnalyticsView";
+
 
 // Quick summary card — shows a snapshot with a "View Details" link
 function SummaryCard({
@@ -48,14 +50,14 @@ function SummaryCard({
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 20, scale: 0.95 }} 
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y: 10 }} 
+      animate={{ opacity: 1, y: 0 }}
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      whileHover={{ y: -4 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.99 }}
+      transition={{ type: "spring", stiffness: 200, damping: 30 }}
       onClick={() => navigate(path)}
       className="glass-card rounded-2xl p-5 border border-border cursor-pointer group transition-all duration-200 hover:border-primary/30 hover:shadow-lg h-full flex flex-col"
     >
@@ -119,16 +121,16 @@ function OverviewSection({ u }: { u: UserProfile }) {
           }
         }}
       >
-        <motion.div className="col-span-12 md:col-span-6 lg:col-span-3" variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
+        <motion.div className="col-span-12 md:col-span-6 lg:col-span-3" variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
           <MetricCard title="Net Worth"      value={formatCurrency(u.netWorth, currency)}      icon={Wallet}      variant="primary" trend={{ value: "4.2%", positive: true }} />
         </motion.div>
-        <motion.div className="col-span-12 md:col-span-6 lg:col-span-3" variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
+        <motion.div className="col-span-12 md:col-span-6 lg:col-span-3" variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
           <MetricCard title="Monthly Income" value={formatCurrency(u.monthlyIncome, currency)} icon={TrendingUp}  variant="success" />
         </motion.div>
-        <motion.div className="col-span-12 md:col-span-6 lg:col-span-3" variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
+        <motion.div className="col-span-12 md:col-span-6 lg:col-span-3" variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
           <MetricCard title="Monthly Expense"value={formatCurrency(u.monthlyExpense, currency)}icon={TrendingDown} variant="danger" />
         </motion.div>
-        <motion.div className="col-span-12 md:col-span-6 lg:col-span-3" variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
+        <motion.div className="col-span-12 md:col-span-6 lg:col-span-3" variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}>
           <MetricCard title="Savings Rate"   value={`${u.savingsRate}%`}             icon={PiggyBank}   variant={u.savingsRate > 30 ? "success" : "warning"} trend={{ value: "2.1%", positive: u.savingsRate > 30 }} />
         </motion.div>
       </motion.div>
@@ -136,7 +138,7 @@ function OverviewSection({ u }: { u: UserProfile }) {
       {/* Quick summary cards — click to navigate */}
       <motion.div
         className="mt-8"
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
@@ -342,6 +344,7 @@ const sectionMap: Record<string, (u: any) => JSX.Element | null> = {
   "/dashboard/forecasting": ()  => <div className="space-y-8"><ForecastChart /><MLForecastChart /></div>,
   "/dashboard/simulation":  ()  => <ScenarioSimulation />,
   "/dashboard/alerts":      ()  => <RecommendationFeed />,
+  "/dashboard/analytics":   ()  => <AdvancedAnalyticsView />,
   "/dashboard/reports":     ()  => <div className="space-y-8"><ReportsExport /><ExpenseBreakdown /></div>,
   "/dashboard/settings":    ()  => <SettingsPanel />,
 };
@@ -349,6 +352,7 @@ const sectionMap: Record<string, (u: any) => JSX.Element | null> = {
 const sectionTitles: Record<string, string> = {
   "/dashboard":             "Overview",
   "/dashboard/health":      "Financial Health",
+  "/dashboard/analytics":   "Advanced AI Analytics",
   "/dashboard/risk":        "Risk Analysis",
   "/dashboard/savings":     "Savings",
   "/dashboard/debt":        "Debt Management",
