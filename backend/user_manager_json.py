@@ -36,6 +36,52 @@ class UserManagerJSON:
     }
 
     @staticmethod
+    def _generate_mock_user_data(account_number: str, user_info: Dict[str, str]):
+        """Generate a complete set of high-quality mock data for a new production user"""
+        folder = USER_DATA_DIR / account_number
+        folder.mkdir(parents=True, exist_ok=True)
+        
+        # 1. Profile
+        profile = {
+            "id": user_info["user_id"],
+            "name": user_info["name"],
+            "occupation": "Senior Software Engineer",
+            "age": 28,
+            "city": "Chennai",
+            "monthly_income": 125000,
+            "risk_profile": "Moderate",
+            "marital_status": "Single",
+            "dependents": 0
+        }
+        with open(folder / "profile.json", 'w') as f: json.dump(profile, f)
+        
+        # 2. Bank Transactions
+        transactions = []
+        for i in range(20):
+            transactions.append({
+                "date": (datetime.now()).isoformat(),
+                "description": ["Amazon", "Zomato", "Rent", "Salary", "Netflix"][i % 5],
+                "amount": [1200, 450, 25000, 125000, 799][i % 5],
+                "type": "credit" if i % 5 == 3 else "debit",
+                "category": ["Shopping", "Food", "Housing", "Income", "Entertainment"][i % 5]
+            })
+        with open(folder / "fetch_bank_transactions.json", 'w') as f: json.dump(transactions, f)
+        
+        # 3. Net Worth
+        net_worth = {
+            "netWorth": 1250000,
+            "assets": 1500000,
+            "liabilities": 250000,
+            "emergencyFundMonths": 6
+        }
+        with open(folder / "fetch_net_worth.json", 'w') as f: json.dump(net_worth, f)
+
+        # 4. Empty/Basic data for other files to prevent crashes
+        basic_files = ["fetch_credit_report", "fetch_epf_details", "fetch_mf_transactions", "fetch_stock_transactions"]
+        for bf in basic_files:
+            with open(folder / f"{bf}.json", 'w') as f: json.dump([], f)
+
+    @staticmethod
     def _load_json_file(file_path: Path) -> Optional[Dict[str, Any]]:
         """Load JSON file safely"""
         try:
@@ -176,6 +222,13 @@ class UserManagerJSON:
 
         # Load full user profile
         profile = UserManagerJSON._load_user_profile(account_number)
+        
+        # PRODUCTION FALLBACK: If folder is missing on Render, auto-generate high-quality mock data
+        if not profile:
+            logger.info(f"Auto-generating mock data for production user: {user_info['name']}")
+            UserManagerJSON._generate_mock_user_data(account_number, user_info)
+            profile = UserManagerJSON._load_user_profile(account_number)
+
         if not profile:
             return None
 
