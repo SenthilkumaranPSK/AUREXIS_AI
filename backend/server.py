@@ -161,7 +161,11 @@ try:
     # Versioned surface used by the test suite and newer clients.
     app.include_router(api_v1_router, prefix="/api/v1")
     
-    logger.info("All API routes loaded successfully")
+    logger.info("==========================================")
+    logger.info(f" AUREXIS AI - VERSION 1.0.0 (Production) ")
+    logger.info(f" Environment: {settings.ENVIRONMENT}      ")
+    logger.info(" All API routes loaded successfully      ")
+    logger.info("==========================================")
 except ImportError as e:
     logger.warning(f"Some routes could not be loaded: {e}")
 
