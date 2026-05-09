@@ -21,11 +21,11 @@ redis~=5.0.0
 slowapi~=0.1.9
 
 # ── ML / Forecasting ───────────────────────────────────────────────────────
-numpy~=1.26.0
-scikit-learn~=1.3.0
-statsmodels~=0.14.0
-xgboost~=2.0.0
-pandas~=2.1.0
+numpy>=1.26.4
+scikit-learn>=1.4.2
+statsmodels>=0.14.1
+xgboost>=2.0.3
+pandas>=2.2.1
 
 # ── AI / LLM ───────────────────────────────────────────────────────────────
 ollama~=0.1.0
