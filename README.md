@@ -2,15 +2,11 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-2.5.0-blue.svg)
-![Status](https://img.shields.io/badge/status-production--ready-success.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Python](https://img.shields.io/badge/python-3.11+-blue.svg)
-![Node](https://img.shields.io/badge/node-18+-green.svg)
+![AUREXIS AI Dashboard Preview](C:\Users\SENTHILKUMARAN\.gemini\antigravity\brain\960f31ad-4808-4b30-aeed-c02360d12483\aurexis_dashboard_preview_1778325988159.png)
 
 **Next-Generation AI-powered financial intelligence platform with real-time analytics, risk assessment, and local LLM integration.**
 
-[Features](#-key-features) • [Installation](#-installation--setup) • [Ollama Setup](#-ollama-ai-integration) • [Demo](#-demo-accounts) • [Architecture](#-architecture)
+[Features](#-key-features) • [Installation](#-installation--setup) • [Ollama Setup](#-ollama-ai-integration) • [Users](#-authorized-users) • [Architecture](#-architecture)
 
 </div>
 
@@ -18,9 +14,9 @@
 
 ## 🎯 Overview
 
-**AUREXIS AI** is a comprehensive financial decision support system designed to provide institutional-grade insights to individual users. By combining advanced machine learning models with a premium, glassmorphic UI, AUREXIS transforms raw financial data into actionable intelligence.
+**AUREXIS AI** is a comprehensive financial decision support system designed to provide institutional-grade insights. By combining advanced machine learning models with a premium, glassmorphic UI, AUREXIS transforms raw financial data into actionable intelligence.
 
-### Why AUREXIS AI?
+### why AUREXIS AI?
 
 - **🤖 Local Intelligence**: Privacy-first AI interactions using local LLMs via Ollama.
 - **📊 Financial Health DNA**: Dynamic scoring system based on 15+ financial vectors.
@@ -47,19 +43,7 @@
 - 💬 **Floating AI Chat** - Persistent financial advisor available on any page.
 - 📄 **Export Suite** - Institutional-quality PDF financial reports.
 - 💱 **Dynamic Currency Toggle** - Instant switching between INR (₹) and USD ($).
-- 🖱️ **Physics-Based UI** - Mouse-reactive cards and 3D parallax effects.
-
----
-
-## 🛠 Technology Stack
-
-| Layer | Technologies |
-|:--- |:--- |
-| **Frontend** | React 18, TypeScript, Tailwind CSS, Framer Motion, Recharts, Zustand |
-| **Backend** | FastAPI (Python 3.11), Pydantic v2, Uvicorn |
-| **AI/ML** | Ollama (Local LLM), Scikit-learn, Pandas, NumPy |
-| **Security** | JWT (HS256), BCrypt, CORS Whitelisting |
-| **Data** | JSON-based Portable Store (No-DB Required for easy portability) |
+- 🖱 **Physics-Based UI** - Mouse-reactive cards and 3D parallax effects.
 
 ---
 
@@ -76,7 +60,7 @@ AUREXIS AI uses local LLMs for data privacy.
 2. Install and run the Ollama service.
 3. Pull the required models:
    ```bash
-   ollama pull deepseek-v2  # Or your preferred model defined in backend/config.py
+   ollama pull deepseek-v2
    ```
 
 ### 3. Backend Setup
@@ -88,7 +72,6 @@ pip install -r requirements.txt
 
 # Create environment file
 cp .env.example .env
-# Ensure SECRET_KEY and JWT_SECRET_KEY are set
 ```
 
 ### 4. Frontend Setup
@@ -111,15 +94,26 @@ npm run dev
 
 ---
 
-## 🎭 Demo Accounts
+## 👥 Authorized Users
 
-Access the platform using these pre-configured test profiles:
+The platform is pre-configured with 12 institutional user profiles:
 
-| Username | Password | Role |
+| User ID | Name | Role |
 | :--- | :--- | :--- |
-| **SK** | `SK@2000` | Super User / Administrator |
-| **Senthilkumaran** | `Senthilkumaran@2000` | Software Engineer Profile |
-| **Imayavarman** | `Imayavarman@2000` | Medical Professional Profile |
+| **1010101010** | SK | Super User / Administrator |
+| **1111111111** | Imayavarman | Senior Consultant |
+| **1212121212** | Srivarshan | Business Executive |
+| **1313131313** | Rahulprasath | Software Architect |
+| **1414141414** | Magudesh | Financial Analyst |
+| **2020202020** | Deepak | Product Manager |
+| **2121212121** | Mani | Operations Head |
+| **2222222222** | Dineshkumar | Research Scientist |
+| **2525252525** | Avinash | UX Lead |
+| **3333333333** | Kumar | Strategy Director |
+| **4444444444** | Hari | Security Engineer |
+| **5555555555** | Janakrishnan | Data Engineer |
+
+*All users are part of the AUREXIS AI financial ecosystem.*
 
 ---
 
