@@ -16,7 +16,7 @@ interface ReportType {
 
 export default function ReportsExport() {
   const { ref, x, y, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseReactive({ sensitivity: 25, tiltIntensity: 2 });
-  const { currentUser } = useStore();
+  const { currentUser, currency } = useStore();
   const [generating, setGenerating] = useState<string | null>(null);
   const [generated, setGenerated] = useState<string[]>([]);
 
@@ -171,10 +171,10 @@ export default function ReportsExport() {
             startY: 40,
             head: [['Metric', 'Confidence', 'Estimated Impact']],
             body: [
-              ['Value at Risk (VaR 95%)', '95%', formatCurrency(currentUser.riskMetrics?.var_95 || 0, currency)],
-              ['Conditional VaR (CVaR)', '95%', formatCurrency(currentUser.riskMetrics?.cvar_95 || 0, currency)],
-              ['Portfolio Volatility', 'High', `${currentUser.riskMetrics?.portfolio_volatility || 0}%`],
-              ['Diversification Ratio', 'N/A', `${currentUser.riskMetrics?.diversification_ratio || 0}`],
+              ['Value at Risk (VaR 95%)', '95%', formatCurrency(currentUser?.riskMetrics?.var_95 || 0, currency)],
+              ['Conditional VaR (CVaR)', '95%', formatCurrency(currentUser?.riskMetrics?.cvar_95 || 0, currency)],
+              ['Portfolio Volatility', 'High', `${currentUser?.riskMetrics?.portfolio_volatility || 0}%`],
+              ['Diversification Ratio', 'N/A', `${currentUser?.riskMetrics?.diversification_ratio || 0}`],
             ],
             theme: 'grid',
             headStyles: { fillColor: [22, 28, 36] }
@@ -284,15 +284,15 @@ export default function ReportsExport() {
       <div className="grid grid-cols-3 gap-3 mb-6 p-4 rounded-xl bg-muted/30 border border-border">
         <div className="text-center">
           <div className="text-[10px] text-muted-foreground mb-1">Net Worth</div>
-          <div className="text-sm font-bold text-foreground">{formatCurrency(currentUser.netWorth, currency)}</div>
+          <div className="text-sm font-bold text-foreground">{formatCurrency(currentUser?.netWorth || 0, currency)}</div>
         </div>
         <div className="text-center">
           <div className="text-[10px] text-muted-foreground mb-1">Monthly Income</div>
-          <div className="text-sm font-bold text-success">{formatCurrency(currentUser.monthlyIncome, currency)}</div>
+          <div className="text-sm font-bold text-success">{formatCurrency(currentUser?.monthlyIncome || 0, currency)}</div>
         </div>
         <div className="text-center">
           <div className="text-[10px] text-muted-foreground mb-1">Savings Rate</div>
-          <div className="text-sm font-bold text-primary">{currentUser.savingsRate}%</div>
+          <div className="text-sm font-bold text-primary">{currentUser?.savingsRate || 0}%</div>
         </div>
       </div>
 

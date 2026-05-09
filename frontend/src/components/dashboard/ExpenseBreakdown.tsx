@@ -52,17 +52,20 @@ export default function ExpenseBreakdown() {
             </ResponsiveContainer>
           </div>
           <div className="flex-1 space-y-2">
-            {expenses.map((e: any, i: number) => (
+            {expenses?.map((e: any, i: number) => (
               <div key={i} className="flex items-center gap-2 text-xs">
                 <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: e.color }} />
-                <span className="text-muted-foreground flex-1">{e.category}</span>
-                <span className="font-medium text-foreground">{formatCurrency(e.amount)}</span>
-                <span className="text-[10px] text-muted-foreground">{e.percentage}%</span>
+                <span className="text-muted-foreground flex-1">{e.category || "General"}</span>
+                <span className="font-medium text-foreground">{formatCurrency(e.amount || 0)}</span>
+                <span className="text-[10px] text-muted-foreground">{e.percentage || 0}%</span>
                 <span className={`text-[10px] ${e.trend === "up" ? "text-danger" : e.trend === "down" ? "text-success" : "text-muted-foreground"}`}>
                   {e.trend === "up" ? "↑" : e.trend === "down" ? "↓" : "→"}
                 </span>
               </div>
             ))}
+            {(!expenses || expenses.length === 0) && (
+              <p className="text-[10px] text-muted-foreground italic text-center py-4">No expense data available</p>
+            )}
           </div>
         </div>
     </motion.div>

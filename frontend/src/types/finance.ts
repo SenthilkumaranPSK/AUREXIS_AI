@@ -35,6 +35,12 @@ export interface UserProfile {
   investments: InvestmentAsset[];
   upcomingEMIs: EMIReminder[];
   alerts: Alert[];
+  riskMetrics?: {
+    var_95: number;
+    cvar_95: number;
+    portfolio_volatility: number;
+    diversification_ratio: number;
+  };
 }
 
 export interface FinancialGoal {
