@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     
     # ── Security ───────────────────────────────────────────────────────────
     SECRET_KEY: str = os.getenv("SECRET_KEY", "aurexis_default_fallback_secret_key_2024")
-    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")  # REQUIRED
+    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "aurexis_jwt_fallback_secret_key_2024")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440  # 24 hours
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
