@@ -12,8 +12,11 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).resolve().parent
 USER_DATA_DIR = BASE_DIR / "user_data"
+
+# Auto-initialize user_data directory on module load
+USER_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class UserManagerJSON:
@@ -221,13 +224,17 @@ class UserManagerJSON:
             return None
 
         # Load full user profile
-        profile = cls._load_user_profile(account_number)
-        
-        # PRODUCTION FALLBACK: If folder is missing on Render, auto-generate high-quality mock data
-        if not profile:
-            logger.info(f"Auto-generating mock data for production user: {user_info['name']}")
-            cls._generate_mock_user_data(account_number, user_info)
+        try:
             profile = cls._load_user_profile(account_number)
+            
+            # PRODUCTION FALLBACK: If folder is missing on Render, auto-generate high-quality mock data
+            if not profile:
+                logger.info(f"Auto-generating mock data for production user: {user_info['name']}")
+                cls._generate_mock_user_data(account_number, user_info)
+                profile = cls._load_user_profile(account_number)
+        except Exception as e:
+            logger.error(f"Critical error during mock data generation: {e}")
+            return None
 
         if not profile:
             return None
