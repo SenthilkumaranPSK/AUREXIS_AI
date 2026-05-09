@@ -28,7 +28,12 @@ if not os.path.exists("user_data"):
     os.makedirs("user_data")
 
 # Import user management (JSON-based, no database)
-from user_manager_json import authenticate_user, get_all_users
+from user_manager_json import authenticate_user, get_all_users, UserManagerJSON
+
+# Auto-initialize default user for Demo/Production if empty
+if not get_all_users():
+    logger.info("Initializing default user 'SK' for production...")
+    UserManagerJSON.create_user("SK", "SK@2000", "SK")
 
 # Import cache manager
 from cache_manager import cache
