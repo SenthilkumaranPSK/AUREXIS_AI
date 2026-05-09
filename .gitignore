@@ -456,6 +456,7 @@ user_data.json
 financial_data.json
 chat_history.json
 *.aurexis
+.vscode/
 
 # User Sensitive Data (Crucial for Privacy)
 backend/user_data/
