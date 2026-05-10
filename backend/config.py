@@ -55,6 +55,8 @@ class Settings(BaseSettings):
     
     # ── CORS ───────────────────────────────────────────────────────────────
     ALLOWED_ORIGINS: List[str] = [
+        "https://aurexis-ai.vercel.app",
+        "https://aurexis-api.onrender.com",
         "http://localhost:5173",
         "http://localhost:8080",
         "http://localhost:8081",
