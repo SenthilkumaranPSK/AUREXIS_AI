@@ -24,9 +24,13 @@ def event_loop():
 def test_app():
     """Create test FastAPI application"""
     # Set test environment
-    os.environ["ENVIRONMENT"] = "test"
+    os.environ["ENVIRONMENT"] = "testing"
     os.environ["JWT_SECRET_KEY"] = "test-secret-key"
     os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
+    
+    # Ensure user_data exists for tests
+    if not os.path.exists("user_data"):
+        os.makedirs("user_data")
     
     from server import app
     return app

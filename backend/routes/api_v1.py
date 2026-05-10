@@ -22,7 +22,7 @@ from routes.export import router as export_router
 api_v1_router = APIRouter()
 
 # Include all sub-routers. Each router owns its resource prefix.
-api_v1_router.include_router(auth_router, tags=["Authentication"])
+api_v1_router.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 api_v1_router.include_router(financial_router, tags=["Financial"])
 api_v1_router.include_router(forecast_router, tags=["Forecast"])
 api_v1_router.include_router(chat_router, tags=["Chat"])
