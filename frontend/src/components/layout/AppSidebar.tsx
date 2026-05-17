@@ -4,30 +4,33 @@ import { useMouseReactive } from "@/hooks/useMouseReactive";
 import {
   LayoutDashboard, Heart, ShieldAlert, PiggyBank, CreditCard,
   TrendingUp, Target, LineChart, FlaskConical, Bell, FileText,
-  Settings, Sparkles, ChevronLeft, ChevronRight
+  Settings, Sparkles, ChevronLeft, ChevronRight, Receipt, Wallet, User
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Overview",        path: "/dashboard",             group: "main" },
-  { icon: Sparkles,        label: "AI Analytics",     path: "/dashboard/analytics",   group: "main" },
-  { icon: Heart,           label: "Financial Health", path: "/dashboard/health",      group: "main" },
-  { icon: ShieldAlert,     label: "Risk Analysis",    path: "/dashboard/risk",        group: "main" },
-  { icon: PiggyBank,       label: "Savings",          path: "/dashboard/savings",     group: "finance" },
-  { icon: CreditCard,      label: "Debt",             path: "/dashboard/debt",        group: "finance" },
-  { icon: TrendingUp,      label: "Investments",      path: "/dashboard/investments", group: "finance" },
-  { icon: Target,          label: "Goals",            path: "/dashboard/goals",       group: "finance" },
-  { icon: LineChart,       label: "Forecasting",      path: "/dashboard/forecasting", group: "tools" },
-  { icon: FlaskConical,    label: "Scenarios",        path: "/dashboard/simulation",  group: "tools" },
-  { icon: Bell,            label: "Alerts",           path: "/dashboard/alerts",      group: "tools" },
-  { icon: FileText,        label: "Reports",          path: "/dashboard/reports",     group: "tools" },
-  { icon: Settings,        label: "Settings",         path: "/dashboard/settings",    group: "tools" },
+  { icon: LayoutDashboard, label: "Overview",        path: "/dashboard",               group: "main"    },
+  { icon: Sparkles,        label: "AI Analytics",    path: "/dashboard/analytics",     group: "main"    },
+  { icon: Heart,           label: "Health",          path: "/dashboard/health",        group: "main"    },
+  { icon: ShieldAlert,     label: "Risk Analysis",   path: "/dashboard/risk",          group: "main"    },
+  { icon: User,            label: "Profile",         path: "/dashboard/profile",       group: "main"    },
+  { icon: PiggyBank,       label: "Savings",         path: "/dashboard/savings",       group: "finance" },
+  { icon: CreditCard,      label: "Debt",            path: "/dashboard/debt",          group: "finance" },
+  { icon: TrendingUp,      label: "Investments",     path: "/dashboard/investments",   group: "finance" },
+  { icon: Target,          label: "Goals",           path: "/dashboard/goals",         group: "finance" },
+  { icon: Receipt,         label: "Transactions",    path: "/dashboard/transactions",  group: "finance" },
+  { icon: Wallet,          label: "Budget",          path: "/dashboard/budget",        group: "finance" },
+  { icon: LineChart,       label: "Forecasting",     path: "/dashboard/forecasting",   group: "tools"   },
+  { icon: FlaskConical,    label: "Scenarios",       path: "/dashboard/simulation",    group: "tools"   },
+  { icon: Bell,            label: "Notifications",   path: "/dashboard/notifications", group: "tools"   },
+  { icon: FileText,        label: "Reports",         path: "/dashboard/reports",       group: "tools"   },
+  { icon: Settings,        label: "Settings",        path: "/dashboard/settings",      group: "tools"   },
 ];
 
 const groups = [
   { key: "main",    label: "OVERVIEW" },
-  { key: "finance", label: "FINANCE" },
-  { key: "tools",   label: "TOOLS" },
+  { key: "finance", label: "FINANCE"  },
+  { key: "tools",   label: "TOOLS"    },
 ];
 
 export default function AppSidebar() {

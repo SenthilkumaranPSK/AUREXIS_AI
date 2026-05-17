@@ -32,6 +32,10 @@ import ReportsExport from "@/components/dashboard/ReportsExport";
 import SettingsPanel from "@/components/dashboard/SettingsPanel";
 import ProductTour from "@/components/dashboard/ProductTour";
 import AdvancedAnalyticsView from "@/components/dashboard/AdvancedAnalyticsView";
+import TransactionHistory from "@/components/dashboard/TransactionHistory";
+import BudgetPlanner from "@/components/dashboard/BudgetPlanner";
+import NotificationsPanel from "@/components/dashboard/NotificationsPanel";
+import ProfilePage from "@/components/dashboard/ProfilePage";
 
 
 // Quick summary card — shows a snapshot with a "View Details" link
@@ -335,34 +339,42 @@ function DebtSection({ u }: { u: UserProfile }) {
 }
 
 const sectionMap: Record<string, (u: any) => JSX.Element | null> = {
-  "/dashboard/health":      (u) => <HealthSection u={u} />,
-  "/dashboard/risk":        (u) => <RiskSection u={u} />,
-  "/dashboard/savings":     (u) => <SavingsSection u={u} />,
-  "/dashboard/debt":        (u) => <DebtSection u={u} />,
-  "/dashboard/investments": ()  => <div className="space-y-8"><InvestmentPanel /><StocksPanel /><MutualFundsPanel /><RecommendationFeed /></div>,
-  "/dashboard/goals":       ()  => <GoalsPanel />,
-  "/dashboard/forecasting": ()  => <div className="space-y-8"><ForecastChart /><MLForecastChart /></div>,
-  "/dashboard/simulation":  ()  => <ScenarioSimulation />,
-  "/dashboard/alerts":      ()  => <RecommendationFeed />,
-  "/dashboard/analytics":   ()  => <AdvancedAnalyticsView />,
-  "/dashboard/reports":     ()  => <div className="space-y-8"><ReportsExport /><ExpenseBreakdown /></div>,
-  "/dashboard/settings":    ()  => <SettingsPanel />,
+  "/dashboard/health":        (u) => <HealthSection u={u} />,
+  "/dashboard/risk":          (u) => <RiskSection u={u} />,
+  "/dashboard/savings":       (u) => <SavingsSection u={u} />,
+  "/dashboard/debt":          (u) => <DebtSection u={u} />,
+  "/dashboard/investments":   ()  => <div className="space-y-8"><InvestmentPanel /><StocksPanel /><MutualFundsPanel /><RecommendationFeed /></div>,
+  "/dashboard/goals":         ()  => <GoalsPanel />,
+  "/dashboard/forecasting":   ()  => <div className="space-y-8"><ForecastChart /><MLForecastChart /></div>,
+  "/dashboard/simulation":    ()  => <ScenarioSimulation />,
+  "/dashboard/alerts":        ()  => <RecommendationFeed />,
+  "/dashboard/analytics":     ()  => <AdvancedAnalyticsView />,
+  "/dashboard/reports":       ()  => <div className="space-y-8"><ReportsExport /><ExpenseBreakdown /></div>,
+  "/dashboard/settings":      ()  => <SettingsPanel />,
+  "/dashboard/transactions":  ()  => <TransactionHistory />,
+  "/dashboard/budget":        ()  => <BudgetPlanner />,
+  "/dashboard/notifications": ()  => <NotificationsPanel />,
+  "/dashboard/profile":       ()  => <ProfilePage />,
 };
 
 const sectionTitles: Record<string, string> = {
-  "/dashboard":             "Overview",
-  "/dashboard/health":      "Financial Health",
-  "/dashboard/analytics":   "Advanced AI Analytics",
-  "/dashboard/risk":        "Risk Analysis",
-  "/dashboard/savings":     "Savings",
-  "/dashboard/debt":        "Debt Management",
-  "/dashboard/investments": "Investments",
-  "/dashboard/goals":       "Goals",
-  "/dashboard/forecasting": "Forecasting",
-  "/dashboard/simulation":  "Scenario Simulation",
-  "/dashboard/alerts":      "Alerts & Recommendations",
-  "/dashboard/reports":     "Reports",
-  "/dashboard/settings":    "Settings",
+  "/dashboard":               "Overview",
+  "/dashboard/health":        "Financial Health",
+  "/dashboard/analytics":     "Advanced AI Analytics",
+  "/dashboard/risk":          "Risk Analysis",
+  "/dashboard/savings":       "Savings",
+  "/dashboard/debt":          "Debt Management",
+  "/dashboard/investments":   "Investments",
+  "/dashboard/goals":         "Goals",
+  "/dashboard/forecasting":   "Forecasting",
+  "/dashboard/simulation":    "Scenario Simulation",
+  "/dashboard/alerts":        "Alerts & Recommendations",
+  "/dashboard/reports":       "Reports",
+  "/dashboard/settings":      "Settings",
+  "/dashboard/transactions":  "Transaction History",
+  "/dashboard/budget":        "Budget Planner",
+  "/dashboard/notifications": "Notifications",
+  "/dashboard/profile":       "My Profile",
 };
 
 export default function DashboardPage() {

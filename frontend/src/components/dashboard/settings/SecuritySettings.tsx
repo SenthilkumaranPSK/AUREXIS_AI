@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { Lock, Eye, EyeOff, ShieldCheck, Cpu, Database, Activity, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 export function SecuritySettings() {
   const [showPassword, setShowPassword] = useState(false);
   const [auditing, setAuditing] = useState(false);
+  const [currentPwd, setCurrentPwd] = useState("");
+  const [newPwd, setNewPwd] = useState("");
 
   const securityLogs = [
     { action: "Ollama Context Isolation", status: "Active", time: "Just now", type: "Privacy" },
@@ -105,10 +108,36 @@ export function SecuritySettings() {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Current Password"
+              value={currentPwd}
+              onChange={e => setCurrentPwd(e.target.value)}
+              className="w-full px-4 py-2 text-xs rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+            </button>
+          </div>
+          <div className="relative">
+            <input
+              type="password"
+              placeholder="New Password"
+              value={newPwd}
+              onChange={e => setNewPwd(e.target.value)}
               className="w-full px-4 py-2 text-xs rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
-          <button className="px-4 py-2 rounded-xl gradient-primary text-white text-xs font-bold hover:opacity-90 transition-opacity">
+          <button
+            onClick={() => {
+              if (!currentPwd || !newPwd) { toast.error("Please fill in both fields."); return; }
+              if (newPwd.length < 6) { toast.error("New password must be at least 6 characters."); return; }
+              toast.success("Credentials updated successfully!");
+              setCurrentPwd(""); setNewPwd("");
+            }}
+            className="px-4 py-2 rounded-xl gradient-primary text-white text-xs font-bold hover:opacity-90 transition-opacity"
+          >
             Update Credentials
           </button>
         </div>

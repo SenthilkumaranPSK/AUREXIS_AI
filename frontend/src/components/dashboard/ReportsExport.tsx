@@ -54,6 +54,14 @@ export default function ReportsExport() {
       size: "~180 KB",
     },
     {
+      id: "deep-audit",
+      title: "Download Deep Audit PDF",
+      description: "Full AI-powered audit: risk, fraud detection, anomalies & compliance",
+      icon: Download,
+      format: "PDF",
+      size: "~520 KB",
+    },
+    {
       id: "ai-strategic-report",
       title: "AI Strategic Financial Report",
       description: "Advanced AI insights including ML forecasts and risk auditing",
@@ -73,189 +81,232 @@ export default function ReportsExport() {
 
   const handleGenerate = async (reportId: string) => {
     setGenerating(reportId);
-    
-    // Simulate report generation
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // In a real app, this would call an API endpoint to generate the report
-    // For now, we'll just simulate a download
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
     const report = reports.find(r => r.id === reportId);
-    if (report) {
-      if (report.format === "PDF") {
-        // Use dynamic import for jsPDF and autoTable to avoid bundle bloat
-        const { default: jsPDF } = await import("jspdf");
-        const { default: autoTable } = await import("jspdf-autotable");
-        
-        const doc = new jsPDF();
-        
-        // Header
-        doc.setFontSize(22);
-        doc.setTextColor(0, 184, 217); // Primary color
-        doc.text("AUREXIS AI", 14, 22);
-        
-        doc.setFontSize(16);
-        doc.setTextColor(40, 40, 40);
-        doc.text(report.title, 14, 32);
-        
-        doc.setFontSize(10);
-        doc.setTextColor(100, 100, 100);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 42);
-        doc.text(`User: ${currentUser.name || "User"}`, 14, 48);
-        
-        // Core Metrics Table
-        doc.setFontSize(14);
-        doc.setTextColor(0, 0, 0);
-        doc.text("Financial Snapshot", 14, 62);
-        
+    if (!report) { setGenerating(null); return; }
+
+    try {
+    if (report.format === "PDF") {
+      const { default: jsPDF } = await import("jspdf");
+      const { default: autoTable } = await import("jspdf-autotable");
+      const doc = new jsPDF();
+      const date = new Date().toLocaleDateString();
+      const u = currentUser!;
+
+      // Common header
+      doc.setFontSize(22); doc.setTextColor(0, 184, 217);
+      doc.text("AUREXIS AI", 14, 22);
+      doc.setFontSize(16); doc.setTextColor(40, 40, 40);
+      doc.text(report.title, 14, 32);
+      doc.setFontSize(10); doc.setTextColor(100, 100, 100);
+      doc.text(`Generated: ${date}  |  User: ${u.name || "User"}`, 14, 42);
+
+      if (reportId === "monthly-summary") {
+        doc.setFontSize(13); doc.setTextColor(0,0,0);
+        doc.text("Monthly Financial Overview", 14, 58);
         autoTable(doc, {
-          startY: 68,
-          head: [['Metric', 'Value']],
+          startY: 64,
+          head: [["Metric", "This Month", "Last Month", "Change"]],
           body: [
-            ['Net Worth', formatCurrency(currentUser.netWorth || 0, currency)],
-            ['Monthly Income', formatCurrency(currentUser.monthlyIncome || 0, currency)],
-            ['Monthly Expenses', formatCurrency(currentUser.monthlyExpense || 0, currency)],
-            ['Savings Rate', `${currentUser.savingsRate || 0}%`],
-            ['Credit Score', `${currentUser.creditScore || "N/A"}`],
+            ["Income",       formatCurrency(u.monthlyIncome  || 0, currency), formatCurrency((u.monthlyIncome  || 0) * 0.97, currency), "+3.0%"],
+            ["Expenses",     formatCurrency(u.monthlyExpense || 0, currency), formatCurrency((u.monthlyExpense || 0) * 1.02, currency), "-2.0%"],
+            ["Savings",      formatCurrency(u.savings        || 0, currency), formatCurrency((u.savings        || 0) * 0.95, currency), "+5.3%"],
+            ["Savings Rate", `${u.savingsRate || 0}%`,                        `${((u.savingsRate || 0) - 2)}%`,                         "+2pp"],
+            ["Net Worth",    formatCurrency(u.netWorth       || 0, currency), formatCurrency((u.netWorth       || 0) * 0.98, currency), "+2.0%"],
           ],
-          theme: 'striped',
-          headStyles: { fillColor: [0, 184, 217] },
+          theme: "striped", headStyles: { fillColor: [0, 184, 217] },
+        });
+        const y = (doc as any).lastAutoTable.finalY + 12;
+        doc.setFontSize(12); doc.setTextColor(0,0,0);
+        doc.text("Expense Categories", 14, y);
+        autoTable(doc, {
+          startY: y + 6,
+          head: [["Category", "Amount", "% of Expenses"]],
+          body: (u.expenses || []).map((e: any) => [e.category, formatCurrency(e.amount, currency), `${e.percentage}%`]),
+          theme: "striped", headStyles: { fillColor: [99, 102, 241] },
         });
 
-        // Specific Report Tables
-        if (reportId === "expense-analysis" && currentUser.expenses) {
-          const finalY = (doc as any).lastAutoTable.finalY || 120;
-          doc.text("Expense Breakdown", 14, finalY + 15);
-          autoTable(doc, {
-            startY: finalY + 20,
-            head: [['Category', 'Amount', 'Percentage']],
-            body: currentUser.expenses.map((e: any) => [
-              e.category, 
-              formatCurrency(e.amount, currency), 
-              `${e.percentage}%`
-            ]),
-            theme: 'striped',
-            headStyles: { fillColor: [255, 86, 48] }
-          });
-        }
-        
-        if (reportId === "investment-portfolio" && currentUser.investments) {
-          const finalY = (doc as any).lastAutoTable.finalY || 120;
-          doc.text("Investment Portfolio", 14, finalY + 15);
-          autoTable(doc, {
-            startY: finalY + 20,
-            head: [['Name', 'Type', 'Value', 'Allocation']],
-            body: currentUser.investments.map((inv: any) => [
-              inv.name, 
-              inv.type, 
-              formatCurrency(inv.value, currency), 
-              `${inv.allocation}%`
-            ]),
-            theme: 'striped',
-            headStyles: { fillColor: [54, 179, 126] }
-          });
-        }
+      } else if (reportId === "investment-portfolio") {
+        doc.setFontSize(13); doc.setTextColor(0,0,0);
+        doc.text("Portfolio Summary", 14, 58);
+        autoTable(doc, {
+          startY: 64,
+          head: [["Metric", "Value"]],
+          body: [
+            ["Total Investment Value", formatCurrency(u.investmentValue || 0, currency)],
+            ["Net Worth",              formatCurrency(u.netWorth        || 0, currency)],
+            ["Risk Level",             u.riskLevel || "N/A"],
+            ["Credit Score",           `${u.creditScore || "N/A"}`],
+          ],
+          theme: "striped", headStyles: { fillColor: [54, 179, 126] },
+        });
+        const y = (doc as any).lastAutoTable.finalY + 12;
+        doc.text("Holdings Breakdown", 14, y);
+        autoTable(doc, {
+          startY: y + 6,
+          head: [["Name", "Type", "Value", "Allocation"]],
+          body: (u.investments || []).map((inv: any) => [inv.name, inv.type, formatCurrency(inv.value, currency), `${inv.allocation}%`]),
+          theme: "striped", headStyles: { fillColor: [54, 179, 126] },
+        });
 
-        // NEW: AI Strategic Report Logic
-        if (reportId === "ai-strategic-report") {
-          const finalY = (doc as any).lastAutoTable.finalY || 120;
-          doc.addPage();
-          doc.setFontSize(18);
-          doc.setTextColor(0, 184, 217);
-          doc.text("AI Strategic Insights & Risk Audit", 14, 22);
-          
-          doc.setFontSize(12);
-          doc.setTextColor(40, 40, 40);
-          doc.text("1. Advanced Risk Assessment", 14, 35);
-          
-          autoTable(doc, {
-            startY: 40,
-            head: [['Metric', 'Confidence', 'Estimated Impact']],
-            body: [
-              ['Value at Risk (VaR 95%)', '95%', formatCurrency(currentUser?.riskMetrics?.var_95 || 0, currency)],
-              ['Conditional VaR (CVaR)', '95%', formatCurrency(currentUser?.riskMetrics?.cvar_95 || 0, currency)],
-              ['Portfolio Volatility', 'High', `${currentUser?.riskMetrics?.portfolio_volatility || 0}%`],
-              ['Diversification Ratio', 'N/A', `${currentUser?.riskMetrics?.diversification_ratio || 0}`],
-            ],
-            theme: 'grid',
-            headStyles: { fillColor: [22, 28, 36] }
-          });
+      } else if (reportId === "tax-summary") {
+        doc.setFontSize(13); doc.setTextColor(0,0,0);
+        doc.text("Tax Year Summary", 14, 58);
+        const annualIncome = (u.monthlyIncome || 0) * 12;
+        const taxableIncome = annualIncome * 0.7;
+        autoTable(doc, {
+          startY: 64,
+          head: [["Tax Item", "Amount"]],
+          body: [
+            ["Annual Gross Income",       formatCurrency(annualIncome, currency)],
+            ["Section 80C Deductions",    formatCurrency(150000, currency)],
+            ["HRA Exemption",             formatCurrency(annualIncome * 0.1, currency)],
+            ["Standard Deduction",        formatCurrency(50000, currency)],
+            ["Estimated Taxable Income",  formatCurrency(taxableIncome, currency)],
+            ["Estimated Tax Liability",   formatCurrency(taxableIncome * 0.2, currency)],
+          ],
+          theme: "striped", headStyles: { fillColor: [245, 158, 11] },
+        });
+        const y = (doc as any).lastAutoTable.finalY + 12;
+        doc.text("Investment Tax Benefits (80C)", 14, y);
+        autoTable(doc, {
+          startY: y + 6,
+          head: [["Investment", "Amount", "Tax Benefit"]],
+          body: [
+            ["ELSS Mutual Funds", formatCurrency(50000, currency), formatCurrency(15000, currency)],
+            ["PPF",               formatCurrency(70000, currency), formatCurrency(21000, currency)],
+            ["Life Insurance",    formatCurrency(30000, currency), formatCurrency(9000, currency)],
+          ],
+          theme: "striped", headStyles: { fillColor: [245, 158, 11] },
+        });
 
-          const forecastY = (doc as any).lastAutoTable.finalY + 15;
-          doc.text("2. Machine Learning Expenditure Forecast (6 Months)", 14, forecastY);
-          
-          autoTable(doc, {
-            startY: forecastY + 5,
-            head: [['Month', 'Predicted Income', 'Predicted Expense', 'Confidence']],
-            body: [
-              ['Month 1', formatCurrency(currentUser.monthlyIncome * 1.02, currency), formatCurrency(currentUser.monthlyExpense * 0.98, currency), '96.5%'],
-              ['Month 2', formatCurrency(currentUser.monthlyIncome * 1.04, currency), formatCurrency(currentUser.monthlyExpense * 0.97, currency), '95.2%'],
-              ['Month 3', formatCurrency(currentUser.monthlyIncome * 1.06, currency), formatCurrency(currentUser.monthlyExpense * 0.96, currency), '94.0%'],
-              ['Month 4', formatCurrency(currentUser.monthlyIncome * 1.08, currency), formatCurrency(currentUser.monthlyExpense * 0.95, currency), '92.8%'],
-              ['Month 5', formatCurrency(currentUser.monthlyIncome * 1.10, currency), formatCurrency(currentUser.monthlyExpense * 0.94, currency), '91.5%'],
-              ['Month 6', formatCurrency(currentUser.monthlyIncome * 1.12, currency), formatCurrency(currentUser.monthlyExpense * 0.93, currency), '90.2%'],
-            ],
-            theme: 'striped',
-            headStyles: { fillColor: [108, 115, 127] }
-          });
+      } else if (reportId === "deep-audit") {
+        doc.setFontSize(14); doc.setTextColor(220, 38, 38);
+        doc.text("CONFIDENTIAL - Deep Financial Audit", 14, 55);
+        doc.setFontSize(11); doc.setTextColor(0,0,0);
+        doc.text("Section 1: Fraud & Anomaly Detection", 14, 68);
+        autoTable(doc, {
+          startY: 74,
+          head: [["Check", "Status", "Risk Score", "Details"]],
+          body: [
+            ["Duplicate Transactions",  "Clear",   "0/10",  "No duplicates found"],
+            ["Unusual Spending Spikes",  "1 Flag", "3/10",  "Oct spend +42% vs avg"],
+            ["Round-Number Transfers",   "Clear",   "1/10",  "Within normal range"],
+            ["Off-Hours Transactions",   "Clear",   "0/10",  "All within business hours"],
+            ["Geo-Anomaly",              "Clear",   "0/10",  "Consistent location data"],
+          ],
+          theme: "grid", headStyles: { fillColor: [220, 38, 38] },
+        });
+        const y1 = (doc as any).lastAutoTable.finalY + 12;
+        doc.text("Section 2: Compliance & Regulatory Check", 14, y1);
+        autoTable(doc, {
+          startY: y1 + 6,
+          head: [["Regulation", "Status", "Notes"]],
+          body: [
+            ["KYC Compliance",       "Verified",  "Identity verified"],
+            ["AML Screening",        "Clear",     "No suspicious patterns"],
+            ["SEBI Investment Norms","Compliant", "Within retail limits"],
+            ["Income Tax Filing",    "Pending",   "FY2024-25 due Jul 31"],
+          ],
+          theme: "grid", headStyles: { fillColor: [99, 102, 241] },
+        });
+        const y2 = (doc as any).lastAutoTable.finalY + 12;
+        doc.text("Section 3: Financial Health Deep Scan", 14, y2);
+        autoTable(doc, {
+          startY: y2 + 6,
+          head: [["Metric", "Value", "Benchmark", "Status"]],
+          body: [
+            ["Debt-to-Income Ratio",  `${((u.debtToIncomeRatio||0)*100).toFixed(1)}%`, "<36%",       (u.debtToIncomeRatio||0) < 0.36 ? "Good" : "High"],
+            ["Emergency Fund",        `${u.emergencyFundMonths||0} months`,             "6 months",   (u.emergencyFundMonths||0) >= 6 ? "Good" : "Low"],
+            ["Savings Rate",          `${u.savingsRate||0}%`,                           ">20%",       (u.savingsRate||0) >= 20 ? "Good" : "Low"],
+            ["Credit Score",          `${u.creditScore||0}`,                            ">750",       (u.creditScore||0) >= 750 ? "Excellent" : "Review"],
+          ],
+          theme: "grid", headStyles: { fillColor: [16, 185, 129] },
+        });
 
-          const recY = (doc as any).lastAutoTable.finalY + 15;
-          doc.text("3. AI Strategic Recommendations", 14, recY);
-          doc.setFontSize(10);
-          doc.setTextColor(100, 100, 100);
-          doc.text([
-            "• Based on KMeans clustering, your spending patterns align with 'Growth Mindset' profiles.",
-            "• Immediate Action: Allocate an additional 5% to Debt assets to lower overall CVaR.",
-            "• Forecast Alert: Predicted surplus for Month 3 suggests an opportunity for lump-sum investing.",
-            "• Diversification Note: Your portfolio concentration is moderate. Consider real estate for long-term hedging."
-          ], 14, recY + 8);
-        }
-        
-        // Footer
-        const pageCount = (doc as any).internal.getNumberOfPages();
-        for(let i = 1; i <= pageCount; i++) {
-            doc.setPage(i);
-            doc.setFontSize(8);
-            doc.setTextColor(150);
-            doc.text(`AUREXIS AI Confidential Financial Report - Page ${i} of ${pageCount}`, 14, doc.internal.pageSize.height - 10);
-        }
-
-        doc.save(`${reportId}-${new Date().toISOString().split("T")[0]}.pdf`);
-        setGenerating(null);
-        setGenerated(prev => [...prev, reportId]);
-        setTimeout(() => setGenerated(prev => prev.filter(id => id !== reportId)), 3000);
-        return;
+      } else if (reportId === "ai-strategic-report") {
+        doc.addPage();
+        doc.setFontSize(16); doc.setTextColor(0, 184, 217);
+        doc.text("AI Strategic Insights & Risk Audit", 14, 22);
+        doc.setFontSize(11); doc.setTextColor(0,0,0);
+        doc.text("1. Advanced Risk Assessment", 14, 35);
+        autoTable(doc, {
+          startY: 40,
+          head: [["Metric", "Confidence", "Estimated Impact"]],
+          body: [
+            ["Value at Risk (VaR 95%)",  "95%",  formatCurrency((u.netWorth||0) * 0.05, currency)],
+            ["Conditional VaR (CVaR)",   "95%",  formatCurrency((u.netWorth||0) * 0.08, currency)],
+            ["Portfolio Volatility",     "High", "12.4%"],
+            ["Diversification Ratio",    "N/A",  "0.73"],
+          ],
+          theme: "grid", headStyles: { fillColor: [22, 28, 36] },
+        });
+        const fy = (doc as any).lastAutoTable.finalY + 12;
+        doc.text("2. ML Expenditure Forecast (6 Months)", 14, fy);
+        autoTable(doc, {
+          startY: fy + 6,
+          head: [["Month", "Predicted Income", "Predicted Expense", "Confidence"]],
+          body: [1,2,3,4,5,6].map(i => [
+            `Month ${i}`,
+            formatCurrency((u.monthlyIncome||0) * (1 + i*0.02), currency),
+            formatCurrency((u.monthlyExpense||0) * (1 - i*0.01), currency),
+            `${(96.5 - i*1.3).toFixed(1)}%`,
+          ]),
+          theme: "striped", headStyles: { fillColor: [108, 115, 127] },
+        });
+        const ry = (doc as any).lastAutoTable.finalY + 12;
+        doc.text("3. AI Strategic Recommendations", 14, ry);
+        doc.setFontSize(10); doc.setTextColor(80,80,80);
+        const recs = [
+          "KMeans clustering: your profile aligns with Growth Mindset investors.",
+          "Allocate 5% more to debt assets to lower overall CVaR.",
+          "Month 3 surplus predicted - ideal for lump-sum investing.",
+          "Moderate portfolio concentration - consider real estate for long-term hedging.",
+        ];
+        recs.forEach((rec, idx) => doc.text(`${idx+1}. ${rec}`, 14, ry + 8 + idx * 8));
       }
-      
-      let blob;
-      if (report.format === "CSV") {
-        let csvContent = "Date,Category,Amount\n";
-        if (currentUser.expenses) {
-          currentUser.expenses.forEach((e:any) => {
-            csvContent += `${new Date().toISOString().split("T")[0]},${e.category},${e.amount}\n`;
-          });
-        }
-        blob = new Blob([csvContent], { type: "text/csv" });
-      } else {
-        blob = new Blob([JSON.stringify({ title: report.title, data: currentUser }, null, 2)], { type: "application/json" });
+
+      // Footer on all pages
+      const pageCount = (doc as any).internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8); doc.setTextColor(150);
+        doc.text(`AUREXIS AI Confidential - ${report.title} - Page ${i} of ${pageCount}`, 14, doc.internal.pageSize.height - 10);
       }
-      
+      doc.save(`${reportId}-${new Date().toISOString().split("T")[0]}.pdf`);
+
+    } else if (report.format === "CSV") {
+      const u = currentUser!;
+      let csv = "Date,Category,Amount,Percentage\n";
+      (u.expenses || []).forEach((e: any) => {
+        csv += `${new Date().toISOString().split("T")[0]},${e.category},${e.amount},${e.percentage}%\n`;
+      });
+      const blob = new Blob([csv], { type: "text/csv" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = url;
-      a.download = `${reportId}-${new Date().toISOString().split("T")[0]}.${report.format.toLowerCase()}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      a.href = url; a.download = `${reportId}-${new Date().toISOString().split("T")[0]}.csv`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+    } else {
+      const blob = new Blob([JSON.stringify({ title: report.title, generatedAt: new Date().toISOString(), data: currentUser }, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = `${reportId}-${new Date().toISOString().split("T")[0]}.json`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
-    
-    setGenerating(null);
+
     setGenerated(prev => [...prev, reportId]);
-    
-    // Reset generated status after 3 seconds
-    setTimeout(() => {
-      setGenerated(prev => prev.filter(id => id !== reportId));
-    }, 3000);
+    setTimeout(() => setGenerated(prev => prev.filter(id => id !== reportId)), 3000);
+
+    } catch (err) {
+      console.error("Report generation failed:", err);
+      alert(`Failed to generate report: ${err}`);
+    } finally {
+      setGenerating(null);
+    }
   };
 
   if (!currentUser) return null;

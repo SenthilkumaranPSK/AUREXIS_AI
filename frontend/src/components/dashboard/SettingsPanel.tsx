@@ -1,6 +1,7 @@
 import { useState, useEffect, ElementType } from "react";
 import { useStore } from "@/store/useStore";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { 
   User, Bell, Shield, Palette, Globe, Database, Save
 } from "lucide-react";
@@ -40,7 +41,7 @@ export default function SettingsPanel() {
     reports: false,
   });
 
-  const { currentUser, setCurrentUser, currency, setCurrency: setGlobalCurrency } = useStore();
+  const { currentUser, setCurrentUser, currency, setCurrency: setGlobalCurrency, isDark, setIsDark } = useStore();
 
   const [profile, setProfile] = useState({
     name: currentUser?.name || "",
@@ -49,6 +50,18 @@ export default function SettingsPanel() {
     occupation: currentUser?.occupation || "",
     location: currentUser?.location || "",
   });
+
+  // Sync theme state with global store
+  useEffect(() => {
+    setTheme(isDark ? "dark" : "light");
+  }, [isDark]);
+
+  const handleThemeChange = (t: "light" | "dark" | "system") => {
+    setTheme(t);
+    if (t === "dark") setIsDark(true);
+    else if (t === "light") setIsDark(false);
+    else setIsDark(window.matchMedia("(prefers-color-scheme: dark)").matches);
+  };
 
   // Update profile when currentUser changes
   useEffect(() => {
@@ -65,10 +78,6 @@ export default function SettingsPanel() {
 
   const handleSave = async () => {
     try {
-      // Here you would typically make an API call to save settings to the backend
-      // await fetch("/api/user/settings", { method: "PUT", body: JSON.stringify({ profile, notifications, theme, currency, language }) });
-      
-      // Update local store
       if (currentUser) {
         setCurrentUser({
           ...currentUser,
@@ -79,10 +88,10 @@ export default function SettingsPanel() {
           location: profile.location,
         });
       }
-      alert("Settings saved successfully!");
+      toast.success("Settings saved successfully!");
     } catch (error) {
       console.error("Failed to save settings:", error);
-      alert("Failed to save settings. Please try again.");
+      toast.error("Failed to save settings. Please try again.");
     }
   };
 
@@ -95,7 +104,7 @@ export default function SettingsPanel() {
       case "security":
         return <SecuritySettings />;
       case "appearance":
-        return <AppearanceSettings theme={theme} setTheme={setTheme} />;
+        return <AppearanceSettings theme={theme} setTheme={handleThemeChange} />;
       case "preferences":
         return <PreferenceSettings currency={currency} setCurrency={(c: any) => setGlobalCurrency(c)} language={language} setLanguage={setLanguage} />;
       case "data":
