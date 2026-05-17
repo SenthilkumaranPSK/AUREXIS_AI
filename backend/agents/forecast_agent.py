@@ -17,3 +17,4 @@ class ForecastingAgent(BaseAgent):
         result = compute_monthly_forecast(data, 6)
         self._update_status("completed")
         return {"forecast": result, "agent": self.name}
+

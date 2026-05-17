@@ -1,5 +1,5 @@
 # AUREXIS AI Backend Requirements - v2.0.0
-
+portalocker
 # ── Web Framework ──────────────────────────────────────────────────────────
 fastapi~=0.109.0
 uvicorn[standard]~=0.27.0

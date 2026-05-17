@@ -33,9 +33,26 @@ class AuthService:
         Register a new user
         Returns: user dict and tokens
         """
-        # Note: Signup not fully supported in JSON mode
-        # This is a placeholder for future implementation
-        raise NotImplementedError("Signup is not available in JSON-based mode. Please contact administrator.")
+        user = UserManagerJSON.create_user(
+            name=name,
+            email=email,
+            password=password,
+            occupation=occupation,
+            age=age,
+            location=location
+        )
+        
+        # Generate tokens
+        user_id = user.get("id")
+        access_token = create_access_token({"sub": user_id, "email": user.get("email", "")})
+        refresh_token = create_refresh_token({"sub": user_id})
+        
+        return {
+            "success": True,
+            "user": user,
+            "access_token": access_token,
+            "refresh_token": refresh_token
+        }
     
     @staticmethod
     def login(identifier: str, password: str) -> Dict:

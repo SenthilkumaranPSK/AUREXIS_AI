@@ -16,7 +16,29 @@ def extract_transactions(financial_data: Dict[str, Any]):
     monthly_expense = 0.0
     transactions = []
 
-    for bank in financial_data.get("fetch_bank_transactions", {}).get("bankTransactions", []):
+    bank_data = financial_data.get("fetch_bank_transactions", {})
+    
+    # Handle both dict and list formats for backward compatibility
+    if isinstance(bank_data, list):
+        # Format used by generate_mock_user_data
+        for txn in bank_data:
+            amount = float(txn.get("amount", 0))
+            txn_type = txn.get("type", "").upper()
+            if txn_type == "CREDIT":
+                monthly_income += amount
+            elif txn_type == "DEBIT":
+                monthly_expense += amount
+            transactions.append({
+                "bank": "AUREXIS BANK",
+                "amount": amount,
+                "narration": txn.get("description", ""),
+                "date": txn.get("date", ""),
+                "type": txn_type,
+            })
+        return monthly_income, monthly_expense, transactions
+
+    # Original dict format
+    for bank in bank_data.get("bankTransactions", []):
         bank_name = bank.get("bank", "Bank")
         for txn in bank.get("txns", []):
             if len(txn) >= 4:
